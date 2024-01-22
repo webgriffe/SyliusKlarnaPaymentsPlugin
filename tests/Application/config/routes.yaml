@@ -1,9 +1,9 @@
-acme_sylius_example_shop:
+webgriffe_sylius_klarna_shop:
     resource: "@WebgriffeSyliusKlarnaPlugin/config/shop_routing.yml"
     prefix: /{_locale}
     requirements:
         _locale: ^[a-z]{2}(?:_[A-Z]{2})?$
 
-acme_sylius_example_admin:
+webgriffe_sylius_klarna_admin:
     resource: "@WebgriffeSyliusKlarnaPlugin/config/admin_routing.yml"
     prefix: /admin

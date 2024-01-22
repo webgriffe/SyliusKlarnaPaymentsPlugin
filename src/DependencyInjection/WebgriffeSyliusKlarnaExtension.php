@@ -35,7 +35,7 @@ final class WebgriffeSyliusKlarnaExtension extends AbstractResourceExtension imp
 
     protected function getMigrationsDirectory(): string
     {
-        return '@AcmeSyliusExamplePlugin/migrations';
+        return '@WebgriffeSyliusKlarnaPlugin/migrations';
     }
 
     protected function getNamespacesOfMigrationsExecutedBefore(): array
