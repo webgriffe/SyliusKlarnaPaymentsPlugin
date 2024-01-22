@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Acme\SyliusExamplePlugin\Behat\Context\Ui\Shop;
+namespace Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Context\Ui\Shop;
 
 use Behat\Behat\Context\Context;
 use Tests\Acme\SyliusExamplePlugin\Behat\Page\Shop\WelcomePageInterface;
