@@ -6,5 +6,4 @@ namespace Webgriffe\SyliusKlarnaPlugin\Client\ValueObject;
 
 final readonly class Customer
 {
-
 }
