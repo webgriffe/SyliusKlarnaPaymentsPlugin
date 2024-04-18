@@ -2,9 +2,3 @@
 
 default:
     suites:
-        greeting_customer:
-            contexts:
-                - webgriffe_sylius_klarna.context.ui.shop.welcome
-
-            filters:
-                tags: "@greeting_customer"
