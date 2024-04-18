@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusKlarnaPlugin\Client\Enum;
 
-enum AcquiringChannel
+enum ServerRegion
 {
-    case ECOMMERCE;
-    case IN_STORE;
-    case TELESALES;
+    case Europe;
+    case NorthAmerica;
+    case Oceania;
 }

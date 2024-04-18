@@ -6,6 +6,6 @@ namespace Webgriffe\SyliusKlarnaPlugin\Client\Exception;
 
 use RuntimeException;
 
-final class ContractCreateFailedException extends RuntimeException implements ExceptionInterface
+final class SessionCreateFailedException extends RuntimeException implements ExceptionInterface
 {
 }
