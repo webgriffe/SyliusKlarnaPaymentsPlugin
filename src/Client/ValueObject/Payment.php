@@ -38,7 +38,7 @@ final readonly class Payment implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'acquiring_channel' => json_encode($this->acquiringChannel, \JSON_THROW_ON_ERROR),
+            'acquiring_channel' => $this->acquiringChannel->value,
             'customer' => $this->customer,
             'billing_address' => $this->billingAddress,
             'shipping_address' => $this->shippingAddress,
@@ -51,7 +51,7 @@ final readonly class Payment implements JsonSerializable
             'order_tax_amount' => $this->orderTaxAmount,
             'purchase_country' => $this->purchaseCountry,
             'purchase_currency' => $this->purchaseCurrency,
-            'intent' => json_encode($this->intent, \JSON_THROW_ON_ERROR),
+            'intent' => $this->intent->value,
         ];
     }
 }

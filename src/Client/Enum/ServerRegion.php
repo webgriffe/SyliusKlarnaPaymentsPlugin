@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusKlarnaPlugin\Client\Enum;
 
-enum ServerRegion
+enum ServerRegion: string
 {
-    case Europe;
-    case NorthAmerica;
-    case Oceania;
+    case Europe = 'europe';
+    case NorthAmerica = 'north_america';
+    case Oceania = 'oceania';
 }
