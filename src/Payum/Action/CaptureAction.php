@@ -12,6 +12,7 @@ use Payum\Core\GatewayAwareInterface;
 use Payum\Core\GatewayAwareTrait;
 use Payum\Core\Reply\HttpRedirect;
 use Payum\Core\Request\Capture;
+use Payum\Core\Security\GenericTokenFactoryAwareInterface;
 use Payum\Core\Security\GenericTokenFactoryAwareTrait;
 use Payum\Core\Security\TokenInterface;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
@@ -26,7 +27,7 @@ use Webmozart\Assert\Assert;
 /**
  * @psalm-suppress PropertyNotSetInConstructor
  */
-final class CaptureAction implements ActionInterface, GatewayAwareInterface, ApiAwareInterface
+final class CaptureAction implements ActionInterface, GatewayAwareInterface, ApiAwareInterface, GenericTokenFactoryAwareInterface
 {
     use GatewayAwareTrait, GenericTokenFactoryAwareTrait, ApiAwareTrait;
 
@@ -51,6 +52,9 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
 
         $captureUrl = $captureToken->getTargetUrl();
 
+        $notifyToken = $this->tokenFactory->createNotifyToken($captureToken->getGatewayName(), $captureToken->getDetails());
+        $notifyUrl = $notifyToken->getTargetUrl();
+
         $paymentMethod = $payment->getMethod();
         Assert::isInstanceOf($paymentMethod, PaymentMethodInterface::class);
         $gatewayConfig = $paymentMethod->getGatewayConfig();
@@ -60,6 +64,8 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
 
         $convertSyliusPaymentToKlarnaPayment = new ConvertSyliusPaymentToKlarnaPayment(
             $payment,
+            $captureUrl,
+            $notifyUrl,
         );
         $this->gateway->execute($convertSyliusPaymentToKlarnaPayment);
         $klarnaPayment = $convertSyliusPaymentToKlarnaPayment->getKlarnaPayment();

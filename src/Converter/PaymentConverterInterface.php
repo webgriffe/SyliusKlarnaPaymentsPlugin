@@ -9,5 +9,9 @@ use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
 
 interface PaymentConverterInterface
 {
-    public function convert(PaymentInterface $payment): Payment;
+    public function convert(
+        PaymentInterface $payment,
+        string $confirmationUrl,
+        string $notificationUrl,
+    ): Payment;
 }
