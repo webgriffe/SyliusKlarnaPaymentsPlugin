@@ -101,7 +101,10 @@ final readonly class Client implements ClientInterface
             );
         }
 
-        return new PaymentSession();
+        return new PaymentSession(
+            $serializedResponse['client_token'],
+            $serializedResponse['session_id'],
+        );
     }
 
     private function getSessionCreateUrl(ApiContext $apiContext): string

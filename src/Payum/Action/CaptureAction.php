@@ -77,7 +77,10 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         Assert::isInstanceOf($paymentSession, PaymentSession::class);
 
         $payment->setDetails(
-            [],
+            [
+                'session_id' => $paymentSession->getSessionId(),
+                'client_token' => $paymentSession->getClientToken(),
+            ],
         );
 
         throw new HttpRedirect('TODO');

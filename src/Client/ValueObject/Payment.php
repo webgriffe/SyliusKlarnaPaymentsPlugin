@@ -130,7 +130,7 @@ final readonly class Payment implements JsonSerializable
     private function getISO4217Amount(): int
     {
         if ($this->getPurchaseCurrency() === 'EUR') {
-            return $this->getOrderAmount() / 100;
+            return (int) ($this->getOrderAmount() / 100);
         }
 
         return $this->getOrderAmount();
