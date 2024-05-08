@@ -7,7 +7,7 @@ namespace Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
 
-final class CreatePayment
+final class CreatePaymentSession
 {
     private ?PaymentSession $paymentSession = null;
 

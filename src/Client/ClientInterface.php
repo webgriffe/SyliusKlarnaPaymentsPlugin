@@ -5,21 +5,40 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusKlarnaPlugin\Client;
 
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\ClientException;
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\SessionCreateFailedException;
+use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionCreateFailedException;
+use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
 
 interface ClientInterface
 {
     /**
-     * @docs https://docs.klarna.com/klarna-payments/integrate-with-klarna-payments/step-1-initiate-a-payment/
+     * @docs https://docs.klarna.com/api/payments/#operation/createCreditSession
      *
      * @throws ClientException
-     * @throws SessionCreateFailedException
+     * @throws PaymentSessionCreateFailedException
      */
-    public function createASession(
+    public function createPaymentSession(
         ApiContext $apiContext,
         Payment $payment,
     ): PaymentSession;
+
+    /**
+     * @docs https://docs.klarna.com/api/hpp-merchant/#operation/createHppSession
+     *
+     * @throws ClientException
+     * @throws HostedPaymentPageSessionCreateFailedException
+     */
+    public function createHostedPaymentPageSession(
+        ApiContext $apiContext,
+        HostedPaymentPage $hostedPaymentPage,
+    ): HostedPaymentPageSession;
+
+    public function createPaymentSessionUrl(
+        ApiContext $apiContext,
+        string $sessionId,
+    ): string;
 }

@@ -13,9 +13,9 @@ use Webgriffe\SyliusKlarnaPlugin\Client\Enum\AcquiringChannel;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Intent;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Address;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Customer;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\MerchantUrls;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\OrderLine;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payments\MerchantUrls;
 use Webmozart\Assert\Assert;
 
 final class PaymentConverter implements PaymentConverterInterface

@@ -8,6 +8,7 @@ use JsonException;
 use JsonSerializable;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\AcquiringChannel;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Intent;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payments\MerchantUrls;
 
 final readonly class Payment implements JsonSerializable
 {

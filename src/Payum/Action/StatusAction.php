@@ -10,6 +10,9 @@ use Sylius\Bundle\PayumBundle\Request\GetStatus;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Webmozart\Assert\Assert;
 
+/**
+ * @psalm-import-type PaymentDetails from \Webgriffe\SyliusKlarnaPlugin\PaymentDetailsHelper
+ */
 final class StatusAction implements ActionInterface
 {
     /**
@@ -23,7 +26,7 @@ final class StatusAction implements ActionInterface
         /** @var SyliusPaymentInterface $payment */
         $payment = $request->getFirstModel();
 
-        /** @var array{} $paymentDetails */
+        /** @var array{}|PaymentDetails $paymentDetails */
         $paymentDetails = $payment->getDetails();
 
         if ($paymentDetails === []) {
