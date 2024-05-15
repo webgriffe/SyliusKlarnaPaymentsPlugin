@@ -41,8 +41,7 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
 
     public function __construct(
         private readonly ClientInterface $client,
-    )
-    {
+    ) {
         $this->apiClass = KlarnaPaymentsApi::class;
     }
 

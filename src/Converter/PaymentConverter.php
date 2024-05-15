@@ -12,6 +12,7 @@ use Sylius\Component\Core\Model\PaymentInterface;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\AcquiringChannel;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Intent;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Address;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Amount;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Customer;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\OrderLine;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
@@ -36,7 +37,7 @@ final class PaymentConverter implements PaymentConverterInterface
             str_replace('_', '-', (string) $order->getLocaleCode()),
             $purchaseCountry,
             $purchaseCurrency,
-            $order->getTotal(),
+            Amount::fromSyliusAmount($order->getTotal()),
             $this->getOrderLines($order),
             Intent::buy,
             new MerchantUrls($confirmationUrl, $notificationUrl),
@@ -46,7 +47,7 @@ final class PaymentConverter implements PaymentConverterInterface
             $this->getAddress($order->getShippingAddress(), $order->getCustomer()),
             (string) $order->getNumber(),
             null,
-            $order->getTaxTotal(),
+            Amount::fromSyliusAmount($order->getTaxTotal()),
         );
     }
 
@@ -89,8 +90,8 @@ final class PaymentConverter implements PaymentConverterInterface
         return new OrderLine(
             (string) $orderItem->getProductName(),
             $orderItem->getQuantity(),
-            $orderItem->getTotal(),
-            $orderItem->getUnitPrice(),
+            Amount::fromSyliusAmount($orderItem->getTotal()),
+            Amount::fromSyliusAmount($orderItem->getUnitPrice()),
             null,
             null,
             $orderItem->getProduct()?->getCode(),

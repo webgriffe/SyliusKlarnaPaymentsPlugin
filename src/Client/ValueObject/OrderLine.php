@@ -11,8 +11,8 @@ final readonly class OrderLine implements JsonSerializable
     public function __construct(
         private string $name,
         private int $quantity,
-        private int $totalAmount,
-        private int $unitPrice,
+        private Amount $totalAmount,
+        private Amount $unitPrice,
         private ?string $productUrl = null,
         private ?string $imageUrl = null,
         private ?string $merchantData = null,
@@ -29,12 +29,12 @@ final readonly class OrderLine implements JsonSerializable
         return $this->quantity;
     }
 
-    public function getTotalAmount(): int
+    public function getTotalAmount(): Amount
     {
         return $this->totalAmount;
     }
 
-    public function getUnitPrice(): int
+    public function getUnitPrice(): Amount
     {
         return $this->unitPrice;
     }
@@ -59,8 +59,8 @@ final readonly class OrderLine implements JsonSerializable
         return array_filter([
             'name' => $this->getName(),
             'quantity' => $this->getQuantity(),
-            'total_amount' => $this->getTotalAmount(),
-            'unit_price' => $this->getUnitPrice(),
+            'total_amount' => $this->getTotalAmount()->getISO4217Amount(),
+            'unit_price' => $this->getUnitPrice()->getISO4217Amount(),
             'product_url' => $this->getProductUrl(),
             'image_url' => $this->getImageUrl(),
             'merchant_data' => $this->getMerchantData(),

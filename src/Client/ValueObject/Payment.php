@@ -19,7 +19,7 @@ final readonly class Payment implements JsonSerializable
         private string $locale,
         private string $purchaseCountry,
         private string $purchaseCurrency,
-        private int $orderAmount,
+        private Amount $orderAmount,
         private array $orderLines,
         private Intent $intent,
         private MerchantUrls $merchantUrls,
@@ -29,7 +29,7 @@ final readonly class Payment implements JsonSerializable
         private ?Address $shippingAddress = null,
         private ?string $merchantReference1 = null,
         private ?string $merchantReference2 = null,
-        private ?int $orderTaxAmount = null,
+        private ?Amount $orderTaxAmount = null,
     ) {
     }
 
@@ -48,7 +48,7 @@ final readonly class Payment implements JsonSerializable
         return $this->purchaseCurrency;
     }
 
-    public function getOrderAmount(): int
+    public function getOrderAmount(): Amount
     {
         return $this->orderAmount;
     }
@@ -98,7 +98,7 @@ final readonly class Payment implements JsonSerializable
         return $this->merchantReference2;
     }
 
-    public function getOrderTaxAmount(): ?int
+    public function getOrderTaxAmount(): ?Amount
     {
         return $this->orderTaxAmount;
     }
@@ -112,7 +112,7 @@ final readonly class Payment implements JsonSerializable
             'locale' => $this->getLocale(),
             'purchase_country' => $this->getPurchaseCountry(),
             'purchase_currency' => $this->getPurchaseCurrency(),
-            'order_amount' => $this->getISO4217Amount(),
+            'order_amount' => $this->getOrderAmount()->getISO4217Amount(),
             'order_lines' => $this->getOrderLines(),
             'intent' => $this->getIntent()->value,
             'merchant_urls' => $this->getMerchantUrls(),
@@ -122,18 +122,9 @@ final readonly class Payment implements JsonSerializable
             'shipping_address' => $this->getShippingAddress(),
             'merchant_reference1' => $this->getMerchantReference1(),
             'merchant_reference2' => $this->getMerchantReference2(),
-            'order_tax_amount' => $this->getOrderTaxAmount(),
+            'order_tax_amount' => $this->getOrderTaxAmount()?->getISO4217Amount(),
         ];
 
         return array_filter($payload, static fn ($value) => $value !== null);
-    }
-
-    private function getISO4217Amount(): int
-    {
-        if ($this->getPurchaseCurrency() === 'EUR') {
-            return (int) ($this->getOrderAmount() / 100);
-        }
-
-        return $this->getOrderAmount();
     }
 }
