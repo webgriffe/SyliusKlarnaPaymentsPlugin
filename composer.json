@@ -1,4 +1,5 @@
 {
+    "name": "webgriffe/sylius-klarna-plugin",
     "type": "sylius-plugin",
     "keywords": [
         "sylius",
