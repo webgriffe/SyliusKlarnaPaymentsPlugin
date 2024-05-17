@@ -11,8 +11,8 @@ final readonly class HostedPaymentPage implements JsonSerializable
 {
     public function __construct(
         private MerchantUrls $merchantUrls,
-        private array $options,
         private string $paymentSessionUrl,
+        private ?array $options = null,
         private ?string $profileId = null,
     ) {
     }
@@ -22,7 +22,7 @@ final readonly class HostedPaymentPage implements JsonSerializable
         return $this->merchantUrls;
     }
 
-    public function getOptions(): array
+    public function getOptions(): ?array
     {
         return $this->options;
     }

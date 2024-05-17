@@ -24,8 +24,8 @@ final class HostedPaymentPageConverter implements HostedPaymentPageConverterInte
                 $notificationUrl,
                 $confirmationUrl,
             ),
-            [],
             $paymentSessionUrl,
+            null,
             null,
         );
     }

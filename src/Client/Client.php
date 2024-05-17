@@ -148,6 +148,7 @@ final readonly class Client implements ClientInterface
             $this->getHostedPaymentPageSessionCreateUrl($apiContext),
             [
                 'Content-Type' => 'application/json',
+                'Authorization' => 'Basic ' . (string) $apiContext->getAuthorization(),
             ],
             $bodyParams,
         );

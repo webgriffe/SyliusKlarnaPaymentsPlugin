@@ -16,15 +16,12 @@ use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Amount;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Customer;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\OrderLine;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payments\MerchantUrls;
 use Webmozart\Assert\Assert;
 
 final class PaymentConverter implements PaymentConverterInterface
 {
     public function convert(
         PaymentInterface $payment,
-        string $confirmationUrl,
-        string $notificationUrl,
     ): Payment {
         $order = $payment->getOrder();
         Assert::isInstanceOf($order, OrderInterface::class);
@@ -40,8 +37,8 @@ final class PaymentConverter implements PaymentConverterInterface
             Amount::fromSyliusAmount($order->getTotal()),
             $this->getOrderLines($order),
             Intent::buy,
-            new MerchantUrls($confirmationUrl, $notificationUrl),
             AcquiringChannel::ECOMMERCE,
+            null,
             $this->getCustomer($order),
             $this->getAddress($order->getBillingAddress(), $order->getCustomer()),
             $this->getAddress($order->getShippingAddress(), $order->getCustomer()),
@@ -90,11 +87,17 @@ final class PaymentConverter implements PaymentConverterInterface
         return new OrderLine(
             (string) $orderItem->getProductName(),
             $orderItem->getQuantity(),
+            2200,
             Amount::fromSyliusAmount($orderItem->getTotal()),
+            Amount::fromSyliusAmount(0),
+            Amount::fromSyliusAmount($orderItem->getTaxTotal()),
             Amount::fromSyliusAmount($orderItem->getUnitPrice()),
             null,
             null,
+            null,
+            'pcs',
             $orderItem->getProduct()?->getCode(),
+            'physical',
         );
     }
 

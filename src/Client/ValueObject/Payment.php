@@ -22,8 +22,8 @@ final readonly class Payment implements JsonSerializable
         private Amount $orderAmount,
         private array $orderLines,
         private Intent $intent,
-        private MerchantUrls $merchantUrls,
         private AcquiringChannel $acquiringChannel = AcquiringChannel::ECOMMERCE,
+        private ?MerchantUrls $merchantUrls = null,
         private ?Customer $customer = null,
         private ?Address $billingAddress = null,
         private ?Address $shippingAddress = null,
@@ -63,7 +63,7 @@ final readonly class Payment implements JsonSerializable
         return $this->intent;
     }
 
-    public function getMerchantUrls(): MerchantUrls
+    public function getMerchantUrls(): ?MerchantUrls
     {
         return $this->merchantUrls;
     }

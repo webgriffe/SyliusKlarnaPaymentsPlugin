@@ -16,7 +16,6 @@ use Payum\Core\Security\GenericTokenFactoryAwareInterface;
 use Payum\Core\Security\GenericTokenFactoryAwareTrait;
 use Payum\Core\Security\TokenInterface;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
-use Sylius\Component\Core\Model\PaymentMethodInterface;
 use Webgriffe\SyliusKlarnaPlugin\Client\ClientInterface;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Authorization;
@@ -34,6 +33,8 @@ use Webmozart\Assert\Assert;
 
 /**
  * @psalm-suppress PropertyNotSetInConstructor
+ *
+ * @psalm-import-type PaymentDetails from \Webgriffe\SyliusKlarnaPlugin\PaymentDetailsHelper
  */
 final class CaptureAction implements ActionInterface, GatewayAwareInterface, ApiAwareInterface, GenericTokenFactoryAwareInterface
 {
@@ -59,58 +60,71 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         $captureToken = $request->getToken();
         Assert::isInstanceOf($captureToken, TokenInterface::class);
 
+        /**
+         * @TODO improve this
+         */
         $captureUrl = $captureToken->getTargetUrl();
-
-        $cancelToken = $this->tokenFactory->createToken($captureToken->getGatewayName(), $captureToken->getDetails(), 'payum_cancel_do', [], $captureToken->getAfterUrl());
-        $cancelUrl = $cancelToken->getTargetUrl();
-
-        $notifyToken = $this->tokenFactory->createNotifyToken($captureToken->getGatewayName(), $captureToken->getDetails());
-        $notifyUrl = $notifyToken->getTargetUrl();
-
-        $paymentMethod = $payment->getMethod();
-        Assert::isInstanceOf($paymentMethod, PaymentMethodInterface::class);
-        $gatewayConfig = $paymentMethod->getGatewayConfig();
+        $captureUrl .= '?authorization_token={{authorization_token}}';
 
         $klarnaPaymentsApi = $this->api;
         Assert::isInstanceOf($klarnaPaymentsApi, KlarnaPaymentsApi::class);
 
-        $convertSyliusPaymentToKlarnaPayment = new ConvertSyliusPaymentToKlarnaPayment(
-            $payment,
-            $captureUrl,
-            $notifyUrl,
-        );
-        $this->gateway->execute($convertSyliusPaymentToKlarnaPayment);
-        $klarnaPayment = $convertSyliusPaymentToKlarnaPayment->getKlarnaPayment();
-        Assert::isInstanceOf($klarnaPayment, Payment::class);
+        if ($payment->getDetails() === []) {
+            $convertSyliusPaymentToKlarnaPayment = new ConvertSyliusPaymentToKlarnaPayment($payment);
+            $this->gateway->execute($convertSyliusPaymentToKlarnaPayment);
+            $klarnaPayment = $convertSyliusPaymentToKlarnaPayment->getKlarnaPayment();
+            Assert::isInstanceOf($klarnaPayment, Payment::class);
 
-        $createPaymentSession = new CreatePaymentSession($klarnaPayment);
-        $this->gateway->execute($createPaymentSession);
-        $paymentSession = $createPaymentSession->getPaymentSession();
-        Assert::isInstanceOf($paymentSession, PaymentSession::class);
+            $createPaymentSession = new CreatePaymentSession($klarnaPayment);
+            $this->gateway->execute($createPaymentSession);
+            $paymentSession = $createPaymentSession->getPaymentSession();
+            Assert::isInstanceOf($paymentSession, PaymentSession::class);
+            $payment->setDetails(
+                PaymentDetailsHelper::storePaymentSessionOnPaymentDetails($paymentSession),
+            );
+        } else {
+            /** @var PaymentDetails $paymentDetails */
+            $paymentDetails = $payment->getDetails();
+            PaymentDetailsHelper::assertPaymentDetailsAreValid($paymentDetails);
+            $paymentSession = PaymentDetailsHelper::extractPaymentSessionFromPaymentDetails($paymentDetails);
+        }
+        /** @var PaymentDetails $paymentDetails */
+        $paymentDetails = $payment->getDetails();
 
-        $apiContext = new ApiContext(
-            new Authorization($klarnaPaymentsApi->getUsername(), $klarnaPaymentsApi->getPassword()),
-            $klarnaPaymentsApi->getServerRegion(),
-            $klarnaPaymentsApi->isSandBox(),
-        );
-        $convertSyliusPaymentToKlarnaHostedPaymentPage = new ConvertSyliusPaymentToKlarnaHostedPaymentPage(
-            $captureUrl,
-            $notifyUrl,
-            $cancelUrl,
-            $this->client->createPaymentSessionUrl($apiContext, $paymentSession->getSessionId()),
-        );
-        $this->gateway->execute($convertSyliusPaymentToKlarnaHostedPaymentPage);
-        $klarnaHostedPaymentPage = $convertSyliusPaymentToKlarnaHostedPaymentPage->getKlarnaHostedPaymentPage();
-        Assert::isInstanceOf($klarnaHostedPaymentPage, HostedPaymentPage::class);
+        if (!PaymentDetailsHelper::haveHostedPaymentPageSessionData($paymentDetails)) {
+            $apiContext = new ApiContext(
+                new Authorization($klarnaPaymentsApi->getUsername(), $klarnaPaymentsApi->getPassword()),
+                $klarnaPaymentsApi->getServerRegion(),
+                $klarnaPaymentsApi->isSandBox(),
+            );
+            $cancelToken = $this->tokenFactory->createToken($captureToken->getGatewayName(), $captureToken->getDetails(), 'payum_cancel_do', [], $captureToken->getAfterUrl());
+            $cancelUrl = $cancelToken->getTargetUrl();
 
-        $createHostedPaymentPageSession = new CreateHostedPaymentPageSession($klarnaHostedPaymentPage);
-        $this->gateway->execute($createHostedPaymentPageSession);
-        $hostedPaymentPageSession = $createHostedPaymentPageSession->getHostedPaymentPageSession();
-        Assert::isInstanceOf($hostedPaymentPageSession, HostedPaymentPageSession::class);
+            $notifyToken = $this->tokenFactory->createNotifyToken($captureToken->getGatewayName(), $captureToken->getDetails());
+            $notifyUrl = $notifyToken->getTargetUrl();
 
-        $payment->setDetails(
-            PaymentDetailsHelper::createFromContractCreateResult($paymentSession, $hostedPaymentPageSession),
-        );
+            $convertSyliusPaymentToKlarnaHostedPaymentPage = new ConvertSyliusPaymentToKlarnaHostedPaymentPage(
+                $captureUrl,
+                $notifyUrl,
+                $cancelUrl,
+                $this->client->createPaymentSessionUrl($apiContext, $paymentSession->getSessionId()),
+            );
+            $this->gateway->execute($convertSyliusPaymentToKlarnaHostedPaymentPage);
+            $klarnaHostedPaymentPage = $convertSyliusPaymentToKlarnaHostedPaymentPage->getKlarnaHostedPaymentPage();
+            Assert::isInstanceOf($klarnaHostedPaymentPage, HostedPaymentPage::class);
+
+            $createHostedPaymentPageSession = new CreateHostedPaymentPageSession($klarnaHostedPaymentPage);
+            $this->gateway->execute($createHostedPaymentPageSession);
+            $hostedPaymentPageSession = $createHostedPaymentPageSession->getHostedPaymentPageSession();
+            Assert::isInstanceOf($hostedPaymentPageSession, HostedPaymentPageSession::class);
+
+            $payment->setDetails(
+                PaymentDetailsHelper::storeHostedPaymentPageSessionOnPaymentDetails($paymentDetails, $hostedPaymentPageSession),
+            );
+        } else {
+            PaymentDetailsHelper::assertPaymentDetailsAreValid($paymentDetails);
+            $hostedPaymentPageSession = PaymentDetailsHelper::extractHostedPaymentPageSessionFromPaymentDetails($paymentDetails);
+        }
 
         throw new HttpRedirect($hostedPaymentPageSession->getRedirectUrl());
     }
