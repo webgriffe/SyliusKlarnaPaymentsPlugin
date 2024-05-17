@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\CreateHostedPaymentPageSessionAction;
+use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\CreateOrderAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\CreatePaymentSessionAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\CaptureAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\ConvertSyliusPaymentToKlarnaHostedPaymentPageAction;
+use Webgriffe\SyliusKlarnaPlugin\Payum\Action\ConvertSyliusPaymentToKlarnaOrderAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\ConvertSyliusPaymentToKlarnaPaymentAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\StatusAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\KlarnaPaymentsApi;
@@ -43,6 +45,14 @@ return static function (ContainerConfigurator $containerConfigurator) {
         ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.convert_sylius_payment_to_klarna_hosted_payment_page'])
     ;
 
+    $services->set('webgriffe_sylius_klarna.payum.action.convert_sylius_payment_to_klarna_order', ConvertSyliusPaymentToKlarnaOrderAction::class)
+        ->public()
+        ->args([
+            service('webgriffe_sylius_klarna.converter.order'),
+        ])
+        ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.convert_sylius_payment_to_klarna_order'])
+    ;
+
     $services->set('webgriffe_sylius_klarna.payum.action.api.create_payment_session', CreatePaymentSessionAction::class)
         ->public()
         ->args([
@@ -57,5 +67,13 @@ return static function (ContainerConfigurator $containerConfigurator) {
             service('webgriffe_sylius_klarna.client'),
         ])
         ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.api.create_hosted_payment_page_session'])
+    ;
+
+    $services->set('webgriffe_sylius_klarna.payum.action.api.create_order', CreateOrderAction::class)
+        ->public()
+        ->args([
+            service('webgriffe_sylius_klarna.client'),
+        ])
+        ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.api.create_order'])
     ;
 };

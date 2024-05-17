@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusKlarnaPlugin\Payum\Request;
 
 use Sylius\Component\Core\Model\PaymentInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Order;
 
-final class ConvertSyliusPaymentToKlarnaPayment
+final class ConvertSyliusPaymentToKlarnaOrder
 {
-    private ?Payment $klarnaPayment = null;
+    private ?Order $klarnaOrder = null;
 
     public function __construct(
         private readonly PaymentInterface $syliusPayment,
@@ -21,13 +21,13 @@ final class ConvertSyliusPaymentToKlarnaPayment
         return $this->syliusPayment;
     }
 
-    public function setKlarnaPayment(Payment $klarnaPayment): void
+    public function setKlarnaOrder(Order $klarnaOrder): void
     {
-        $this->klarnaPayment = $klarnaPayment;
+        $this->klarnaOrder = $klarnaOrder;
     }
 
-    public function getKlarnaPayment(): ?Payment
+    public function getKlarnaOrder(): ?Order
     {
-        return $this->klarnaPayment;
+        return $this->klarnaOrder;
     }
 }

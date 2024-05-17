@@ -6,11 +6,14 @@ namespace Webgriffe\SyliusKlarnaPlugin\Client;
 
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\ClientException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionCreateFailedException;
+use Webgriffe\SyliusKlarnaPlugin\Client\Exception\OrderCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Order;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\Order as OrderResponse;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
 
 interface ClientInterface
@@ -36,6 +39,18 @@ interface ClientInterface
         ApiContext $apiContext,
         HostedPaymentPage $hostedPaymentPage,
     ): HostedPaymentPageSession;
+
+    /**
+     * @docs https://docs.klarna.com/api/payments/#operation/createOrder
+     *
+     * @throws ClientException
+     * @throws OrderCreateFailedException
+     */
+    public function createOrder(
+        ApiContext $apiContext,
+        Order $order,
+        string $authorizationToken,
+    ): OrderResponse;
 
     public function createPaymentSessionUrl(
         ApiContext $apiContext,

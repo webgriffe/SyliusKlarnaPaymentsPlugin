@@ -14,12 +14,16 @@ use Psr\Log\LoggerInterface;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\ServerRegion;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\ClientException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionCreateFailedException;
+use Webgriffe\SyliusKlarnaPlugin\Client\Exception\OrderCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Order;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\AuthorizedPaymentMethod;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\DistributionModule;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\Order as OrderResponse;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
 
 final readonly class Client implements ClientInterface
@@ -28,18 +32,6 @@ final readonly class Client implements ClientInterface
         private GuzzleHttpClientInterface $httpClient,
         private LoggerInterface $logger,
     ) {
-    }
-
-    public function createPaymentSessionUrl(
-        ApiContext $apiContext,
-        string $sessionId,
-    ): string {
-        return sprintf(
-            '%s/payments/%s/sessions/%s',
-            $this->getBaseUrl($apiContext),
-            $this->getVersion1(),
-            $sessionId,
-        );
     }
 
     public function createPaymentSession(
@@ -215,6 +207,107 @@ final readonly class Client implements ClientInterface
         );
     }
 
+    public function createOrder(
+        ApiContext $apiContext,
+        Order $order,
+        string $authorizationToken,
+    ): OrderResponse {
+        try {
+            $bodyParams = json_encode($order, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            $message = 'Malformed order create request body.';
+            $this->logger->error($message, ['exception' => $e]);
+
+            throw new OrderCreateFailedException(
+                $message,
+                0,
+                $e,
+            );
+        }
+
+        $this->logger->debug('Create order request body: ' . $bodyParams);
+
+        $request = new ServerRequest(
+            'POST',
+            $this->getOrderCreateUrl($apiContext, $authorizationToken),
+            [
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Basic ' . (string) $apiContext->getAuthorization(),
+            ],
+            $bodyParams,
+        );
+
+        try {
+            $response = $this->httpClient->send($request);
+        } catch (GuzzleException $e) {
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
+
+            throw new ClientException($e->getMessage(), $e->getCode(), $e);
+        }
+
+        $bodyContents = $response->getBody()->getContents();
+        $this->logger->debug('Create order request response: ' . $bodyContents);
+
+        if ($response->getStatusCode() !== 200) {
+            $message = sprintf(
+                'Unexpected order create response status code: %s - "%s".',
+                $response->getStatusCode(),
+                $response->getReasonPhrase(),
+            );
+            $this->logger->error($message);
+
+            throw new OrderCreateFailedException(
+                $message,
+                $response->getStatusCode(),
+            );
+        }
+
+        try {
+            /** @var array{authorized_payment_method: array{number_of_days: int, number_of_installments: int, type: string}, fraud_status: string, order_id: string, redirect_url: string} $serializedResponse */
+            $serializedResponse = json_decode(
+                $bodyContents,
+                true,
+                512,
+                JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $e) {
+            $message = sprintf(
+                'Malformed order create response body: "%s".',
+                $bodyContents,
+            );
+            $this->logger->error($message, ['exception' => $e]);
+
+            throw new OrderCreateFailedException(
+                $message,
+                $response->getStatusCode(),
+                $e,
+            );
+        }
+
+        return new OrderResponse(
+            $serializedResponse['order_id'],
+            $serializedResponse['redirect_url'],
+            $serializedResponse['fraud_status'],
+            new AuthorizedPaymentMethod(
+                $serializedResponse['authorized_payment_method']['number_of_days'],
+                $serializedResponse['authorized_payment_method']['number_of_installments'],
+                $serializedResponse['authorized_payment_method']['type'],
+            ),
+        );
+    }
+
+    public function createPaymentSessionUrl(
+        ApiContext $apiContext,
+        string $sessionId,
+    ): string {
+        return sprintf(
+            '%s/payments/%s/sessions/%s',
+            $this->getBaseUrl($apiContext),
+            $this->getVersion1(),
+            $sessionId,
+        );
+    }
+
     private function getPaymentSessionCreateUrl(ApiContext $apiContext): string
     {
         return sprintf('%s/payments/%s/sessions', $this->getBaseUrl($apiContext), $this->getVersion1());
@@ -223,6 +316,16 @@ final readonly class Client implements ClientInterface
     private function getHostedPaymentPageSessionCreateUrl(ApiContext $apiContext): string
     {
         return sprintf('%s/hpp/%s/sessions', $this->getBaseUrl($apiContext), $this->getVersion1());
+    }
+
+    private function getOrderCreateUrl(ApiContext $apiContext, string $authorizationToken): string
+    {
+        return sprintf(
+            '%s/payments/%s/authorizations/%s/order',
+            $this->getBaseUrl($apiContext),
+            $this->getVersion1(),
+            $authorizationToken,
+        );
     }
 
     private function getBaseUrl(ApiContext $apiContext): string
