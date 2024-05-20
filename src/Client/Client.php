@@ -11,11 +11,15 @@ use GuzzleHttp\Psr7\ServerRequest;
 use const JSON_THROW_ON_ERROR;
 use JsonException;
 use Psr\Log\LoggerInterface;
+use Webgriffe\SyliusKlarnaPlugin\Client\Enum\AcquiringChannel;
+use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Intent;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\ServerRegion;
+use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Status;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\ClientException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\OrderCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionCreateFailedException;
+use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionReadFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Order;
@@ -25,6 +29,7 @@ use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\DistributionModule;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\Order as OrderResponse;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSessionDetails;
 
 final readonly class Client implements ClientInterface
 {
@@ -76,9 +81,10 @@ final readonly class Client implements ClientInterface
 
         if ($response->getStatusCode() !== 200) {
             $message = sprintf(
-                'Unexpected session create response status code: %s - "%s".',
+                'Unexpected session create response status code: %s - "%s". Check merchant logs as stated here "%s"',
                 $response->getStatusCode(),
                 $response->getReasonPhrase(),
+                'https://docs.klarna.com/klarna-payments/integrate-with-klarna-payments/step-1-initiate-a-payment/#:~:text=Here%20are%20examples%20of%20common%20errors%20with%20troubleshooting%20suggestions.%20You%20can%20use%20the%20value%20in%20correlation_id%20to%20find%20entries%20related%20to%20the%20request%20under%20Logs%20in%20the%20Merchant%20portal.',
             );
             $this->logger->error($message);
 
@@ -113,6 +119,75 @@ final readonly class Client implements ClientInterface
         return new PaymentSession(
             $serializedResponse['client_token'],
             $serializedResponse['session_id'],
+        );
+    }
+
+    public function getPaymentSessionDetails(
+        ApiContext $apiContext,
+        string $sessionId,
+    ): PaymentSessionDetails {
+        $request = new ServerRequest(
+            'GET',
+            $this->getPaymentSessionReadUrl($apiContext, $sessionId),
+            [
+                'Authorization' => 'Basic ' . (string) $apiContext->getAuthorization(),
+            ],
+        );
+
+        try {
+            $response = $this->httpClient->send($request);
+        } catch (GuzzleException $e) {
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
+
+            throw new ClientException($e->getMessage(), $e->getCode(), $e);
+        }
+
+        $bodyContents = $response->getBody()->getContents();
+        $this->logger->debug('Read session details request response: ' . $bodyContents);
+
+        if ($response->getStatusCode() !== 200) {
+            $message = sprintf(
+                'Unexpected session details read response status code: %s - "%s".',
+                $response->getStatusCode(),
+                $response->getReasonPhrase(),
+            );
+            $this->logger->error($message);
+
+            throw new PaymentSessionReadFailedException(
+                $message,
+                $response->getStatusCode(),
+            );
+        }
+
+        try {
+            /** @var array{acquiring_channel: string, authorization_token: string, client_token: string, expires_at: string, status: string, intent: string} $serializedResponse */
+            $serializedResponse = json_decode(
+                $bodyContents,
+                true,
+                512,
+                JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $e) {
+            $message = sprintf(
+                'Malformed session details read response body: "%s".',
+                $bodyContents,
+            );
+            $this->logger->error($message, ['exception' => $e]);
+
+            throw new PaymentSessionReadFailedException(
+                $message,
+                $response->getStatusCode(),
+                $e,
+            );
+        }
+
+        return new PaymentSessionDetails(
+            AcquiringChannel::from($serializedResponse['acquiring_channel']),
+            $serializedResponse['authorization_token'],
+            $serializedResponse['client_token'],
+            new DateTimeImmutable($serializedResponse['expires_at']),
+            Status::from($serializedResponse['status']),
+            Intent::from($serializedResponse['intent']),
         );
     }
 
@@ -250,9 +325,10 @@ final readonly class Client implements ClientInterface
 
         if ($response->getStatusCode() !== 200) {
             $message = sprintf(
-                'Unexpected order create response status code: %s - "%s".',
+                'Unexpected order create response status code: %s - "%s". Check logs on merchant portal for more info as stated here "%s".',
                 $response->getStatusCode(),
                 $response->getReasonPhrase(),
+                'https://docs.klarna.com/klarna-payments/integrate-with-klarna-payments/step-3-create-an-order/#special-considerations-for-one-time-payments:~:text=one%2Dtime%20payment.-,Here%20are%20examples%20of%20common%20errors%20with%20troubleshooting%20suggestions.%20You%20can%20use%20the%20value%20in%20correlation_id%20to%20find%20entries%20related%20to%20the%20request%20under%20Logs%20in%20the%20Merchant%20portal.,-Error%20code',
             );
             $this->logger->error($message);
 
@@ -311,6 +387,16 @@ final readonly class Client implements ClientInterface
     private function getPaymentSessionCreateUrl(ApiContext $apiContext): string
     {
         return sprintf('%s/payments/%s/sessions', $this->getBaseUrl($apiContext), $this->getVersion1());
+    }
+
+    private function getPaymentSessionReadUrl(ApiContext $apiContext, string $sessionId): string
+    {
+        return sprintf(
+            '%s/payments/%s/sessions/%s',
+            $this->getBaseUrl($apiContext),
+            $this->getVersion1(),
+            $sessionId,
+        );
     }
 
     private function getHostedPaymentPageSessionCreateUrl(ApiContext $apiContext): string

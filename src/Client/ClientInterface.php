@@ -8,6 +8,7 @@ use Webgriffe\SyliusKlarnaPlugin\Client\Exception\ClientException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\OrderCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionCreateFailedException;
+use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionReadFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Order;
@@ -15,6 +16,7 @@ use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\Order as OrderResponse;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSessionDetails;
 
 interface ClientInterface
 {
@@ -28,6 +30,17 @@ interface ClientInterface
         ApiContext $apiContext,
         Payment $payment,
     ): PaymentSession;
+
+    /**
+     * @docs https://docs.klarna.com/api/payments/#operation/readCreditSession
+     *
+     * @throws ClientException
+     * @throws PaymentSessionReadFailedException
+     */
+    public function getPaymentSessionDetails(
+        ApiContext $apiContext,
+        string $sessionId,
+    ): PaymentSessionDetails;
 
     /**
      * @docs https://docs.klarna.com/api/hpp-merchant/#operation/createHppSession
