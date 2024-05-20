@@ -1,5 +1,6 @@
 {
     "name": "webgriffe/sylius-klarna-plugin",
+    "description": "Klarna Payments plugin for Sylius ecommerce framework",
     "type": "sylius-plugin",
     "keywords": [
         "sylius",
