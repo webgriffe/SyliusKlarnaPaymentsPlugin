@@ -107,6 +107,11 @@ final class PaymentConverter implements PaymentConverterInterface
             return null;
         }
 
+        $region = $address->getProvinceCode();
+        if ($region !== null && str_contains($region, '-')) {
+            $region = explode('-', $region)[1];
+        }
+
         return new Address(
             $address->getCity(),
             $address->getCountryCode(),
@@ -115,7 +120,7 @@ final class PaymentConverter implements PaymentConverterInterface
             $address->getFirstName(),
             $address->getPhoneNumber(),
             $address->getPostcode(),
-            $address->getProvinceCode(),
+            $region,
             $address->getStreet(),
             null,
             null,
