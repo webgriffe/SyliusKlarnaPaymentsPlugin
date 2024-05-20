@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusKlarnaPlugin\Converter;
 
+use LogicException;
 use Sylius\Component\Core\Model\AddressInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
@@ -16,10 +17,16 @@ use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Amount;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Customer;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\OrderLine;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
+use Webgriffe\SyliusKlarnaPlugin\Resolver\PaymentCountryResolverInterface;
 use Webmozart\Assert\Assert;
 
-final class PaymentConverter implements PaymentConverterInterface
+final readonly class PaymentConverter implements PaymentConverterInterface
 {
+    public function __construct(
+        private PaymentCountryResolverInterface $paymentCountryResolver,
+    ) {
+    }
+
     public function convert(
         PaymentInterface $payment,
     ): Payment {
@@ -29,15 +36,24 @@ final class PaymentConverter implements PaymentConverterInterface
         Assert::notNull($purchaseCountry, 'Purchase country is required to create a payment on Klarna');
         $purchaseCurrency = $order->getCurrencyCode();
         Assert::notNull($purchaseCurrency, 'Purchase currency is required to create a payment on Klarna');
+        $paymentCountry = $this->paymentCountryResolver->resolve($payment);
+        if ($purchaseCurrency !== $paymentCountry->getCurrency()->value) {
+            throw new LogicException(sprintf(
+                'Attention! The order currency is "%s", but for the country "%s" Klarna only supports currency
+                "%s". Please, change the channel configuration or implement a way to handle currencies change',
+                $purchaseCurrency,
+                $purchaseCountry,
+                $paymentCountry->getCurrency()->value,
+            ));
+        }
 
         return new Payment(
-            str_replace('_', '-', (string) $order->getLocaleCode()),
-            $purchaseCountry,
-            $purchaseCurrency,
+            $paymentCountry,
             Amount::fromSyliusAmount($order->getTotal()),
             $this->getOrderLines($order),
             Intent::buy,
             AcquiringChannel::ECOMMERCE,
+            $order->getLocaleCode(),
             null,
             $this->getCustomer($order),
             $this->getAddress($order->getBillingAddress(), $order->getCustomer()),

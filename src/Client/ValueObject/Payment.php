@@ -16,13 +16,12 @@ final readonly class Payment implements JsonSerializable
      * @param OrderLine[] $orderLines
      */
     public function __construct(
-        private string $locale,
-        private string $purchaseCountry,
-        private string $purchaseCurrency,
+        private PaymentCountry $paymentCountry,
         private Amount $orderAmount,
         private array $orderLines,
         private Intent $intent,
         private AcquiringChannel $acquiringChannel = AcquiringChannel::ECOMMERCE,
+        private ?string $userLocale = null,
         private ?MerchantUrls $merchantUrls = null,
         private ?Customer $customer = null,
         private ?Address $billingAddress = null,
@@ -33,19 +32,14 @@ final readonly class Payment implements JsonSerializable
     ) {
     }
 
-    public function getLocale(): string
+    public function getUserLocale(): ?string
     {
-        return $this->locale;
+        return $this->userLocale;
     }
 
-    public function getPurchaseCountry(): string
+    public function getPaymentCountry(): PaymentCountry
     {
-        return $this->purchaseCountry;
-    }
-
-    public function getPurchaseCurrency(): string
-    {
-        return $this->purchaseCurrency;
+        return $this->paymentCountry;
     }
 
     public function getOrderAmount(): Amount
@@ -109,9 +103,9 @@ final readonly class Payment implements JsonSerializable
     public function jsonSerialize(): array
     {
         $payload = [
-            'locale' => $this->getLocale(),
-            'purchase_country' => $this->getPurchaseCountry(),
-            'purchase_currency' => $this->getPurchaseCurrency(),
+            'locale' => $this->getPaymentCountry()->matchUserLocale($this->getUserLocale())->value,
+            'purchase_country' => $this->getPaymentCountry()->getCountry()->value,
+            'purchase_currency' => $this->getPaymentCountry()->getCurrency()->value,
             'order_amount' => $this->getOrderAmount()->getISO4217Amount(),
             'order_lines' => $this->getOrderLines(),
             'intent' => $this->getIntent()->value,

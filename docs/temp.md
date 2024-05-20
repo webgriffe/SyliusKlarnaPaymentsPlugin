@@ -26,3 +26,9 @@ https://docs.klarna.com/hosted-payment-page/get-started/accept-klarna-payments-u
 
 - [ ] Create a KP session
 - 
+
+
+Help
+
+- Non si può creare un pagamento verso UK con valuta EURO
+- 
