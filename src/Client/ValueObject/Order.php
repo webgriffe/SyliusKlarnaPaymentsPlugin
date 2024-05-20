@@ -9,7 +9,6 @@ use JsonSerializable;
 final readonly class Order implements JsonSerializable
 {
     public function __construct(
-
     ) {
     }
 
