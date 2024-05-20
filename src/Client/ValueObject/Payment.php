@@ -19,7 +19,7 @@ final readonly class Payment implements JsonSerializable
         private PaymentCountry $paymentCountry,
         private Amount $orderAmount,
         private array $orderLines,
-        private Intent $intent,
+        private Intent $intent = Intent::buy,
         private AcquiringChannel $acquiringChannel = AcquiringChannel::ECOMMERCE,
         private ?string $userLocale = null,
         private ?MerchantUrls $merchantUrls = null,
@@ -29,6 +29,7 @@ final readonly class Payment implements JsonSerializable
         private ?string $merchantReference1 = null,
         private ?string $merchantReference2 = null,
         private ?Amount $orderTaxAmount = null,
+        private ?string $merchantData = null,
     ) {
     }
 
@@ -97,6 +98,11 @@ final readonly class Payment implements JsonSerializable
         return $this->orderTaxAmount;
     }
 
+    public function getMerchantData(): ?string
+    {
+        return $this->merchantData;
+    }
+
     /**
      * @throws JsonException
      */
@@ -117,6 +123,7 @@ final readonly class Payment implements JsonSerializable
             'merchant_reference1' => $this->getMerchantReference1(),
             'merchant_reference2' => $this->getMerchantReference2(),
             'order_tax_amount' => $this->getOrderTaxAmount()?->getISO4217Amount(),
+            'merchant_data' => $this->getMerchantData(),
         ];
 
         return array_filter($payload, static fn ($value) => $value !== null);

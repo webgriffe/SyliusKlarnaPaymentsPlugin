@@ -17,6 +17,7 @@ use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Amount;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Customer;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\OrderLine;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payments\MerchantUrls;
 use Webgriffe\SyliusKlarnaPlugin\Resolver\PaymentCountryResolverInterface;
 use Webmozart\Assert\Assert;
 
@@ -29,6 +30,8 @@ final readonly class PaymentConverter implements PaymentConverterInterface
 
     public function convert(
         PaymentInterface $payment,
+        string $confirmationUrl,
+        string $notificationUrl,
     ): Payment {
         $order = $payment->getOrder();
         Assert::isInstanceOf($order, OrderInterface::class);
@@ -54,7 +57,10 @@ final readonly class PaymentConverter implements PaymentConverterInterface
             Intent::buy,
             AcquiringChannel::ECOMMERCE,
             $order->getLocaleCode(),
-            null,
+            new MerchantUrls(
+                $confirmationUrl,
+                $notificationUrl,
+            ),
             $this->getCustomer($order),
             $this->getAddress($order->getBillingAddress(), $order->getCustomer()),
             $this->getAddress($order->getShippingAddress(), $order->getCustomer()),

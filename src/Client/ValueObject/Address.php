@@ -6,7 +6,7 @@ namespace Webgriffe\SyliusKlarnaPlugin\Client\ValueObject;
 
 use JsonSerializable;
 
-final readonly class Address implements JsonSerializable
+readonly class Address implements JsonSerializable
 {
     public function __construct(
         private ?string $city = null,
