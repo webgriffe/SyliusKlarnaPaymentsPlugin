@@ -87,6 +87,8 @@ final class PaymentDetailsHelper
     }
 
     /**
+     * @param PaymentDetails|array $paymentDetails
+     *
      * @throws InvalidArgumentException
      */
     public static function assertPaymentDetailsAreValid(array $paymentDetails): void
@@ -94,6 +96,7 @@ final class PaymentDetailsHelper
         Assert::keyExists($paymentDetails, self::PAYMENT_KEY);
         Assert::notEmpty($paymentDetails[self::PAYMENT_KEY]);
 
+        /** @var KlarnaPaymentDetails|array $paymentDetails */
         $paymentDetails = $paymentDetails[self::PAYMENT_KEY];
         Assert::keyExists($paymentDetails, self::PAYMENT_SESSION_ID_KEY);
         Assert::stringNotEmpty($paymentDetails[self::PAYMENT_SESSION_ID_KEY]);
@@ -104,6 +107,7 @@ final class PaymentDetailsHelper
             return;
         }
 
+        /** @var KlarnaHostedPaymentPageDetails|array $hostedPaymentPageDetails */
         $hostedPaymentPageDetails = $paymentDetails[self::HOSTED_PAYMENT_PAGE_KEY];
         Assert::notEmpty($hostedPaymentPageDetails);
         Assert::keyExists($hostedPaymentPageDetails, self::HOSTED_PAYMENT_PAGE_SESSION_ID_KEY);
@@ -121,6 +125,7 @@ final class PaymentDetailsHelper
         Assert::keyExists($hostedPaymentPageDetails, self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_KEY);
         Assert::notEmpty($hostedPaymentPageDetails[self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_KEY]);
 
+        /** @var array{generation_url: string, standalone_url: string, token: string}|array $distributionModule */
         $distributionModule = $hostedPaymentPageDetails[self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_KEY];
         Assert::keyExists($distributionModule, self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_GENERATION_URL_KEY);
         Assert::stringNotEmpty($distributionModule[self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_GENERATION_URL_KEY]);
@@ -153,19 +158,27 @@ final class PaymentDetailsHelper
         return true;
     }
 
+    /**
+     * @param PaymentDetails $paymentDetails
+     */
     public static function extractHostedPaymentPageSessionFromPaymentDetails(array $paymentDetails): HostedPaymentPageSession
     {
+        if (!array_key_exists(self::HOSTED_PAYMENT_PAGE_KEY, $paymentDetails)) {
+            throw new \InvalidArgumentException();
+        }
+        $hostedPaymentPage = $paymentDetails[self::HOSTED_PAYMENT_PAGE_KEY];
+
         return new HostedPaymentPageSession(
-            $paymentDetails[self::HOSTED_PAYMENT_PAGE_KEY][self::HOSTED_PAYMENT_PAGE_SESSION_ID_KEY],
-            $paymentDetails[self::HOSTED_PAYMENT_PAGE_KEY][self::HOSTED_PAYMENT_PAGE_REDIRECT_URL_KEY],
-            $paymentDetails[self::HOSTED_PAYMENT_PAGE_KEY][self::HOSTED_PAYMENT_PAGE_SESSION_URL_KEY],
-            $paymentDetails[self::HOSTED_PAYMENT_PAGE_KEY][self::HOSTED_PAYMENT_PAGE_QR_CODE_URL_KEY],
-            $paymentDetails[self::HOSTED_PAYMENT_PAGE_KEY][self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_URL_KEY],
-            new DateTimeImmutable($paymentDetails[self::HOSTED_PAYMENT_PAGE_KEY][self::HOSTED_PAYMENT_PAGE_EXPIRES_AT_KEY]),
+            $hostedPaymentPage[self::HOSTED_PAYMENT_PAGE_SESSION_ID_KEY],
+            $hostedPaymentPage[self::HOSTED_PAYMENT_PAGE_REDIRECT_URL_KEY],
+            $hostedPaymentPage[self::HOSTED_PAYMENT_PAGE_SESSION_URL_KEY],
+            $hostedPaymentPage[self::HOSTED_PAYMENT_PAGE_QR_CODE_URL_KEY],
+            $hostedPaymentPage[self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_URL_KEY],
+            new DateTimeImmutable($hostedPaymentPage[self::HOSTED_PAYMENT_PAGE_EXPIRES_AT_KEY]),
             new DistributionModule(
-                $paymentDetails[self::HOSTED_PAYMENT_PAGE_KEY][self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_KEY][self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_TOKEN_KEY],
-                $paymentDetails[self::HOSTED_PAYMENT_PAGE_KEY][self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_KEY][self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_STANDALONE_URL_KEY],
-                $paymentDetails[self::HOSTED_PAYMENT_PAGE_KEY][self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_KEY][self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_GENERATION_URL_KEY],
+                $hostedPaymentPage[self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_KEY][self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_TOKEN_KEY],
+                $hostedPaymentPage[self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_KEY][self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_STANDALONE_URL_KEY],
+                $hostedPaymentPage[self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_KEY][self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_GENERATION_URL_KEY],
             ),
         );
     }
