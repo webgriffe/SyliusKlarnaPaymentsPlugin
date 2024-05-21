@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusKlarnaPlugin\Converter;
 
+use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PlaceOrderMode;
+use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PurchaseType;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage\MerchantUrls;
 
@@ -25,7 +27,10 @@ final class HostedPaymentPageConverter implements HostedPaymentPageConverterInte
                 $confirmationUrl,
             ),
             $paymentSessionUrl,
-            null,
+            [
+                HostedPaymentPage::PLACE_ORDER_MODE_KEY => PlaceOrderMode::PlaceOrder,
+                HostedPaymentPage::PURCHASE_TYPE_KEY => PurchaseType::Buy,
+            ],
             null,
         );
     }
