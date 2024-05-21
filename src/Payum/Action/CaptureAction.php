@@ -18,7 +18,7 @@ use Payum\Core\Security\GenericTokenFactoryAwareTrait;
 use Payum\Core\Security\TokenInterface;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Webgriffe\SyliusKlarnaPlugin\Client\ClientInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Status;
+use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PaymentSessionStatus;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Authorization;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
@@ -140,7 +140,7 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         $paymentSessionDetails = $createPaymentSession->getPaymentSessionDetails();
         Assert::isInstanceOf($paymentSessionDetails, PaymentSessionDetails::class);
 
-        if ($paymentSessionDetails->getStatus() !== Status::Incomplete) {
+        if ($paymentSessionDetails->getStatus() !== PaymentSessionStatus::Incomplete) {
             throw new \RuntimeException('TODO: order already placed');
         }
         if (new DateTimeImmutable('now') >= $paymentSessionDetails->getExpiresAt()) {

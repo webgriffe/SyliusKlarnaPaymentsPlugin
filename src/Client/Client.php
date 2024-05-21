@@ -12,11 +12,13 @@ use const JSON_THROW_ON_ERROR;
 use JsonException;
 use Psr\Log\LoggerInterface;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\AcquiringChannel;
+use Webgriffe\SyliusKlarnaPlugin\Client\Enum\HostedPaymentPageSessionStatus;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Intent;
+use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PaymentSessionStatus;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\ServerRegion;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Status;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\ClientException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionCreateFailedException;
+use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionReadFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\OrderCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionReadFailedException;
@@ -27,6 +29,7 @@ use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\AuthorizedPaymentMethod;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\DistributionModule;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSessionDetails;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\Order as OrderResponse;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSessionDetails;
@@ -186,7 +189,7 @@ final readonly class Client implements ClientInterface
             $serializedResponse['authorization_token'],
             $serializedResponse['client_token'],
             new DateTimeImmutable($serializedResponse['expires_at']),
-            Status::from($serializedResponse['status']),
+            PaymentSessionStatus::from($serializedResponse['status']),
             Intent::from($serializedResponse['intent']),
         );
     }
@@ -279,6 +282,76 @@ final readonly class Client implements ClientInterface
                 $serializedResponse['distribution_module']['standalone_url'],
                 $serializedResponse['distribution_module']['generation_url'],
             ),
+        );
+    }
+
+    public function getHostedPaymentPageSessionDetails(
+        ApiContext $apiContext,
+        string $sessionId,
+    ): HostedPaymentPageSessionDetails {
+        $request = new ServerRequest(
+            'GET',
+            $this->getHostedPaymentPageSessionReadUrl($apiContext, $sessionId),
+            [
+                'Authorization' => 'Basic ' . (string) $apiContext->getAuthorization(),
+            ],
+        );
+
+        try {
+            $response = $this->httpClient->send($request);
+        } catch (GuzzleException $e) {
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
+
+            throw new ClientException($e->getMessage(), $e->getCode(), $e);
+        }
+
+        $bodyContents = $response->getBody()->getContents();
+        $this->logger->debug('Read hosted payment page session details request response: ' . $bodyContents);
+
+        if ($response->getStatusCode() !== 200) {
+            $message = sprintf(
+                'Unexpected hosted payment page session details read response status code: %s - "%s".',
+                $response->getStatusCode(),
+                $response->getReasonPhrase(),
+            );
+            $this->logger->error($message);
+
+            throw new HostedPaymentPageSessionReadFailedException(
+                $message,
+                $response->getStatusCode(),
+            );
+        }
+
+        try {
+            /** @var array{authorization_token: string, expires_at: string, klarna_reference: string, order_id: string, session_id: string, status: string, updated_at: string} $serializedResponse */
+            $serializedResponse = json_decode(
+                $bodyContents,
+                true,
+                512,
+                JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $e) {
+            $message = sprintf(
+                'Malformed hosted payment page session details read response body: "%s".',
+                $bodyContents,
+            );
+            $this->logger->error($message, ['exception' => $e]);
+
+            throw new HostedPaymentPageSessionReadFailedException(
+                $message,
+                $response->getStatusCode(),
+                $e,
+            );
+        }
+
+        return new HostedPaymentPageSessionDetails(
+            $serializedResponse['authorization_token'],
+            new DateTimeImmutable($serializedResponse['expires_at']),
+            $serializedResponse['klarna_reference'],
+            $serializedResponse['order_id'],
+            $serializedResponse['session_id'],
+            HostedPaymentPageSessionStatus::from($serializedResponse['status']),
+            new DateTimeImmutable($serializedResponse['updated_at']),
         );
     }
 
@@ -402,6 +475,16 @@ final readonly class Client implements ClientInterface
     private function getHostedPaymentPageSessionCreateUrl(ApiContext $apiContext): string
     {
         return sprintf('%s/hpp/%s/sessions', $this->getBaseUrl($apiContext), $this->getVersion1());
+    }
+
+    private function getHostedPaymentPageSessionReadUrl(ApiContext $apiContext, string $sessionId): string
+    {
+        return sprintf(
+            '%s/hpp/%s/sessions/%s',
+            $this->getBaseUrl($apiContext),
+            $this->getVersion1(),
+            $sessionId,
+        );
     }
 
     private function getOrderCreateUrl(ApiContext $apiContext, string $authorizationToken): string

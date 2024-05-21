@@ -7,7 +7,7 @@ namespace Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response;
 use DateTimeImmutable;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\AcquiringChannel;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Intent;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Status;
+use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PaymentSessionStatus;
 
 final readonly class PaymentSessionDetails
 {
@@ -16,7 +16,7 @@ final readonly class PaymentSessionDetails
         private string $authorizationToken,
         private string $clientToken,
         private DateTimeImmutable $expiresAt,
-        private Status $status,
+        private PaymentSessionStatus $status,
         private Intent $intent,
     ) {
     }
@@ -41,7 +41,7 @@ final readonly class PaymentSessionDetails
         return $this->expiresAt;
     }
 
-    public function getStatus(): Status
+    public function getStatus(): PaymentSessionStatus
     {
         return $this->status;
     }
