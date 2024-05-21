@@ -11,7 +11,11 @@ use Webgriffe\SyliusKlarnaPlugin\Converter\PaymentConverter;
 return static function (ContainerConfigurator $containerConfigurator) {
     $services = $containerConfigurator->services();
 
-    $services->set('webgriffe_sylius_klarna.converter.payment', PaymentConverter::class);
+    $services->set('webgriffe_sylius_klarna.converter.payment', PaymentConverter::class)
+        ->args([
+            service('webgriffe_sylius_klarna.resolver.payment_country'),
+        ])
+    ;
 
     $services->set('webgriffe_sylius_klarna.converter.hosted_payment_page', HostedPaymentPageConverter::class);
 
