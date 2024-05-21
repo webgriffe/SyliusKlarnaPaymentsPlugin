@@ -191,9 +191,8 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         );
         $notifyUrl = $notifyToken->getTargetUrl();
 
-        $captureUrl = $this->addPlaceholdersOnCaptureUrl($captureToken->getTargetUrl());
         $convertSyliusPaymentToKlarnaHostedPaymentPage = new ConvertSyliusPaymentToKlarnaHostedPaymentPage(
-            $captureUrl,
+            $captureToken->getTargetUrl(),
             $notifyUrl,
             $cancelUrl,
             $this->client->createPaymentSessionUrl($apiContext, $paymentSession->getSessionId()),
@@ -231,16 +230,5 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         if (new DateTimeImmutable('now') >= $hostedPaymentPageSessionDetails->getExpiresAt()) {
             throw new RuntimeException('TODO: HPP expired');
         }
-    }
-
-    /**
-     * Add both placeholder authorization_token and oder_id even if only one of them is used depending on place order mode
-     * of the HPP.
-     */
-    private function addPlaceholdersOnCaptureUrl(string $captureUrl): string
-    {
-        $captureUrl .= '?sid={{session_id}}&authorization_token={{authorization_token}}&oder_id={{oder_id}}';
-
-        return $captureUrl;
     }
 }

@@ -24,16 +24,20 @@ final readonly class HostedPaymentPage implements JsonSerializable
 
     public const PURCHASE_TYPE_KEY = 'purchase_type';
 
+    private MerchantUrls $merchantUrls;
+
     /**
      * @param HostedPaymentPageOptions|null $options
      */
     public function __construct(
-        private MerchantUrls $merchantUrls,
+        MerchantUrls $merchantUrls,
         private string $paymentSessionUrl,
         private ?array $options = null,
         private ?string $profileId = null,
     ) {
         if ($this->options === null) {
+            $this->merchantUrls = $merchantUrls;
+
             return;
         }
         if (array_key_exists(self::PAYMENT_METHOD_CATEGORIES_KEY, $this->options) &&
@@ -45,6 +49,41 @@ final readonly class HostedPaymentPage implements JsonSerializable
                 'https://docs.klarna.com/hosted-payment-page/get-started/accept-klarna-payments-using-hosted-payment-page/#:~:text=Defining%20both%20fields%20payment_method_category%20and%20payment_method_categories%20at%20the%20same%20time%20will%20end%20up%20in%20a%20refused%20request.',
             ));
         }
+
+        $successUrl = $merchantUrls->getSuccess();
+        if (str_contains($successUrl, 'sid={{session_id}}') ||
+            str_contains($successUrl, 'authorization_token={{authorization_token}}') ||
+            str_contains($successUrl, 'oder_id={{oder_id}}')
+        ) {
+            $this->merchantUrls = $merchantUrls;
+
+            return;
+        }
+
+        $hppOptions = $this->options;
+        if (array_key_exists(self::PLACE_ORDER_MODE_KEY, $hppOptions) &&
+            ($hppOptions[self::PLACE_ORDER_MODE_KEY] === PlaceOrderMode::PlaceOrder || $hppOptions[self::PLACE_ORDER_MODE_KEY] === PlaceOrderMode::CaptureOrder)
+        ) {
+            $this->merchantUrls = new MerchantUrls(
+                $merchantUrls->getBack(),
+                $merchantUrls->getCancel(),
+                $merchantUrls->getError(),
+                $merchantUrls->getFailure(),
+                $merchantUrls->getStatusUpdate(),
+                $successUrl . '?sid={{session_id}}&oder_id={{oder_id}}',
+            );
+
+            return;
+        }
+
+        $this->merchantUrls = new MerchantUrls(
+            $merchantUrls->getBack(),
+            $merchantUrls->getCancel(),
+            $merchantUrls->getError(),
+            $merchantUrls->getFailure(),
+            $merchantUrls->getStatusUpdate(),
+            $successUrl . '?success?sid={{session_id}}&authorization_token={{authorization_token}}',
+        );
     }
 
     public function getMerchantUrls(): MerchantUrls
