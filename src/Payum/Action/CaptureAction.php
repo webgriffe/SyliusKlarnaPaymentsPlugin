@@ -74,18 +74,12 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         $captureToken = $request->getToken();
         Assert::isInstanceOf($captureToken, TokenInterface::class);
 
-        /**
-         * @TODO improve this
-         */
-        $captureUrl = $captureToken->getTargetUrl();
-        $captureUrl .= '?authorization_token={{authorization_token}}';
-
         $klarnaPaymentsApi = $this->api;
         Assert::isInstanceOf($klarnaPaymentsApi, KlarnaPaymentsApi::class);
 
         $paymentSessionJustCreated = false;
         if ($payment->getDetails() === []) {
-            $this->createPaymentSession($payment, $captureToken, $captureUrl);
+            $this->createPaymentSession($payment, $captureToken);
             $paymentSessionJustCreated = true;
         }
         /** @var PaymentDetails $paymentDetails */
@@ -101,7 +95,6 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         if (!PaymentDetailsHelper::haveHostedPaymentPageSessionData($paymentDetails)) {
             $this->createHostedPaymentPageSession(
                 $captureToken,
-                $captureUrl,
                 $paymentSession,
                 $payment,
             );
@@ -130,7 +123,6 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
     private function createPaymentSession(
         SyliusPaymentInterface $payment,
         TokenInterface $captureToken,
-        string $captureUrl,
     ): void {
         $notifyToken = $this->tokenFactory->createNotifyToken(
             $captureToken->getGatewayName(),
@@ -140,7 +132,7 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
 
         $convertSyliusPaymentToKlarnaPayment = new ConvertSyliusPaymentToKlarnaPayment(
             $payment,
-            $captureUrl,
+            $captureToken->getTargetUrl(),
             $notifyUrl,
         );
         $this->gateway->execute($convertSyliusPaymentToKlarnaPayment);
@@ -173,7 +165,6 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
 
     private function createHostedPaymentPageSession(
         TokenInterface $captureToken,
-        string $captureUrl,
         PaymentSession $paymentSession,
         SyliusPaymentInterface $payment,
     ): void {
@@ -200,6 +191,7 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         );
         $notifyUrl = $notifyToken->getTargetUrl();
 
+        $captureUrl = $this->addPlaceholdersOnCaptureUrl($captureToken->getTargetUrl());
         $convertSyliusPaymentToKlarnaHostedPaymentPage = new ConvertSyliusPaymentToKlarnaHostedPaymentPage(
             $captureUrl,
             $notifyUrl,
@@ -239,5 +231,16 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         if (new DateTimeImmutable('now') >= $hostedPaymentPageSessionDetails->getExpiresAt()) {
             throw new RuntimeException('TODO: HPP expired');
         }
+    }
+
+    /**
+     * Add both placeholder authorization_token and oder_id even if only one of them is used depending on place order mode
+     * of the HPP.
+     */
+    private function addPlaceholdersOnCaptureUrl(string $captureUrl): string
+    {
+        $captureUrl .= '?sid={{session_id}}&authorization_token={{authorization_token}}&oder_id={{oder_id}}';
+
+        return $captureUrl;
     }
 }
