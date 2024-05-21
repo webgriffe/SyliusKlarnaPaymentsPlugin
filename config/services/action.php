@@ -7,6 +7,8 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\CreateHostedPaymentPageSessionAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\CreateOrderAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\CreatePaymentSessionAction;
+use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\ReadHostedPaymentPageSessionAction;
+use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\ReadPaymentSessionAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\CaptureAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\ConvertSyliusPaymentToKlarnaHostedPaymentPageAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\ConvertSyliusPaymentToKlarnaOrderAction;
@@ -61,12 +63,28 @@ return static function (ContainerConfigurator $containerConfigurator) {
         ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.api.create_payment_session'])
     ;
 
+    $services->set('webgriffe_sylius_klarna.payum.action.api.read_payment_session', ReadPaymentSessionAction::class)
+        ->public()
+        ->args([
+            service('webgriffe_sylius_klarna.client'),
+        ])
+        ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.api.read_payment_session'])
+    ;
+
     $services->set('webgriffe_sylius_klarna.payum.action.api.create_hosted_payment_page_session', CreateHostedPaymentPageSessionAction::class)
         ->public()
         ->args([
             service('webgriffe_sylius_klarna.client'),
         ])
         ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.api.create_hosted_payment_page_session'])
+    ;
+
+    $services->set('webgriffe_sylius_klarna.payum.action.api.read_hosted_payment_page_session', ReadHostedPaymentPageSessionAction::class)
+        ->public()
+        ->args([
+            service('webgriffe_sylius_klarna.client'),
+        ])
+        ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.api.read_hosted_payment_page_session'])
     ;
 
     $services->set('webgriffe_sylius_klarna.payum.action.api.create_order', CreateOrderAction::class)

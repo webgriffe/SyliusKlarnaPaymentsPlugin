@@ -13,12 +13,24 @@ final class ConvertSyliusPaymentToKlarnaPayment
 
     public function __construct(
         private readonly PaymentInterface $syliusPayment,
+        private readonly string $confirmationUrl,
+        private readonly string $notificationUrl,
     ) {
     }
 
     public function getSyliusPayment(): PaymentInterface
     {
         return $this->syliusPayment;
+    }
+
+    public function getConfirmationUrl(): string
+    {
+        return $this->confirmationUrl;
+    }
+
+    public function getNotificationUrl(): string
+    {
+        return $this->notificationUrl;
     }
 
     public function setKlarnaPayment(Payment $klarnaPayment): void
