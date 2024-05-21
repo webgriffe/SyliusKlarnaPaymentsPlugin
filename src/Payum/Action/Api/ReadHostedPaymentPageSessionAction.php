@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api;
 
 use Payum\Core\Action\ActionInterface;
+use Payum\Core\ApiAwareInterface;
 use Payum\Core\ApiAwareTrait;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\ClientInterface;
@@ -17,7 +18,7 @@ use Webmozart\Assert\Assert;
 /**
  * @psalm-suppress PropertyNotSetInConstructor
  */
-final class ReadHostedPaymentPageSessionAction implements ActionInterface
+final class ReadHostedPaymentPageSessionAction implements ActionInterface, ApiAwareInterface
 {
     use ApiAwareTrait;
 

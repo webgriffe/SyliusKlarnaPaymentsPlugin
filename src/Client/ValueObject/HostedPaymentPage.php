@@ -53,7 +53,7 @@ final readonly class HostedPaymentPage implements JsonSerializable
         $successUrl = $merchantUrls->getSuccess();
         if (str_contains($successUrl, 'sid={{session_id}}') ||
             str_contains($successUrl, 'authorization_token={{authorization_token}}') ||
-            str_contains($successUrl, 'oder_id={{oder_id}}')
+            str_contains($successUrl, 'order_id={{order_id}}')
         ) {
             $this->merchantUrls = $merchantUrls;
 
@@ -70,7 +70,7 @@ final readonly class HostedPaymentPage implements JsonSerializable
                 $merchantUrls->getError(),
                 $merchantUrls->getFailure(),
                 $merchantUrls->getStatusUpdate(),
-                $successUrl . '?sid={{session_id}}&oder_id={{oder_id}}',
+                $successUrl . '?sid={{session_id}}&order_id={{order_id}}',
             );
 
             return;
@@ -82,7 +82,7 @@ final readonly class HostedPaymentPage implements JsonSerializable
             $merchantUrls->getError(),
             $merchantUrls->getFailure(),
             $merchantUrls->getStatusUpdate(),
-            $successUrl . '?success?sid={{session_id}}&authorization_token={{authorization_token}}',
+            $successUrl . '?sid={{session_id}}&authorization_token={{authorization_token}}',
         );
     }
 

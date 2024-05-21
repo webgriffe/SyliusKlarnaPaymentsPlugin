@@ -13,11 +13,11 @@ final readonly class PaymentSessionDetails
 {
     public function __construct(
         private AcquiringChannel $acquiringChannel,
-        private string $authorizationToken,
         private string $clientToken,
         private DateTimeImmutable $expiresAt,
         private PaymentSessionStatus $status,
         private Intent $intent,
+        private ?string $authorizationToken = null,
     ) {
     }
 
@@ -26,7 +26,7 @@ final readonly class PaymentSessionDetails
         return $this->acquiringChannel;
     }
 
-    public function getAuthorizationToken(): string
+    public function getAuthorizationToken(): ?string
     {
         return $this->authorizationToken;
     }

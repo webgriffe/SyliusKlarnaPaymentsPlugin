@@ -163,7 +163,7 @@ final readonly class Client implements ClientInterface
         }
 
         try {
-            /** @var array{acquiring_channel: string, authorization_token: string, client_token: string, expires_at: string, status: string, intent: string} $serializedResponse */
+            /** @var array{acquiring_channel: string, authorization_token?: string, client_token: string, expires_at: string, status: string, intent: string} $serializedResponse */
             $serializedResponse = json_decode(
                 $bodyContents,
                 true,
@@ -186,11 +186,11 @@ final readonly class Client implements ClientInterface
 
         return new PaymentSessionDetails(
             AcquiringChannel::from($serializedResponse['acquiring_channel']),
-            $serializedResponse['authorization_token'],
             $serializedResponse['client_token'],
             new DateTimeImmutable($serializedResponse['expires_at']),
             PaymentSessionStatus::from($serializedResponse['status']),
             Intent::from($serializedResponse['intent']),
+            $serializedResponse['authorization_token'] ?? null,
         );
     }
 
