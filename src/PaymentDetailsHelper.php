@@ -7,14 +7,16 @@ namespace Webgriffe\SyliusKlarnaPlugin;
 use DateTimeImmutable;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\DistributionModule;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\Order as OrderResponse;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
 use Webmozart\Assert\Assert;
 use Webmozart\Assert\InvalidArgumentException;
 
 /**
+ * @psalm-type KlarnaOrderDetails array{}
  * @psalm-type KlarnaPaymentDetails array{session_id: string, client_token: string}
  * @psalm-type KlarnaHostedPaymentPageDetails array{session_id: string, session_url: string, distribution_url: string, expires_at: string, qr_code_url: string, redirect_url: string, distribution_module: array{generation_url: string, standalone_url: string, token: string}}
- * @psalm-type PaymentDetails array{payment: KlarnaPaymentDetails, hosted_payment_page?: KlarnaHostedPaymentPageDetails}
+ * @psalm-type PaymentDetails array{payment: KlarnaPaymentDetails, hosted_payment_page?: KlarnaHostedPaymentPageDetails, order?: KlarnaOrderDetails}
  */
 final class PaymentDetailsHelper
 {
@@ -45,6 +47,18 @@ final class PaymentDetailsHelper
     private const HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_STANDALONE_URL_KEY = 'standalone_url';
 
     private const HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_TOKEN_KEY = 'token';
+
+    private const ORDER_KEY = 'order';
+
+    private const ORDER_ID_KEY = 'id';
+
+    private const ORDER_REDIRECT_URL_KEY = 'redirect_url';
+
+    private const ORDER_FRAUD_STATUS_KEY = 'fraud_status';
+    private const ORDER_AUTHORIZED_PAYMENT_METHOD_KEY = 'authorized_payment_method';
+    private const ORDER_AUTHORIZED_PAYMENT_METHOD_NUMBER_OF_DAYS_KEY = 'number_of_days';
+    private const ORDER_AUTHORIZED_PAYMENT_METHOD_NUMBER_OF_INSTALLMENTS_KEY = 'number_of_installments';
+    private const ORDER_AUTHORIZED_PAYMENT_METHOD_TYPE_KEY = 'type';
 
     /**
      * @return PaymentDetails
@@ -80,6 +94,30 @@ final class PaymentDetailsHelper
                 self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_GENERATION_URL_KEY => $hostedPaymentPageSession->getDistributionModule()->getGenerationUrl(),
                 self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_STANDALONE_URL_KEY => $hostedPaymentPageSession->getDistributionModule()->getStandaloneUrl(),
                 self::HOSTED_PAYMENT_PAGE_DISTRIBUTION_MODULE_TOKEN_KEY => $hostedPaymentPageSession->getDistributionModule()->getToken(),
+            ],
+        ];
+
+        return $paymentDetails;
+    }
+
+    /**
+     * @param PaymentDetails $paymentDetails
+     *
+     * @return PaymentDetails
+     */
+    public static function storeOrderOnPaymentDetails(
+        array $paymentDetails,
+        OrderResponse $order,
+    ): array {
+        Assert::false(self::haveOrderData($paymentDetails));
+        $paymentDetails[self::ORDER_KEY] = [
+            self::ORDER_ID_KEY => $order->getOrderId(),
+            self::ORDER_REDIRECT_URL_KEY => $order->getRedirectUrl(),
+            self::ORDER_FRAUD_STATUS_KEY => $order->getFraudStatus(),
+            self::ORDER_AUTHORIZED_PAYMENT_METHOD_KEY => [
+                self::ORDER_AUTHORIZED_PAYMENT_METHOD_NUMBER_OF_DAYS_KEY => $order->getAuthorizedPaymentMethod()->getNumberOfDays(),
+                self::ORDER_AUTHORIZED_PAYMENT_METHOD_NUMBER_OF_INSTALLMENTS_KEY => $order->getAuthorizedPaymentMethod()->getNumberOfInstallments(),
+                self::ORDER_AUTHORIZED_PAYMENT_METHOD_TYPE_KEY => $order->getAuthorizedPaymentMethod()->getType(),
             ],
         ];
 
@@ -152,6 +190,18 @@ final class PaymentDetailsHelper
     public static function haveHostedPaymentPageSessionData(array $paymentDetails): bool
     {
         if (!array_key_exists(self::HOSTED_PAYMENT_PAGE_KEY, $paymentDetails)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param PaymentDetails $paymentDetails
+     */
+    public static function haveOrderData(array $paymentDetails): bool
+    {
+        if (!array_key_exists(self::ORDER_KEY, $paymentDetails)) {
             return false;
         }
 

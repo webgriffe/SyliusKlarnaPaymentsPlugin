@@ -24,6 +24,12 @@ final readonly class HostedPaymentPage implements JsonSerializable
 
     public const PURCHASE_TYPE_KEY = 'purchase_type';
 
+    public const HOSTED_PAYMENT_PAGE_SESSION_ID_KEY = 'sid';
+
+    public const AUTHORIZATION_TOKEN_KEY = 'authorization_token';
+
+    public const ORDER_ID_KEY = 'order_id';
+
     private MerchantUrls $merchantUrls;
 
     /**
@@ -51,9 +57,9 @@ final readonly class HostedPaymentPage implements JsonSerializable
         }
 
         $successUrl = $merchantUrls->getSuccess();
-        if (str_contains($successUrl, 'sid={{session_id}}') ||
-            str_contains($successUrl, 'authorization_token={{authorization_token}}') ||
-            str_contains($successUrl, 'order_id={{order_id}}')
+        if (str_contains($successUrl, self::HOSTED_PAYMENT_PAGE_SESSION_ID_KEY . '={{session_id}}') ||
+            str_contains($successUrl, self::AUTHORIZATION_TOKEN_KEY . '={{authorization_token}}') ||
+            str_contains($successUrl, self::ORDER_ID_KEY . '={{order_id}}')
         ) {
             $this->merchantUrls = $merchantUrls;
 
@@ -70,7 +76,7 @@ final readonly class HostedPaymentPage implements JsonSerializable
                 $merchantUrls->getError(),
                 $merchantUrls->getFailure(),
                 $merchantUrls->getStatusUpdate(),
-                $successUrl . '?sid={{session_id}}&order_id={{order_id}}',
+                $successUrl . '?' . self::HOSTED_PAYMENT_PAGE_SESSION_ID_KEY . '={{session_id}}&' . self::ORDER_ID_KEY . '={{order_id}}',
             );
 
             return;
@@ -82,7 +88,7 @@ final readonly class HostedPaymentPage implements JsonSerializable
             $merchantUrls->getError(),
             $merchantUrls->getFailure(),
             $merchantUrls->getStatusUpdate(),
-            $successUrl . '?sid={{session_id}}&authorization_token={{authorization_token}}',
+            $successUrl . '?' . self::HOSTED_PAYMENT_PAGE_SESSION_ID_KEY . '={{session_id}}&' . self::AUTHORIZATION_TOKEN_KEY . '={{authorization_token}}',
         );
     }
 

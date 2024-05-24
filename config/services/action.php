@@ -22,7 +22,8 @@ return static function (ContainerConfigurator $containerConfigurator) {
     $services->set('webgriffe_sylius_klarna.payum.action.capture', CaptureAction::class)
         ->public()
         ->args([
-            service('webgriffe_sylius_klarna.client')
+            service('webgriffe_sylius_klarna.client'),
+            service('webgriffe_sylius_klarna.logger'),
         ])
         ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.capture'])
     ;

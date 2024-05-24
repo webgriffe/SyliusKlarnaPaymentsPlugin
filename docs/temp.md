@@ -24,7 +24,7 @@ Di conseguenza la guida da utilizzare per lo sviluppo di questo plugin è [quest
 
 https://docs.klarna.com/hosted-payment-page/get-started/accept-klarna-payments-using-hosted-payment-page/#step-by-step-integration
 
-- [ ] Create a KP session
+- [ ] Testare flusso con creazione ordine post
 - 
 
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusKlarnaPlugin\Payum\Action;
 
 use DateTimeImmutable;
+use InvalidArgumentException;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\ApiAwareTrait;
@@ -13,9 +14,11 @@ use Payum\Core\GatewayAwareInterface;
 use Payum\Core\GatewayAwareTrait;
 use Payum\Core\Reply\HttpRedirect;
 use Payum\Core\Request\Capture;
+use Payum\Core\Request\GetHttpRequest;
 use Payum\Core\Security\GenericTokenFactoryAwareInterface;
 use Payum\Core\Security\GenericTokenFactoryAwareTrait;
 use Payum\Core\Security\TokenInterface;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Webgriffe\SyliusKlarnaPlugin\Client\ClientInterface;
@@ -24,18 +27,22 @@ use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PaymentSessionStatus;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Authorization;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Order;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSessionDetails;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\Order as OrderResponse;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSessionDetails;
 use Webgriffe\SyliusKlarnaPlugin\PaymentDetailsHelper;
 use Webgriffe\SyliusKlarnaPlugin\Payum\KlarnaPaymentsApi;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\CreateHostedPaymentPageSession;
+use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\CreateOrder;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\CreatePaymentSession;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\ReadHostedPaymentPageSession;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\ReadPaymentSession;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Request\ConvertSyliusPaymentToKlarnaHostedPaymentPage;
+use Webgriffe\SyliusKlarnaPlugin\Payum\Request\ConvertSyliusPaymentToKlarnaOrder;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Request\ConvertSyliusPaymentToKlarnaPayment;
 use Webmozart\Assert\Assert;
 
@@ -50,6 +57,7 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
 
     public function __construct(
         private readonly ClientInterface $client,
+        private readonly LoggerInterface $logger,
     ) {
         $this->apiClass = KlarnaPaymentsApi::class;
     }
@@ -59,7 +67,8 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
      *  - Starting the payment.
      *      Assuming that the payment details are empty because it is the first attempt to pay, we proceed by creating
      *      the Klarna Payment Session. This session should still be opened during all the checkout on the gateway.
-     *
+     *  - Returning after Klarna checkout.
+     *      We should follow this case by catching any query parameters on the request
      *
      * @param Capture|mixed $request
      */
@@ -76,6 +85,17 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
 
         $klarnaPaymentsApi = $this->api;
         Assert::isInstanceOf($klarnaPaymentsApi, KlarnaPaymentsApi::class);
+
+        // This is needed to populate the http request with GET and POST params from current request
+        $getHttpRequest = new GetHttpRequest();
+        $this->gateway->execute($getHttpRequest);
+        if ($this->areWeInTheConsumerRedirection($getHttpRequest)) {
+            $this->handlePaymentProcessed($payment, $getHttpRequest);
+
+            return;
+        }
+
+        // We are just starting the payment, so continue to launch it!
 
         $paymentSessionJustCreated = false;
         if ($payment->getDetails() === []) {
@@ -230,5 +250,72 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         if (new DateTimeImmutable('now') >= $hostedPaymentPageSessionDetails->getExpiresAt()) {
             throw new RuntimeException('TODO: HPP expired');
         }
+    }
+
+    private function areWeInTheConsumerRedirection(GetHttpRequest $getHttpRequest): bool
+    {
+        $queryParameters = $getHttpRequest->query;
+        if ($queryParameters === []) {
+            return false;
+        }
+        if (array_key_exists(HostedPaymentPage::ORDER_ID_KEY, $queryParameters)) {
+            $orderId = $queryParameters[HostedPaymentPage::ORDER_ID_KEY];
+            if (is_string($orderId) && $orderId !== '' && $orderId !== '{{order_id}}') {
+                return true;
+            }
+        }
+        if (array_key_exists(HostedPaymentPage::AUTHORIZATION_TOKEN_KEY, $queryParameters)) {
+            $authorizationToken = $queryParameters[HostedPaymentPage::AUTHORIZATION_TOKEN_KEY];
+            if (is_string($authorizationToken) && $authorizationToken !== '' && $authorizationToken !== '{{authorization_token}}') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function handlePaymentProcessed(SyliusPaymentInterface $payment, GetHttpRequest $getHttpRequest): void
+    {
+        $queryParameters = $getHttpRequest->query;
+        /** @var PaymentDetails $paymentDetails */
+        $paymentDetails = $payment->getDetails();
+        PaymentDetailsHelper::assertPaymentDetailsAreValid($paymentDetails);
+        $hostedPaymentPageSession = PaymentDetailsHelper::extractHostedPaymentPageSessionFromPaymentDetails($paymentDetails);
+        if (array_key_exists(HostedPaymentPage::HOSTED_PAYMENT_PAGE_SESSION_ID_KEY, $queryParameters)) {
+            $hppSessionId = $queryParameters[HostedPaymentPage::HOSTED_PAYMENT_PAGE_SESSION_ID_KEY];
+
+            if ($hostedPaymentPageSession->getSessionId() !== $hppSessionId) {
+                throw new InvalidArgumentException('HPP Session id does not match. Please, check if it is a malicious attempt to mark an order as completed!');
+            }
+        } else {
+            $this->logger->notice('The success url from Klarna does not contain the "sid" query parameter. The current request will continue, but pay attention! It could be dangerous not adding it!');
+        }
+
+        if (array_key_exists(HostedPaymentPage::ORDER_ID_KEY, $queryParameters)) {
+            $orderId = $queryParameters[HostedPaymentPage::ORDER_ID_KEY];
+
+            dd('TODO');
+
+            return;
+        }
+        if (array_key_exists(HostedPaymentPage::AUTHORIZATION_TOKEN_KEY, $queryParameters)) {
+            $authorizationToken = $queryParameters[HostedPaymentPage::AUTHORIZATION_TOKEN_KEY];
+
+            $convertSyliusPaymentToKlarnaOrder = new ConvertSyliusPaymentToKlarnaOrder($payment);
+            $this->gateway->execute($convertSyliusPaymentToKlarnaOrder);
+            $klarnaOrder = $convertSyliusPaymentToKlarnaOrder->getKlarnaOrder();
+            Assert::isInstanceOf($klarnaOrder, Order::class);
+
+            $createOrder = new CreateOrder($klarnaOrder, $authorizationToken);
+            $this->gateway->execute($createOrder);
+            $orderResponse = $createOrder->getOrderResponse();
+            Assert::isInstanceOf($orderResponse, OrderResponse::class);
+
+            $payment->setDetails(PaymentDetailsHelper::storeOrderOnPaymentDetails($paymentDetails, $orderResponse));
+
+            return;
+        }
+
+        throw new RuntimeException('This point should not be reached. Both authorization token and order id could not exists on the same request!');
     }
 }
