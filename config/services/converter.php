@@ -19,5 +19,9 @@ return static function (ContainerConfigurator $containerConfigurator) {
 
     $services->set('webgriffe_sylius_klarna.converter.hosted_payment_page', HostedPaymentPageConverter::class);
 
-    $services->set('webgriffe_sylius_klarna.converter.order', OrderConverter::class);
+    $services->set('webgriffe_sylius_klarna.converter.order', OrderConverter::class)
+        ->args([
+            service('webgriffe_sylius_klarna.resolver.payment_country'),
+        ])
+    ;
 };
