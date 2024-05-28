@@ -32,6 +32,7 @@ use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSessionDetails;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\Order as OrderResponse;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\OrderDetails;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSessionDetails;
 use Webgriffe\SyliusKlarnaPlugin\PaymentDetailsHelper;
@@ -40,6 +41,7 @@ use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\CreateHostedPaymentPageSessio
 use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\CreateOrder;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\CreatePaymentSession;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\ReadHostedPaymentPageSession;
+use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\ReadOrder;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\ReadPaymentSession;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Request\ConvertSyliusPaymentToKlarnaHostedPaymentPage;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Request\ConvertSyliusPaymentToKlarnaOrder;
@@ -259,12 +261,14 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
             return false;
         }
         if (array_key_exists(HostedPaymentPage::ORDER_ID_KEY, $queryParameters)) {
+            /** @var string|mixed $orderId */
             $orderId = $queryParameters[HostedPaymentPage::ORDER_ID_KEY];
             if (is_string($orderId) && $orderId !== '' && $orderId !== '{{order_id}}') {
                 return true;
             }
         }
         if (array_key_exists(HostedPaymentPage::AUTHORIZATION_TOKEN_KEY, $queryParameters)) {
+            /** @var string|mixed $authorizationToken */
             $authorizationToken = $queryParameters[HostedPaymentPage::AUTHORIZATION_TOKEN_KEY];
             if (is_string($authorizationToken) && $authorizationToken !== '' && $authorizationToken !== '{{authorization_token}}') {
                 return true;
@@ -282,6 +286,7 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         PaymentDetailsHelper::assertPaymentDetailsAreValid($paymentDetails);
         $hostedPaymentPageSession = PaymentDetailsHelper::extractHostedPaymentPageSessionFromPaymentDetails($paymentDetails);
         if (array_key_exists(HostedPaymentPage::HOSTED_PAYMENT_PAGE_SESSION_ID_KEY, $queryParameters)) {
+            /** @var string $hppSessionId */
             $hppSessionId = $queryParameters[HostedPaymentPage::HOSTED_PAYMENT_PAGE_SESSION_ID_KEY];
 
             if ($hostedPaymentPageSession->getSessionId() !== $hppSessionId) {
@@ -292,13 +297,20 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         }
 
         if (array_key_exists(HostedPaymentPage::ORDER_ID_KEY, $queryParameters)) {
+            /** @var string $orderId */
             $orderId = $queryParameters[HostedPaymentPage::ORDER_ID_KEY];
 
-            dd('TODO');
+            $readOrder = new ReadOrder($orderId);
+            $this->gateway->execute($readOrder);
+            $orderDetails = $readOrder->getOrderDetails();
+            Assert::isInstanceOf($orderDetails, OrderDetails::class);
+
+            $payment->setDetails(PaymentDetailsHelper::storeOrderOnPaymentDetails($paymentDetails, $orderDetails));
 
             return;
         }
         if (array_key_exists(HostedPaymentPage::AUTHORIZATION_TOKEN_KEY, $queryParameters)) {
+            /** @var string $authorizationToken */
             $authorizationToken = $queryParameters[HostedPaymentPage::AUTHORIZATION_TOKEN_KEY];
 
             $convertSyliusPaymentToKlarnaOrder = new ConvertSyliusPaymentToKlarnaOrder($payment);

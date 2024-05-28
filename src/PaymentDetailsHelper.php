@@ -8,12 +8,13 @@ use DateTimeImmutable;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\DistributionModule;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\Order as OrderResponse;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\OrderDetails;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
 use Webmozart\Assert\Assert;
 use Webmozart\Assert\InvalidArgumentException;
 
 /**
- * @psalm-type KlarnaOrderDetails array{}
+ * @psalm-type KlarnaOrderDetails array{id: string, fraud_status: string, redirect_url?: string, authorized_payment_method?: array{number_of_days: int, number_of_installments: int, type: string}}
  * @psalm-type KlarnaPaymentDetails array{session_id: string, client_token: string}
  * @psalm-type KlarnaHostedPaymentPageDetails array{session_id: string, session_url: string, distribution_url: string, expires_at: string, qr_code_url: string, redirect_url: string, distribution_module: array{generation_url: string, standalone_url: string, token: string}}
  * @psalm-type PaymentDetails array{payment: KlarnaPaymentDetails, hosted_payment_page?: KlarnaHostedPaymentPageDetails, order?: KlarnaOrderDetails}
@@ -55,9 +56,13 @@ final class PaymentDetailsHelper
     private const ORDER_REDIRECT_URL_KEY = 'redirect_url';
 
     private const ORDER_FRAUD_STATUS_KEY = 'fraud_status';
+
     private const ORDER_AUTHORIZED_PAYMENT_METHOD_KEY = 'authorized_payment_method';
+
     private const ORDER_AUTHORIZED_PAYMENT_METHOD_NUMBER_OF_DAYS_KEY = 'number_of_days';
+
     private const ORDER_AUTHORIZED_PAYMENT_METHOD_NUMBER_OF_INSTALLMENTS_KEY = 'number_of_installments';
+
     private const ORDER_AUTHORIZED_PAYMENT_METHOD_TYPE_KEY = 'type';
 
     /**
@@ -107,19 +112,21 @@ final class PaymentDetailsHelper
      */
     public static function storeOrderOnPaymentDetails(
         array $paymentDetails,
-        OrderResponse $order,
+        OrderResponse|OrderDetails $order,
     ): array {
         Assert::false(self::haveOrderData($paymentDetails));
         $paymentDetails[self::ORDER_KEY] = [
             self::ORDER_ID_KEY => $order->getOrderId(),
-            self::ORDER_REDIRECT_URL_KEY => $order->getRedirectUrl(),
             self::ORDER_FRAUD_STATUS_KEY => $order->getFraudStatus(),
-            self::ORDER_AUTHORIZED_PAYMENT_METHOD_KEY => [
+        ];
+        if ($order instanceof OrderResponse) {
+            $paymentDetails[self::ORDER_KEY][self::ORDER_REDIRECT_URL_KEY] = $order->getRedirectUrl();
+            $paymentDetails[self::ORDER_KEY][self::ORDER_AUTHORIZED_PAYMENT_METHOD_KEY] = [
                 self::ORDER_AUTHORIZED_PAYMENT_METHOD_NUMBER_OF_DAYS_KEY => $order->getAuthorizedPaymentMethod()->getNumberOfDays(),
                 self::ORDER_AUTHORIZED_PAYMENT_METHOD_NUMBER_OF_INSTALLMENTS_KEY => $order->getAuthorizedPaymentMethod()->getNumberOfInstallments(),
                 self::ORDER_AUTHORIZED_PAYMENT_METHOD_TYPE_KEY => $order->getAuthorizedPaymentMethod()->getType(),
-            ],
-        ];
+            ];
+        }
 
         return $paymentDetails;
     }

@@ -20,6 +20,7 @@ use Webgriffe\SyliusKlarnaPlugin\Client\Exception\ClientException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionReadFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\OrderCreateFailedException;
+use Webgriffe\SyliusKlarnaPlugin\Client\Exception\OrderReadFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionReadFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
@@ -31,6 +32,7 @@ use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\DistributionModule;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSessionDetails;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\Order as OrderResponse;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\OrderDetails;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSessionDetails;
 
@@ -445,6 +447,71 @@ final readonly class Client implements ClientInterface
         );
     }
 
+    public function getOrderDetails(
+        ApiContext $apiContext,
+        string $orderId,
+    ): OrderDetails {
+        $request = new ServerRequest(
+            'GET',
+            $this->getOrderReadUrl($apiContext, $orderId),
+            [
+                'Authorization' => 'Basic ' . (string) $apiContext->getAuthorization(),
+            ],
+        );
+
+        try {
+            $response = $this->httpClient->send($request);
+        } catch (GuzzleException $e) {
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
+
+            throw new ClientException($e->getMessage(), $e->getCode(), $e);
+        }
+
+        $bodyContents = $response->getBody()->getContents();
+        $this->logger->debug('Read order details request response: ' . $bodyContents);
+
+        if ($response->getStatusCode() !== 200) {
+            $message = sprintf(
+                'Unexpected order details read response status code: %s - "%s".',
+                $response->getStatusCode(),
+                $response->getReasonPhrase(),
+            );
+            $this->logger->error($message);
+
+            throw new OrderReadFailedException(
+                $message,
+                $response->getStatusCode(),
+            );
+        }
+
+        try {
+            /** @var array{fraud_status: string, order_id: string} $serializedResponse */
+            $serializedResponse = json_decode(
+                $bodyContents,
+                true,
+                512,
+                JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $e) {
+            $message = sprintf(
+                'Malformed order details read response body: "%s".',
+                $bodyContents,
+            );
+            $this->logger->error($message, ['exception' => $e]);
+
+            throw new OrderReadFailedException(
+                $message,
+                $response->getStatusCode(),
+                $e,
+            );
+        }
+
+        return new OrderDetails(
+            $serializedResponse['fraud_status'],
+            $serializedResponse['order_id'],
+        );
+    }
+
     public function createPaymentSessionUrl(
         ApiContext $apiContext,
         string $sessionId,
@@ -494,6 +561,16 @@ final readonly class Client implements ClientInterface
             $this->getBaseUrl($apiContext),
             $this->getVersion1(),
             $authorizationToken,
+        );
+    }
+
+    private function getOrderReadUrl(ApiContext $apiContext, string $orderId): string
+    {
+        return sprintf(
+            '%s/ordermanagement/%s/orders/%s',
+            $this->getBaseUrl($apiContext),
+            $this->getVersion1(),
+            $orderId,
         );
     }
 

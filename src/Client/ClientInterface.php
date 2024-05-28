@@ -8,6 +8,7 @@ use Webgriffe\SyliusKlarnaPlugin\Client\Exception\ClientException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionReadFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\OrderCreateFailedException;
+use Webgriffe\SyliusKlarnaPlugin\Client\Exception\OrderReadFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionCreateFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionReadFailedException;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
@@ -17,6 +18,7 @@ use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSessionDetails;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\Order as OrderResponse;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\OrderDetails;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSessionDetails;
 
@@ -77,6 +79,17 @@ interface ClientInterface
         Order $order,
         string $authorizationToken,
     ): OrderResponse;
+
+    /**
+     * @docs https://docs.klarna.com/api/ordermanagement/#operation/getOrder
+     *
+     * @throws ClientException
+     * @throws OrderReadFailedException
+     */
+    public function getOrderDetails(
+        ApiContext $apiContext,
+        string $orderId,
+    ): OrderDetails;
 
     public function createPaymentSessionUrl(
         ApiContext $apiContext,

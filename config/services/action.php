@@ -8,6 +8,7 @@ use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\CreateHostedPaymentPageSession
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\CreateOrderAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\CreatePaymentSessionAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\ReadHostedPaymentPageSessionAction;
+use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\ReadOrderAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\ReadPaymentSessionAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\CaptureAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\ConvertSyliusPaymentToKlarnaHostedPaymentPageAction;
@@ -94,5 +95,13 @@ return static function (ContainerConfigurator $containerConfigurator) {
             service('webgriffe_sylius_klarna.client'),
         ])
         ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.api.create_order'])
+    ;
+
+    $services->set('webgriffe_sylius_klarna.payum.action.api.read_order', ReadOrderAction::class)
+        ->public()
+        ->args([
+            service('webgriffe_sylius_klarna.client'),
+        ])
+        ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.api.read_order'])
     ;
 };
