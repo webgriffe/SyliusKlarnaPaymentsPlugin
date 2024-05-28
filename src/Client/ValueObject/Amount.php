@@ -18,7 +18,7 @@ final readonly class Amount
 
     public function getISO4217Amount(): int
     {
-        return (int) ($this->syliusAmount / 100);
+        return $this->syliusAmount;
     }
 
     public static function fromSyliusAmount(int $syliusAmount): self

@@ -507,8 +507,8 @@ final readonly class Client implements ClientInterface
         }
 
         return new OrderDetails(
-            $serializedResponse['fraud_status'],
             $serializedResponse['order_id'],
+            $serializedResponse['fraud_status'],
         );
     }
 
