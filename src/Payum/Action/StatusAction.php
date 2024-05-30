@@ -8,6 +8,7 @@ use Payum\Core\Action\ActionInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Sylius\Bundle\PayumBundle\Request\GetStatus;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
+use Webgriffe\SyliusKlarnaPlugin\PaymentDetailsHelper;
 use Webmozart\Assert\Assert;
 
 /**
@@ -31,6 +32,28 @@ final class StatusAction implements ActionInterface
 
         if ($paymentDetails === []) {
             $request->markNew();
+
+            return;
+        }
+
+        if (!$request->isNew() && !$request->isUnknown()) {
+            // Payment status already set
+            return;
+        }
+
+        PaymentDetailsHelper::assertPaymentDetailsAreValid($paymentDetails);
+
+        /** @psalm-suppress InvalidArgument */
+        $paymentStatus = PaymentDetailsHelper::getPaymentStatus($paymentDetails);
+
+        if (in_array($paymentStatus, [PaymentState::CANCELLED, PaymentState::PENDING], true)) {
+            $request->markCanceled();
+
+            return;
+        }
+
+        if (in_array($paymentStatus, [PaymentState::SUCCESS, PaymentState::AWAITING_CONFIRMATION], true)) {
+            $request->markCaptured();
 
             return;
         }
