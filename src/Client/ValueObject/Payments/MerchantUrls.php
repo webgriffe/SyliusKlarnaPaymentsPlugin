@@ -9,19 +9,19 @@ use JsonSerializable;
 final readonly class MerchantUrls implements JsonSerializable
 {
     public function __construct(
-        private string $confirmation,
-        private string $notification,
+        private ?string $confirmation = null,
+        private ?string $notification = null,
         private ?string $push = null,
         private ?string $authorization = null,
     ) {
     }
 
-    public function getConfirmation(): string
+    public function getConfirmation(): ?string
     {
         return $this->confirmation;
     }
 
-    public function getNotification(): string
+    public function getNotification(): ?string
     {
         return $this->notification;
     }

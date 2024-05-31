@@ -14,6 +14,7 @@ use Psr\Log\LoggerInterface;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\AcquiringChannel;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\HostedPaymentPageSessionStatus;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Intent;
+use Webgriffe\SyliusKlarnaPlugin\Client\Enum\OrderStatus;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PaymentSessionStatus;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\ServerRegion;
 use Webgriffe\SyliusKlarnaPlugin\Client\Exception\ClientException;
@@ -485,7 +486,7 @@ final readonly class Client implements ClientInterface
         }
 
         try {
-            /** @var array{fraud_status: string, order_id: string} $serializedResponse */
+            /** @var array{fraud_status: string, order_id: string, status: string} $serializedResponse */
             $serializedResponse = json_decode(
                 $bodyContents,
                 true,
@@ -509,6 +510,7 @@ final readonly class Client implements ClientInterface
         return new OrderDetails(
             $serializedResponse['order_id'],
             $serializedResponse['fraud_status'],
+            OrderStatus::from($serializedResponse['status']),
         );
     }
 

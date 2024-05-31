@@ -28,7 +28,7 @@ final class HostedPaymentPageConverter implements HostedPaymentPageConverterInte
             ),
             $paymentSessionUrl,
             [
-                HostedPaymentPage::PLACE_ORDER_MODE_KEY => PlaceOrderMode::PlaceOrder,
+                HostedPaymentPage::PLACE_ORDER_MODE_KEY => PlaceOrderMode::CaptureOrder,
                 HostedPaymentPage::PURCHASE_TYPE_KEY => PurchaseType::Buy,
             ],
             null,

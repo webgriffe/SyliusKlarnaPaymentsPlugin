@@ -6,8 +6,10 @@ namespace Webgriffe\SyliusKlarnaPlugin\Payum\Action;
 
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
+use RuntimeException;
 use Sylius\Bundle\PayumBundle\Request\GetStatus;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
+use Webgriffe\SyliusKlarnaPlugin\Client\Enum\OrderStatus;
 use Webgriffe\SyliusKlarnaPlugin\PaymentDetailsHelper;
 use Webmozart\Assert\Assert;
 
@@ -31,31 +33,35 @@ final class StatusAction implements ActionInterface
         $paymentDetails = $payment->getDetails();
 
         if ($paymentDetails === []) {
-            $request->markNew();
-
-            return;
+            throw new RuntimeException('When are we here?');
         }
 
         if (!$request->isNew() && !$request->isUnknown()) {
-            // Payment status already set
-            return;
+            throw new RuntimeException('When are we here?');
         }
 
         PaymentDetailsHelper::assertPaymentDetailsAreValid($paymentDetails);
+        /** @var PaymentDetails $paymentDetails */
+        $paymentDetails = $paymentDetails;
+        $orderDetails = PaymentDetailsHelper::extractOrderFromPaymentDetails($paymentDetails);
 
-        /** @psalm-suppress InvalidArgument */
-        $paymentStatus = PaymentDetailsHelper::getPaymentStatus($paymentDetails);
+        if ($orderDetails->getStatus() === OrderStatus::Captured) {
+            $request->markCaptured();
 
-        if (in_array($paymentStatus, [PaymentState::CANCELLED, PaymentState::PENDING], true)) {
+            return;
+        }
+        if ($orderDetails->getStatus() === OrderStatus::Cancelled) {
             $request->markCanceled();
 
             return;
         }
-
-        if (in_array($paymentStatus, [PaymentState::SUCCESS, PaymentState::AWAITING_CONFIRMATION], true)) {
-            $request->markCaptured();
+        if ($orderDetails->getStatus() === OrderStatus::Expired) {
+            $request->markExpired();
 
             return;
+        }
+        if ($orderDetails->getStatus() === OrderStatus::Closed) {
+            throw new RuntimeException('What is closed status?');
         }
     }
 

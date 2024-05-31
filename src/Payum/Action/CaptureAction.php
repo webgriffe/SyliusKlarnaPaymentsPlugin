@@ -91,7 +91,7 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         // This is needed to populate the http request with GET and POST params from current request
         $getHttpRequest = new GetHttpRequest();
         $this->gateway->execute($getHttpRequest);
-        if ($this->areWeInTheConsumerRedirection($getHttpRequest)) {
+        if ($this->areWeInTheConsumerRedirectionUrl($getHttpRequest)) {
             $this->handlePaymentProcessed($payment, $getHttpRequest);
 
             return;
@@ -110,7 +110,14 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         $paymentSession = PaymentDetailsHelper::extractPaymentSessionFromPaymentDetails($paymentDetails);
 
         if (!$paymentSessionJustCreated) {
-            $this->checkIfPaymentSessionIsStillValid($paymentSession);
+            try {
+                $this->checkIfPaymentSessionIsStillValid($paymentSession);
+            } catch (RuntimeException $e) {
+                // TODO Catch better exception
+                $this->logger->debug('Payment session is not valid anymore. Fail current payment.');
+
+                return;
+            }
         }
 
         $hostedPaymentPageSessionJustCreated = false;
@@ -170,6 +177,9 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         );
     }
 
+    /**
+     * @throws RuntimeException
+     */
     private function checkIfPaymentSessionIsStillValid(PaymentSession $paymentSession): void
     {
         $readPaymentSession = new ReadPaymentSession($paymentSession->getSessionId());
@@ -178,9 +188,13 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         Assert::isInstanceOf($paymentSessionDetails, PaymentSessionDetails::class);
 
         if ($paymentSessionDetails->getStatus() !== PaymentSessionStatus::Incomplete) {
+            $this->logger->debug('Order already placed');
+
             throw new RuntimeException('TODO: order already placed');
         }
         if (new DateTimeImmutable('now') >= $paymentSessionDetails->getExpiresAt()) {
+            $this->logger->debug('Session expired');
+
             throw new RuntimeException('TODO: session expired');
         }
     }
@@ -254,7 +268,7 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         }
     }
 
-    private function areWeInTheConsumerRedirection(GetHttpRequest $getHttpRequest): bool
+    private function areWeInTheConsumerRedirectionUrl(GetHttpRequest $getHttpRequest): bool
     {
         $queryParameters = $getHttpRequest->query;
         if ($queryParameters === []) {
@@ -296,6 +310,7 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
             $this->logger->notice('The success url from Klarna does not contain the "sid" query parameter. The current request will continue, but pay attention! It could be dangerous not adding it!');
         }
 
+        /** Order has been already created */
         if (array_key_exists(HostedPaymentPage::ORDER_ID_KEY, $queryParameters)) {
             /** @var string $orderId */
             $orderId = $queryParameters[HostedPaymentPage::ORDER_ID_KEY];
@@ -309,25 +324,28 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
 
             return;
         }
-        if (array_key_exists(HostedPaymentPage::AUTHORIZATION_TOKEN_KEY, $queryParameters)) {
-            /** @var string $authorizationToken */
-            $authorizationToken = $queryParameters[HostedPaymentPage::AUTHORIZATION_TOKEN_KEY];
-
-            $convertSyliusPaymentToKlarnaOrder = new ConvertSyliusPaymentToKlarnaOrder($payment);
-            $this->gateway->execute($convertSyliusPaymentToKlarnaOrder);
-            $klarnaOrder = $convertSyliusPaymentToKlarnaOrder->getKlarnaOrder();
-            Assert::isInstanceOf($klarnaOrder, Order::class);
-
-            $createOrder = new CreateOrder($klarnaOrder, $authorizationToken);
-            $this->gateway->execute($createOrder);
-            $orderResponse = $createOrder->getOrderResponse();
-            Assert::isInstanceOf($orderResponse, OrderResponse::class);
-
-            $payment->setDetails(PaymentDetailsHelper::storeOrderOnPaymentDetails($paymentDetails, $orderResponse));
-
-            return;
+        /** Order should be created */
+        if (!array_key_exists(HostedPaymentPage::AUTHORIZATION_TOKEN_KEY, $queryParameters)) {
+            throw new RuntimeException('This point should not be reached. Both authorization token and order id could not exists on the same request!');
         }
+        /** @var string $authorizationToken */
+        $authorizationToken = $queryParameters[HostedPaymentPage::AUTHORIZATION_TOKEN_KEY];
 
-        throw new RuntimeException('This point should not be reached. Both authorization token and order id could not exists on the same request!');
+        $convertSyliusPaymentToKlarnaOrder = new ConvertSyliusPaymentToKlarnaOrder($payment);
+        $this->gateway->execute($convertSyliusPaymentToKlarnaOrder);
+        $klarnaOrder = $convertSyliusPaymentToKlarnaOrder->getKlarnaOrder();
+        Assert::isInstanceOf($klarnaOrder, Order::class);
+
+        $createOrder = new CreateOrder($klarnaOrder, $authorizationToken);
+        $this->gateway->execute($createOrder);
+        $orderResponse = $createOrder->getOrderResponse();
+        Assert::isInstanceOf($orderResponse, OrderResponse::class);
+
+        $readOrder = new ReadOrder($orderResponse->getOrderId());
+        $this->gateway->execute($readOrder);
+        $orderDetails = $readOrder->getOrderDetails();
+        Assert::isInstanceOf($orderDetails, OrderDetails::class);
+
+        $payment->setDetails(PaymentDetailsHelper::storeOrderOnPaymentDetails($paymentDetails, $orderDetails));
     }
 }

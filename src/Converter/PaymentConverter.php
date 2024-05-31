@@ -56,7 +56,7 @@ final readonly class PaymentConverter implements PaymentConverterInterface
             $this->getOrderLines($order),
             Intent::buy,
             AcquiringChannel::ECOMMERCE,
-            $order->getLocaleCode(),
+            $paymentCountry->matchUserLocale($order->getLocaleCode()),
             new MerchantUrls(
                 $confirmationUrl,
                 $notificationUrl,
@@ -65,7 +65,7 @@ final readonly class PaymentConverter implements PaymentConverterInterface
             $this->getAddress($order->getBillingAddress(), $order->getCustomer()),
             $this->getAddress($order->getShippingAddress(), $order->getCustomer()),
             (string) $order->getNumber(),
-            null,
+            (string) $payment->getId(),
             Amount::fromSyliusAmount($order->getTaxTotal()),
         );
     }
