@@ -29,6 +29,8 @@ final readonly class ConvertSyliusPaymentToKlarnaPaymentAction implements Action
             $request->getSyliusPayment(),
             $request->getConfirmationUrl(),
             $request->getNotificationUrl(),
+            $request->getPushUrl(),
+            $request->getAuthorizationUrl(),
         );
 
         $request->setKlarnaPayment($klarnaPayment);

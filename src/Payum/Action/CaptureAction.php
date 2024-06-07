@@ -21,6 +21,8 @@ use Payum\Core\Security\TokenInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusKlarnaPlugin\Client\ClientInterface;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\HostedPaymentPageSessionStatus;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PaymentSessionStatus;
@@ -35,6 +37,7 @@ use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\Order as OrderRespo
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\OrderDetails;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSessionDetails;
+use Webgriffe\SyliusKlarnaPlugin\Controller\PaymentController;
 use Webgriffe\SyliusKlarnaPlugin\PaymentDetailsHelper;
 use Webgriffe\SyliusKlarnaPlugin\Payum\KlarnaPaymentsApi;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\CreateHostedPaymentPageSession;
@@ -60,6 +63,8 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
     public function __construct(
         private readonly ClientInterface $client,
         private readonly LoggerInterface $logger,
+        private readonly RouterInterface $router,
+        private readonly RequestStack $requestStack,
     ) {
         $this->apiClass = KlarnaPaymentsApi::class;
     }
@@ -88,20 +93,10 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         $klarnaPaymentsApi = $this->api;
         Assert::isInstanceOf($klarnaPaymentsApi, KlarnaPaymentsApi::class);
 
-        // This is needed to populate the http request with GET and POST params from current request
-        $getHttpRequest = new GetHttpRequest();
-        $this->gateway->execute($getHttpRequest);
-        if ($this->areWeInTheConsumerRedirectionUrl($getHttpRequest)) {
-            $this->handlePaymentProcessed($payment, $getHttpRequest);
-
-            return;
-        }
-
         // We are just starting the payment, so continue to launch it!
-
         $paymentSessionJustCreated = false;
         if ($payment->getDetails() === []) {
-            $this->createPaymentSession($payment, $captureToken);
+            $this->createPaymentSession($payment);
             $paymentSessionJustCreated = true;
         }
         /** @var PaymentDetails $paymentDetails */
@@ -109,15 +104,17 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         PaymentDetailsHelper::assertPaymentDetailsAreValid($paymentDetails);
         $paymentSession = PaymentDetailsHelper::extractPaymentSessionFromPaymentDetails($paymentDetails);
 
-        if (!$paymentSessionJustCreated) {
-            try {
-                $this->checkIfPaymentSessionIsStillValid($paymentSession);
-            } catch (RuntimeException $e) {
-                // TODO Catch better exception
-                $this->logger->debug('Payment session is not valid anymore. Fail current payment.');
+        // TODO: Have status? Then redirect to processing page
+        if (true) {
+            $session = $this->requestStack->getSession();
+            $session->set(PaymentController::PAYMENT_ID_SESSION_KEY, $payment->getId());
+            $session->set(PaymentController::TOKEN_HASH_SESSION_KEY, $captureToken->getHash());
 
-                return;
-            }
+            throw new HttpRedirect(
+                $this->router->generate('webgriffe_sylius_klarna_plugin.payment.process', [
+                    'tokenValue' => $payment->getOrder()->getTokenValue(),
+                ]),
+            );
         }
 
         $hostedPaymentPageSessionJustCreated = false;
@@ -134,10 +131,6 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         PaymentDetailsHelper::assertPaymentDetailsAreValid($paymentDetails);
         $hostedPaymentPageSession = PaymentDetailsHelper::extractHostedPaymentPageSessionFromPaymentDetails($paymentDetails);
 
-        if (!$hostedPaymentPageSessionJustCreated) {
-            $this->checkIfHostedPaymentPageSessionIsStillValid($hostedPaymentPageSession);
-        }
-
         throw new HttpRedirect($hostedPaymentPageSession->getRedirectUrl());
     }
 
@@ -151,18 +144,13 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
 
     private function createPaymentSession(
         SyliusPaymentInterface $payment,
-        TokenInterface $captureToken,
     ): void {
-        $notifyToken = $this->tokenFactory->createNotifyToken(
-            $captureToken->getGatewayName(),
-            $captureToken->getDetails(),
-        );
-        $notifyUrl = $notifyToken->getTargetUrl();
-
         $convertSyliusPaymentToKlarnaPayment = new ConvertSyliusPaymentToKlarnaPayment(
             $payment,
-            $captureToken->getTargetUrl(),
-            $notifyUrl,
+            null,
+            null,
+            null,
+            null,
         );
         $this->gateway->execute($convertSyliusPaymentToKlarnaPayment);
         $klarnaPayment = $convertSyliusPaymentToKlarnaPayment->getKlarnaPayment();
@@ -220,7 +208,6 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
             $captureToken->getAfterUrl(),
         );
         $cancelUrl = $cancelToken->getTargetUrl();
-
         $notifyToken = $this->tokenFactory->createNotifyToken(
             $captureToken->getGatewayName(),
             $captureToken->getDetails(),
@@ -230,6 +217,9 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         $convertSyliusPaymentToKlarnaHostedPaymentPage = new ConvertSyliusPaymentToKlarnaHostedPaymentPage(
             $captureToken->getTargetUrl(),
             $notifyUrl,
+            $cancelUrl,
+            $cancelUrl,
+            $cancelUrl,
             $cancelUrl,
             $this->client->createPaymentSessionUrl($apiContext, $paymentSession->getSessionId()),
         );

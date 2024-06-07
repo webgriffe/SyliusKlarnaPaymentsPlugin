@@ -30,8 +30,10 @@ final readonly class PaymentConverter implements PaymentConverterInterface
 
     public function convert(
         PaymentInterface $payment,
-        string $confirmationUrl,
-        string $notificationUrl,
+        ?string $confirmationUrl,
+        ?string $notificationUrl,
+        ?string $pushUrl,
+        ?string $authorizationUrl,
     ): Payment {
         $order = $payment->getOrder();
         Assert::isInstanceOf($order, OrderInterface::class);
@@ -49,6 +51,15 @@ final readonly class PaymentConverter implements PaymentConverterInterface
                 $paymentCountry->getCurrency()->value,
             ));
         }
+        $merchantUrls = null;
+        if ($confirmationUrl !== null || $notificationUrl !== null || $pushUrl !== null || $authorizationUrl !== null) {
+            $merchantUrls = new MerchantUrls(
+                $confirmationUrl,
+                $notificationUrl,
+                $pushUrl,
+                $authorizationUrl,
+            );
+        }
 
         return new Payment(
             $paymentCountry,
@@ -57,10 +68,7 @@ final readonly class PaymentConverter implements PaymentConverterInterface
             Intent::buy,
             AcquiringChannel::ECOMMERCE,
             $paymentCountry->matchUserLocale($order->getLocaleCode()),
-            new MerchantUrls(
-                $confirmationUrl,
-                $notificationUrl,
-            ),
+            $merchantUrls,
             $this->getCustomer($order),
             $this->getAddress($order->getBillingAddress(), $order->getCustomer()),
             $this->getAddress($order->getShippingAddress(), $order->getCustomer()),

@@ -32,3 +32,20 @@ Help
 
 - Non si può creare un pagamento verso UK con valuta EURO
 - 
+
+
+
+Chiamate fatte:
+successo:
+- /hpp/status_update
+- Redirect to /hpp/success
+
+annullo:
+- /hpp/status_update
+- Redirect to /hpp/back
+
+nessun metodo di pagamento accettato:
+- /hpp/status_update
+- Redirect to /hpp/failure
+
+

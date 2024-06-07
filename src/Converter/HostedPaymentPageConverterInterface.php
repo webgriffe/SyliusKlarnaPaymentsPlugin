@@ -11,7 +11,10 @@ interface HostedPaymentPageConverterInterface
     public function convert(
         string $confirmationUrl,
         string $notificationUrl,
+        string $backUrl,
         string $cancelUrl,
+        string $errorUrl,
+        string $failureUrl,
         string $paymentSessionUrl,
     ): HostedPaymentPage;
 }

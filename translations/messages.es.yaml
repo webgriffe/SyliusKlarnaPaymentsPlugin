@@ -1,0 +1,11 @@
+webgriffe_sylius_klarna:
+    ui:
+        processing_payment: '¡Estamos procesando tu pago!'
+        please_wait: '¡Espere hasta que vea una nueva página de estado!'
+        loading: 'Cargando'
+    form:
+        gateway_configuration:
+            merchant_key: 'Clave del comerciante'
+            sandbox: 'Modo de prueba'
+            allowed_terms: 'Plazos permitidos'
+            allowed_terms_help: 'Puede seleccionar uno o más plazos para ofrecer al cliente, si no selecciona ninguno, se ofrecerán todos los plazos disponibles por defecto en su cuenta.'

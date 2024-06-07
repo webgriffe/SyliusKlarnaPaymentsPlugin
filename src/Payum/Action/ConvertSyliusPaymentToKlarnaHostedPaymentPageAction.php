@@ -28,7 +28,10 @@ final readonly class ConvertSyliusPaymentToKlarnaHostedPaymentPageAction impleme
         $klarnaHostedPaymentPage = $this->hostedPaymentPageConverter->convert(
             $request->getConfirmationUrl(),
             $request->getNotificationUrl(),
+            $request->getBackUrl(),
             $request->getCancelUrl(),
+            $request->getErrorUrl(),
+            $request->getFailureUrl(),
             $request->getPaymentSessionUrl(),
         );
 

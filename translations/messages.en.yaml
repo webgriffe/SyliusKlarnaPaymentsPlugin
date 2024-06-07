@@ -1,0 +1,11 @@
+webgriffe_sylius_klarna:
+    ui:
+        processing_payment: 'Your payment is being processed!'
+        please_wait: 'Please wait until you see a new status page!'
+        loading: 'Loading'
+    form:
+        gateway_configuration:
+            merchant_key: 'Merchant key'
+            sandbox: 'Sandbox mode'
+            allowed_terms: 'Allowed terms'
+            allowed_terms_help: 'You can select one or more terms to offer to the customer, if you do not select any, all the terms available by default on your account will be offered.'

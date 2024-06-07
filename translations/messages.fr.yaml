@@ -1,0 +1,11 @@
+webgriffe_sylius_klarna:
+    ui:
+        processing_payment: 'Nous traitons votre paiement!'
+        please_wait: 'Veuillez attendre de voir une nouvelle page de statut!'
+        loading: 'Chargement en cours'
+    form:
+        gateway_configuration:
+            merchant_key: 'Clé du commerçant'
+            sandbox: 'Mode bac à sable'
+            allowed_terms: 'Termes autorisés'
+            allowed_terms_help: 'Vous pouvez sélectionner un ou plusieurs termes à proposer au client, si vous n''en sélectionnez aucun, tous les termes disponibles par défaut sur votre compte seront proposés.'

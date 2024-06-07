@@ -1,0 +1,11 @@
+webgriffe_sylius_klarna:
+    ui:
+        processing_payment: 'Stiamo processando il tuo pagamento!'
+        please_wait: 'Per favore, attendi fino a quando non vedrai una nuova pagina di stato!'
+        loading: 'Caricamento in corso'
+    form:
+        gateway_configuration:
+            merchant_key: 'Chiave del commerciante'
+            sandbox: 'Modalità Sandbox'
+            allowed_terms: 'Rate ammesse'
+            allowed_terms_help: 'Puoi selezionare una o più rate da proporre al cliente, se non ne selezioni nessuna verranno proposte tutte le rate disponibili di default sul tuo account.'

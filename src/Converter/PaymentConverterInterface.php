@@ -11,7 +11,9 @@ interface PaymentConverterInterface
 {
     public function convert(
         PaymentInterface $payment,
-        string $confirmationUrl,
-        string $notificationUrl,
+        ?string $confirmationUrl,
+        ?string $notificationUrl,
+        ?string $pushUrl,
+        ?string $authorizationUrl,
     ): Payment;
 }

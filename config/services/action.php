@@ -10,10 +10,12 @@ use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\CreatePaymentSessionAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\ReadHostedPaymentPageSessionAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\ReadOrderAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api\ReadPaymentSessionAction;
+use Webgriffe\SyliusKlarnaPlugin\Payum\Action\CancelAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\CaptureAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\ConvertSyliusPaymentToKlarnaHostedPaymentPageAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\ConvertSyliusPaymentToKlarnaOrderAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\ConvertSyliusPaymentToKlarnaPaymentAction;
+use Webgriffe\SyliusKlarnaPlugin\Payum\Action\NotifyAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\Action\StatusAction;
 use Webgriffe\SyliusKlarnaPlugin\Payum\KlarnaPaymentsApi;
 
@@ -25,12 +27,24 @@ return static function (ContainerConfigurator $containerConfigurator) {
         ->args([
             service('webgriffe_sylius_klarna.client'),
             service('webgriffe_sylius_klarna.logger'),
+            service('router'),
+            service('request_stack'),
         ])
         ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.capture'])
     ;
 
     $services->set('webgriffe_sylius_klarna.payum.action.status', StatusAction::class)
         ->public()
+    ;
+
+    $services->set('webgriffe_sylius_klarna.payum.action.cancel', CancelAction::class)
+        ->public()
+        ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.cancel'])
+    ;
+
+    $services->set('webgriffe_sylius_klarna.payum.action.notify', NotifyAction::class)
+        ->public()
+        ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.notify'])
     ;
 
     $services->set('webgriffe_sylius_klarna.payum.action.convert_sylius_payment_to_klarna_payment', ConvertSyliusPaymentToKlarnaPaymentAction::class)
