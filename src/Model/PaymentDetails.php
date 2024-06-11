@@ -119,4 +119,25 @@ final class PaymentDetails
 
         return $paymentDetails;
     }
+
+    /**
+     * @return StoredPaymentDetails
+     */
+    public function toStoredPaymentDetails(): array
+    {
+        $storedPaymentDetails = [
+            self::PAYMENT_KEY => [
+                self::PAYMENT_SESSION_ID_KEY => $this->getPaymentSessionId(),
+                self::PAYMENT_CLIENT_TOKEN_KEY => $this->getPaymentSessionClientToken(),
+            ],
+        ];
+        if ($this->getHostedPaymentPageId() !== null) {
+            $storedPaymentDetails[self::HOSTED_PAYMENT_PAGE_KEY] = [
+                self::HOSTED_PAYMENT_PAGE_SESSION_ID_KEY => $this->getHostedPaymentPageId(),
+                self::HOSTED_PAYMENT_PAGE_REDIRECT_URL_KEY => $this->getHostedPaymentPageRedirectUrl(),
+            ];
+        }
+
+        return $storedPaymentDetails;
+    }
 }

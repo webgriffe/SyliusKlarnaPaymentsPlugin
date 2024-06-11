@@ -22,7 +22,6 @@ use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Webgriffe\SyliusKlarnaPlugin\Client\ClientInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PaymentSessionStatus;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Authorization;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
@@ -75,6 +74,11 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         /** @var SyliusPaymentInterface $payment */
         $payment = $request->getModel();
 
+        $this->logger->info(sprintf(
+            'Start capture action for Sylius payment with ID "%s".',
+            $payment->getId(),
+        ));
+
         $captureToken = $request->getToken();
         Assert::isInstanceOf($captureToken, TokenInterface::class);
 
@@ -89,9 +93,18 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
                 throw new RuntimeException('Payment details are already populated with others data. Maybe this payment should be marked as error');
             }
             $paymentDetails = PaymentDetails::createFromStoredPaymentDetails($storedPaymentDetails);
+            $this->logger->info(sprintf(
+                'Klarna payment session "%s" already created.',
+                $paymentDetails->getPaymentSessionId(),
+            ));
         }
 
-        if ($paymentDetails->getPaymentSessionStatus() === PaymentSessionStatus::Complete) {
+        if ($paymentDetails->isCaptured()) {
+            $this->logger->info(sprintf(
+                'Klarna payment session "%s" already captured. Redirecting the user to the Sylius waiting page.',
+                $paymentDetails->getPaymentSessionId(),
+            ));
+
             $session = $this->requestStack->getSession();
             $session->set(PaymentController::PAYMENT_ID_SESSION_KEY, $payment->getId());
             $session->set(PaymentController::TOKEN_HASH_SESSION_KEY, $captureToken->getHash());
@@ -113,8 +126,15 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
             );
         }
 
+        $payment->setDetails($paymentDetails->toStoredPaymentDetails());
+
         $hostedPaymentPageRedirectUrl = $paymentDetails->getHostedPaymentPageRedirectUrl();
         Assert::stringNotEmpty($hostedPaymentPageRedirectUrl);
+
+        $this->logger->info(sprintf(
+            'Redirecting the user to the Klarna Hosted Payment Page redirect URL "%s".',
+            $hostedPaymentPageRedirectUrl,
+        ));
 
         throw new HttpRedirect($hostedPaymentPageRedirectUrl);
     }
@@ -146,7 +166,11 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         $paymentSession = $createPaymentSession->getPaymentSession();
         Assert::isInstanceOf($paymentSession, PaymentSession::class);
 
-        $this->logger->debug(sprintf('Created Klarna Payment Session with ID: %s', $paymentSession->getSessionId()));
+        $this->logger->info(sprintf(
+            'Created Klarna Payment Session with ID "%s" for Sylius payment "%s".',
+            $paymentSession->getSessionId(),
+            $payment->getId(),
+        ));
 
         return PaymentDetails::createFromPaymentSession($paymentSession);
     }
@@ -195,7 +219,11 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         $hostedPaymentPageSession = $createHostedPaymentPageSession->getHostedPaymentPageSession();
         Assert::isInstanceOf($hostedPaymentPageSession, HostedPaymentPageSession::class);
 
-        $this->logger->debug(sprintf('Created Klarna Hosted Payment Page Session with ID: %s', $hostedPaymentPageSession->getSessionId()));
+        $this->logger->info(sprintf(
+            'Created Klarna Hosted Payment Page Session with ID "%s" for Klarna session with ID "%s".',
+            $hostedPaymentPageSession->getSessionId(),
+            $paymentDetails->getPaymentSessionId(),
+        ));
 
         $paymentDetails->setHostedPaymentPageId($hostedPaymentPageSession->getSessionId());
         $paymentDetails->setHostedPaymentPageRedirectUrl($hostedPaymentPageSession->getRedirectUrl());

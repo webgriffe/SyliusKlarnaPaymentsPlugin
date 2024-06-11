@@ -7,6 +7,7 @@ namespace Webgriffe\SyliusKlarnaPlugin\Payum\Action;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Request\Cancel;
+use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Webgriffe\SyliusKlarnaPlugin\Model\PaymentDetails;
 use Webgriffe\SyliusKlarnaPlugin\PaymentDetailsHelper;
@@ -17,6 +18,11 @@ use Webmozart\Assert\Assert;
  */
 final class CancelAction implements ActionInterface
 {
+    public function __construct(
+        private readonly LoggerInterface $logger,
+    ) {
+    }
+
     /**
      * @param Cancel|mixed $request
      */
@@ -27,6 +33,11 @@ final class CancelAction implements ActionInterface
 
         $payment = $request->getModel();
         Assert::isInstanceOf($payment, SyliusPaymentInterface::class);
+
+        $this->logger->info(sprintf(
+            'Start cancel action for Sylius payment with ID "%s".',
+            $payment->getId(),
+        ));
 
         $paymentDetails = $payment->getDetails();
         PaymentDetailsHelper::assertStoredPaymentDetailsAreValid($paymentDetails);

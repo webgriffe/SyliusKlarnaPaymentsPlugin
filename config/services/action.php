@@ -39,11 +39,18 @@ return static function (ContainerConfigurator $containerConfigurator) {
 
     $services->set('webgriffe_sylius_klarna.payum.action.cancel', CancelAction::class)
         ->public()
+        ->args([
+            service('webgriffe_sylius_klarna.logger'),
+        ])
         ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.cancel'])
     ;
 
     $services->set('webgriffe_sylius_klarna.payum.action.notify', NotifyAction::class)
         ->public()
+        ->args([
+            service('webgriffe_sylius_klarna.logger'),
+            service('webgriffe_sylius_klarna_plugin.command_bus'),
+        ])
         ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.notify'])
     ;
 
