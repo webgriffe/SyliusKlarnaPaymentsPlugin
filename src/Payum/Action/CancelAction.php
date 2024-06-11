@@ -9,8 +9,8 @@ use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Request\Cancel;
 use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
+use Webgriffe\SyliusKlarnaPlugin\Helper\PaymentDetailsHelper;
 use Webgriffe\SyliusKlarnaPlugin\Model\PaymentDetails;
-use Webgriffe\SyliusKlarnaPlugin\PaymentDetailsHelper;
 use Webmozart\Assert\Assert;
 
 /**

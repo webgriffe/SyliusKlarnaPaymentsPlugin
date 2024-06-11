@@ -49,7 +49,6 @@ return static function (ContainerConfigurator $containerConfigurator) {
         ->public()
         ->args([
             service('webgriffe_sylius_klarna.logger'),
-            service('webgriffe_sylius_klarna_plugin.command_bus'),
         ])
         ->tag('payum.action', ['factory' => KlarnaPaymentsApi::CODE, 'alias' => 'payum.action.notify'])
     ;

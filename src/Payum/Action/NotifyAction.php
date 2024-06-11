@@ -12,9 +12,11 @@ use Payum\Core\Request\GetHttpRequest;
 use Payum\Core\Request\Notify;
 use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
-use Webgriffe\SyliusKlarnaPlugin\Message\UpdatePaymentDetails;
+use Webgriffe\SyliusKlarnaPlugin\Client\Enum\HostedPaymentPageSessionStatus;
+use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSessionDetails;
+use Webgriffe\SyliusKlarnaPlugin\Helper\PaymentDetailsHelper;
 use Webgriffe\SyliusKlarnaPlugin\Model\PaymentDetails;
+use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\ReadPaymentSession;
 use Webmozart\Assert\Assert;
 
 /**
@@ -26,7 +28,6 @@ final class NotifyAction implements ActionInterface, GatewayAwareInterface
 
     public function __construct(
         private readonly LoggerInterface $logger,
-        private readonly MessageBusInterface $messageBus,
     ) {
     }
 
@@ -58,8 +59,26 @@ final class NotifyAction implements ActionInterface, GatewayAwareInterface
             $payment->getId(),
         ), ['Request parameters' => $requestParameters]);
 
-        // @TODO: dispatch only when status === COMPLETED?
-        $this->messageBus->dispatch(new UpdatePaymentDetails($payment->getId()));
+        $storedPaymentDetails = $payment->getDetails();
+        PaymentDetailsHelper::assertStoredPaymentDetailsAreValid($storedPaymentDetails);
+
+        $paymentDetails = PaymentDetails::createFromStoredPaymentDetails($storedPaymentDetails);
+
+        $paymentDetails->setHostedPaymentPageStatus(HostedPaymentPageSessionStatus::tryFrom($requestParameters['session']['status']));
+        $paymentDetails->setOrderId($requestParameters['session']['order_id'] ?? null);
+        $paymentDetails->setKlarnaReference($requestParameters['session']['klarna_reference'] ?? null);
+
+        if ($paymentDetails->getPaymentSessionStatus() === null && $paymentDetails->getHostedPaymentPageStatus() === HostedPaymentPageSessionStatus::Completed) {
+            $readPaymentSession = new ReadPaymentSession($paymentDetails->getPaymentSessionId());
+            $this->gateway->execute($readPaymentSession);
+
+            $paymentSessionDetails = $readPaymentSession->getPaymentSessionDetails();
+            Assert::isInstanceOf($paymentSessionDetails, PaymentSessionDetails::class);
+
+            $paymentDetails->setPaymentSessionStatus($paymentSessionDetails->getStatus());
+        }
+
+        $payment->setDetails($paymentDetails->toStoredPaymentDetails());
     }
 
     public function supports($request): bool

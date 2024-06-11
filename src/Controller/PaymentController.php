@@ -18,8 +18,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Webgriffe\SyliusKlarnaPlugin\Helper\PaymentDetailsHelper;
 use Webgriffe\SyliusKlarnaPlugin\Model\PaymentDetails;
-use Webgriffe\SyliusKlarnaPlugin\PaymentDetailsHelper;
 use Webgriffe\SyliusKlarnaPlugin\Payum\KlarnaPaymentsApi;
 use Webmozart\Assert\Assert;
 
