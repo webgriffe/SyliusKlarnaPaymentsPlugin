@@ -9,12 +9,12 @@ use Payum\Core\Exception\RequestNotSupportedException;
 use RuntimeException;
 use Sylius\Bundle\PayumBundle\Request\GetStatus;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\OrderStatus;
+use Webgriffe\SyliusKlarnaPlugin\Model\PaymentDetails;
 use Webgriffe\SyliusKlarnaPlugin\PaymentDetailsHelper;
 use Webmozart\Assert\Assert;
 
 /**
- * @psalm-import-type PaymentDetails from \Webgriffe\SyliusKlarnaPlugin\PaymentDetailsHelper
+ * @psalm-import-type StoredPaymentDetails from PaymentDetails
  */
 final class StatusAction implements ActionInterface
 {
@@ -29,10 +29,9 @@ final class StatusAction implements ActionInterface
         /** @var SyliusPaymentInterface $payment */
         $payment = $request->getFirstModel();
 
-        /** @var array{}|PaymentDetails $paymentDetails */
-        $paymentDetails = $payment->getDetails();
+        $storedPaymentDetails = $payment->getDetails();
 
-        if ($paymentDetails === []) {
+        if ($storedPaymentDetails === []) {
             throw new RuntimeException('When are we here?');
         }
 
@@ -40,29 +39,19 @@ final class StatusAction implements ActionInterface
             throw new RuntimeException('When are we here?');
         }
 
-        PaymentDetailsHelper::assertPaymentDetailsAreValid($paymentDetails);
-        /** @var PaymentDetails $paymentDetails */
-        $paymentDetails = $paymentDetails;
-        $orderDetails = PaymentDetailsHelper::extractOrderFromPaymentDetails($paymentDetails);
-
-        if ($orderDetails->getStatus() === OrderStatus::Captured) {
-            $request->markCaptured();
+        if (!PaymentDetailsHelper::areValid($storedPaymentDetails)) {
+            $request->markFailed();
 
             return;
         }
-        if ($orderDetails->getStatus() === OrderStatus::Cancelled) {
-            $request->markCanceled();
+        $paymentDetails = PaymentDetails::createFromStoredPaymentDetails($storedPaymentDetails);
+        if (!$paymentDetails->isCaptured()) {
+            $request->markPending();
 
             return;
         }
-        if ($orderDetails->getStatus() === OrderStatus::Expired) {
-            $request->markExpired();
 
-            return;
-        }
-        if ($orderDetails->getStatus() === OrderStatus::Closed) {
-            throw new RuntimeException('What is closed status?');
-        }
+        // @TODO various statuses
     }
 
     public function supports($request): bool
