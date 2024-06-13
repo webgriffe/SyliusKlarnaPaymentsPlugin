@@ -99,9 +99,9 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
             ));
         }
 
-        if ($paymentDetails->isCaptured()) {
+        if ($paymentDetails->getHostedPaymentPageRedirectUrl() !== null) {
             $this->logger->info(sprintf(
-                'Klarna payment session "%s" already captured. Redirecting the user to the Sylius waiting page.',
+                'Klarna payment session "%s" already contains the redirect url, so no need to continue here. Redirecting the user to the Sylius Klarna Payments waiting page.',
                 $paymentDetails->getPaymentSessionId(),
             ));
 

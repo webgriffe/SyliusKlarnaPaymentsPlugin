@@ -82,6 +82,11 @@ class PaymentController extends AbstractController
         if (!$syliusPayment instanceof PaymentInterface) {
             throw $this->createNotFoundException();
         }
+        $storedPaymentDetails = $syliusPayment->getDetails();
+        if (!PaymentDetailsHelper::areValid($storedPaymentDetails)) {
+            throw $this->createNotFoundException();
+        }
+        $paymentDetails = PaymentDetails::createFromStoredPaymentDetails($storedPaymentDetails);
         $paymentStatusUrl = $this->router->generate(
             'webgriffe_sylius_klarna_plugin.payment.status',
             ['paymentId' => $syliusPayment->getId()],
@@ -91,6 +96,7 @@ class PaymentController extends AbstractController
         return $this->render('@WebgriffeSyliusKlarnaPlugin/Process/index.html.twig', [
             'afterUrl' => $token->getAfterUrl(),
             'paymentStatusUrl' => $paymentStatusUrl,
+            'redirectUrl' => $paymentDetails->getHostedPaymentPageRedirectUrl(),
         ]);
     }
 

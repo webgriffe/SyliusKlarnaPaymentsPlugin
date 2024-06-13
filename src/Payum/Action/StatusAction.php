@@ -50,8 +50,16 @@ final class StatusAction implements ActionInterface
 
             return;
         }
+        if ($paymentDetails->isSuccessfully()) {
+            $request->markCaptured();
 
-        // @TODO various statuses
+            return;
+        }
+        if ($paymentDetails->isFailed()) {
+            $request->markFailed();
+
+            return;
+        }
     }
 
     public function supports($request): bool

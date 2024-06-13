@@ -137,7 +137,23 @@ final class PaymentDetails
      */
     public function isCaptured(): bool
     {
+        return $this->getPaymentSessionStatus() !== null;
+    }
+
+    public function isSuccessfully(): bool
+    {
         return $this->getPaymentSessionStatus() === PaymentSessionStatus::Complete;
+    }
+
+    public function isFailed(): bool
+    {
+        return in_array($this->getHostedPaymentPageStatus(), [
+            HostedPaymentPageSessionStatus::Cancelled,
+            HostedPaymentPageSessionStatus::Failed,
+            HostedPaymentPageSessionStatus::Back,
+            HostedPaymentPageSessionStatus::Disabled,
+            HostedPaymentPageSessionStatus::Error,
+        ], true);
     }
 
     public static function createFromPaymentSession(PaymentSession $paymentSession): self
