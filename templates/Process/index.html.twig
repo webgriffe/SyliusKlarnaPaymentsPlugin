@@ -8,7 +8,7 @@
     <img src="{{ asset('build/shop/images/loading.gif', 'shop') }}" alt="{{ 'webgriffe_sylius_klarna.ui.loading'|trans }}">
 
     {% if redirectUrl %}
-        <p>{{ 'webgriffe_sylius_klarna.ui.return_to_klarna_checkout'|trans({'{redirectUrl}': redirectUrl}) }}</p>
+        <p>{{ 'webgriffe_sylius_klarna.ui.return_to_klarna_checkout'|trans({'{redirectUrl}': redirectUrl})|raw }}</p>
     {% endif %}
 {% endblock %}
 
