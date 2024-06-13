@@ -57,18 +57,21 @@ final class KlarnaContext implements Context
     }
 
     /**
-     * @When /^Pagolight notify the store about the failed payment$/
+     * @When /^Klarna notify the store about the failed payment$/
      */
-    public function pagolightNotifyTheStoreAboutTheFailedPayment(): void
+    public function klarnaNotifyTheStoreAboutTheFailedPayment(): void
     {
         $payment = $this->getCurrentPayment();
         [$paymentCaptureSecurityToken, $paymentNotifySecurityToken] = $this->getCurrentPaymentSecurityTokens($payment);
-        $webhookToken = $this->webhookTokenRepository->findOneByPayment($payment);
-        Assert::isInstanceOf($webhookToken, WebhookTokenInterface::class);
 
         $this->notifyPaymentState($paymentNotifySecurityToken, [
-            'status' => PaymentState::CANCELLED,
-            'token' => $webhookToken->getToken(),
+            'event_id' => random_bytes(5),
+            'session' => [
+                'session_id' => random_bytes(5),
+                'status' => HostedPaymentPageSessionStatus::Failed->value,
+                'updated_at' => (new DateTime())->format('Y-m-d H:i:s'),
+                'expires_at' => (new DateTime('+1 day'))->format('Y-m-d H:i:s'),
+            ],
         ]);
     }
 

@@ -40,6 +40,7 @@ final class KlarnaContext implements Context
         private readonly ThankYouPageInterface $thankYouPage,
         private readonly ShowPageInterface $orderShowPage,
         private readonly OrderRepositoryInterface $orderRepository,
+        private readonly ShowPageInterface $orderDetails,
     ) {
         // TODO: Why config parameters are not loaded?
         $this->urlGenerator->setContext(new RequestContext('', 'GET', '127.0.0.1:8080', 'https'));
@@ -112,6 +113,14 @@ final class KlarnaContext implements Context
     }
 
     /**
+     * @Then I should be notified that my payment is failed
+     */
+    public function iShouldBeNotifiedThatMyPaymentHasBeenCancelled(): void
+    {
+        $this->assertNotification('Payment has failed.');
+    }
+
+    /**
      * @return PaymentRepositoryInterface<PaymentInterface>
      */
     protected function getPaymentRepository(): PaymentRepositoryInterface
@@ -125,5 +134,20 @@ final class KlarnaContext implements Context
     protected function getPaymentTokenRepository(): RepositoryInterface
     {
         return $this->paymentTokenRepository;
+    }
+
+    private function assertNotification(string $expectedNotification): void
+    {
+        $notifications = $this->orderDetails->getNotifications();
+        $hasNotifications = '';
+
+        foreach ($notifications as $notification) {
+            $hasNotifications .= $notification;
+            if ($notification === $expectedNotification) {
+                return;
+            }
+        }
+
+        throw new \RuntimeException(sprintf('There is no notification with "%s". Got "%s"', $expectedNotification, $hasNotifications));
     }
 }

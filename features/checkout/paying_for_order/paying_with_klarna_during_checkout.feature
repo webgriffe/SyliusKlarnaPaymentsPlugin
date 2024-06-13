@@ -39,13 +39,13 @@ Feature: Paying with Klarna Payments during checkout
         And I proceeded with "Free" shipping method and "Klarna" payment
         When I confirm my order
         And I complete the payment on Klarna
-        Then I should be on the capture payment page
+        Then I should be on the waiting payment processing page
         When Klarna notify the store about the failed payment
         Then I should be redirected to the order page page
-        And I should be notified that my payment has been cancelled
+        And I should be notified that my payment is failed
         And I should be able to pay again
 
-    @ui
+    @ui @javascript
     Scenario: Cancelling the payment
         Given I added product "PHP T-Shirt" to the cart
         And I am at the checkout addressing step

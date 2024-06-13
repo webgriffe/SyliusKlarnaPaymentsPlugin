@@ -21,6 +21,7 @@ return static function (ContainerConfigurator $containerConfigurator) {
             service('sylius.behat.page.shop.order.thank_you'),
             service('sylius.behat.page.shop.order.show'),
             service('sylius.repository.order'),
+            service('sylius.behat.page.shop.order.show'),
         ])
     ;
 };
