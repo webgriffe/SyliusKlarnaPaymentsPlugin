@@ -64,11 +64,12 @@ final class NotifyAction implements ActionInterface, GatewayAwareInterface
 
         $paymentDetails = PaymentDetails::createFromStoredPaymentDetails($storedPaymentDetails);
 
+        $oldHostedPaymentPage = $paymentDetails->getHostedPaymentPageStatus();
         $paymentDetails->setHostedPaymentPageStatus(HostedPaymentPageSessionStatus::tryFrom($requestParameters['session']['status']));
         $paymentDetails->setOrderId($requestParameters['session']['order_id'] ?? null);
         $paymentDetails->setKlarnaReference($requestParameters['session']['klarna_reference'] ?? null);
 
-        if ($paymentDetails->getPaymentSessionStatus() === null && $paymentDetails->getHostedPaymentPageStatus() === HostedPaymentPageSessionStatus::Completed) {
+        if ($oldHostedPaymentPage !== $paymentDetails->getHostedPaymentPageStatus()) {
             $readPaymentSession = new ReadPaymentSession($paymentDetails->getPaymentSessionId());
             $this->gateway->execute($readPaymentSession);
 
