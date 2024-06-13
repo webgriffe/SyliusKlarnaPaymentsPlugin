@@ -142,9 +142,14 @@ final class PaymentDetails
 
     public function isSuccessfully(): bool
     {
-        return $this->getPaymentSessionStatus() === PaymentSessionStatus::Complete;
+        return $this->getPaymentSessionStatus() === PaymentSessionStatus::Complete &&
+            $this->getHostedPaymentPageStatus() === HostedPaymentPageSessionStatus::Completed
+        ;
     }
 
+    /**
+     * @TODO
+     */
     public function isFailed(): bool
     {
         return in_array($this->getHostedPaymentPageStatus(), [
