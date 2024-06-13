@@ -9,6 +9,8 @@ use Webmozart\Assert\Assert;
 use Webmozart\Assert\InvalidArgumentException;
 
 /**
+ * @psalm-suppress TypeDoesNotContainType
+ *
  * @psalm-import-type StoredPaymentDetails from PaymentDetails
  */
 final class PaymentDetailsHelper

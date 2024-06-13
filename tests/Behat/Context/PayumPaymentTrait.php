@@ -35,7 +35,6 @@ trait PayumPaymentTrait
      */
     private function getCurrentPaymentSecurityTokens(PaymentInterface $payment): array
     {
-        /** @var PaymentSecurityTokenInterface[] $allPaymentTokens */
         $allPaymentTokens = $this->getPaymentTokenRepository()->findAll();
         $paymentSecurityTokens = array_filter($allPaymentTokens, static function (PaymentSecurityTokenInterface $token) use ($payment): bool {
             return $token->getDetails()->getId() === $payment->getId() &&

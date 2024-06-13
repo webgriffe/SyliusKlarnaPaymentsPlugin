@@ -34,10 +34,6 @@ class PaymentController extends AbstractController
 
     public const TOKEN_HASH_SESSION_KEY = 'webgriffe_klarna_token_hash';
 
-    /**
-     * @param OrderRepositoryInterface<OrderInterface> $orderRepository
-     * @param PaymentRepositoryInterface<PaymentInterface> $paymentRepository
-     */
     public function __construct(
         private readonly OrderRepositoryInterface $orderRepository,
         private readonly RequestStack $requestStack,

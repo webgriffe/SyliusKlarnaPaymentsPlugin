@@ -20,6 +20,8 @@ use Webgriffe\SyliusKlarnaPlugin\Model\PaymentDetails;
 use Webmozart\Assert\Assert;
 
 /**
+ * @psalm-suppress TypeDoesNotContainType
+ *
  * @psalm-import-type StoredPaymentDetails from PaymentDetails
  */
 final class CancelAction implements ActionInterface
@@ -42,9 +44,12 @@ final class CancelAction implements ActionInterface
         $payment = $request->getModel();
         Assert::isInstanceOf($payment, SyliusPaymentInterface::class);
 
+        /** @var string|int $paymentId */
+        $paymentId = $payment->getId();
+
         $this->logger->info(sprintf(
             'Start cancel action for Sylius payment with ID "%s".',
-            $payment->getId(),
+            $paymentId,
         ));
 
         $paymentDetails = $payment->getDetails();
@@ -53,7 +58,7 @@ final class CancelAction implements ActionInterface
         $this->logger->info('Redirecting the user to the Sylius Klarna Payments waiting page.');
 
         $session = $this->requestStack->getSession();
-        $session->set(PaymentController::PAYMENT_ID_SESSION_KEY, $payment->getId());
+        $session->set(PaymentController::PAYMENT_ID_SESSION_KEY, $paymentId);
         $cancelToken = $request->getToken();
         Assert::isInstanceOf($cancelToken, TokenInterface::class);
         $session->set(PaymentController::TOKEN_HASH_SESSION_KEY, $cancelToken->getHash());

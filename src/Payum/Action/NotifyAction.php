@@ -20,6 +20,9 @@ use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\ReadPaymentSession;
 use Webmozart\Assert\Assert;
 
 /**
+ * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress TypeDoesNotContainType
+ *
  * @psalm-import-type StoredPaymentDetails from PaymentDetails
  */
 final class NotifyAction implements ActionInterface, GatewayAwareInterface
@@ -43,9 +46,11 @@ final class NotifyAction implements ActionInterface, GatewayAwareInterface
         $payment = $request->getModel();
         Assert::isInstanceOf($payment, SyliusPaymentInterface::class);
 
+        /** @var string|int $paymentId */
+        $paymentId = $payment->getId();
         $this->logger->info(sprintf(
             'Start notify action for Sylius payment with ID "%s".',
-            $payment->getId(),
+            $paymentId,
         ));
 
         // This is needed to populate the http request with GET and POST params from current request
@@ -56,7 +61,7 @@ final class NotifyAction implements ActionInterface, GatewayAwareInterface
 
         $this->logger->info(sprintf(
             'Received Klarna notification for payment with ID "%s".',
-            $payment->getId(),
+            $paymentId,
         ), ['Request parameters' => $requestParameters]);
 
         $storedPaymentDetails = $payment->getDetails();

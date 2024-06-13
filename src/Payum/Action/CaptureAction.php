@@ -40,6 +40,7 @@ use Webmozart\Assert\Assert;
 
 /**
  * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress TypeDoesNotContainType
  *
  * @psalm-import-type StoredPaymentDetails from PaymentDetails
  */
@@ -74,9 +75,11 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         /** @var SyliusPaymentInterface $payment */
         $payment = $request->getModel();
 
+        /** @var string|int $paymentId */
+        $paymentId = $payment->getId();
         $this->logger->info(sprintf(
             'Start capture action for Sylius payment with ID "%s".',
-            $payment->getId(),
+            $paymentId,
         ));
 
         $captureToken = $request->getToken();
@@ -106,7 +109,7 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
             ));
 
             $session = $this->requestStack->getSession();
-            $session->set(PaymentController::PAYMENT_ID_SESSION_KEY, $payment->getId());
+            $session->set(PaymentController::PAYMENT_ID_SESSION_KEY, $paymentId);
             $session->set(PaymentController::TOKEN_HASH_SESSION_KEY, $captureToken->getHash());
 
             $order = $payment->getOrder();
@@ -166,10 +169,12 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         $paymentSession = $createPaymentSession->getPaymentSession();
         Assert::isInstanceOf($paymentSession, PaymentSession::class);
 
+        /** @var string|int $paymentId */
+        $paymentId = $payment->getId();
         $this->logger->info(sprintf(
             'Created Klarna Payment Session with ID "%s" for Sylius payment "%s".',
             $paymentSession->getSessionId(),
-            $payment->getId(),
+            $paymentId,
         ));
 
         return PaymentDetails::createFromPaymentSession($paymentSession);
