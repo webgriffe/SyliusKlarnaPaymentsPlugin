@@ -6,12 +6,14 @@ namespace Webgriffe\SyliusKlarnaPlugin\Converter;
 
 use LogicException;
 use Sylius\Component\Core\Model\AddressInterface;
+use Sylius\Component\Core\Model\AdjustmentInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\AcquiringChannel;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Intent;
+use Webgriffe\SyliusKlarnaPlugin\Client\Enum\OrderLineType;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Address;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Amount;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Customer;
@@ -109,6 +111,26 @@ final readonly class PaymentConverter implements PaymentConverterInterface
             $lines[] = $this->createOrderLineFromOrderItem($orderItem);
         }
 
+        $taxRate = 2200; #TODO
+        $totalAmount = $order->getShippingTotal();
+        $shippingTaxTotal = $totalAmount - (($totalAmount * 10000) / (10000 + $taxRate));
+
+        $lines[] = new OrderLine(
+            $order->getShipments()->first()?->getMethod()?->getName() ?? 'Shipping fee',
+            1,
+            $taxRate,
+            Amount::fromSyliusAmount($totalAmount),
+            Amount::fromSyliusAmount($order->getAdjustmentsTotalRecursively(AdjustmentInterface::ORDER_SHIPPING_PROMOTION_ADJUSTMENT)),
+            Amount::fromSyliusAmount((int) $shippingTaxTotal),
+            Amount::fromSyliusAmount($totalAmount),
+            null,
+            null,
+            null,
+            null,
+            null,
+            OrderLineType::ShippingFee,
+        );
+
         return $lines;
     }
 
@@ -117,7 +139,7 @@ final readonly class PaymentConverter implements PaymentConverterInterface
         return new OrderLine(
             (string) $orderItem->getProductName(),
             $orderItem->getQuantity(),
-            2200,
+            2200, #TODO
             Amount::fromSyliusAmount($orderItem->getTotal()),
             Amount::fromSyliusAmount(0),
             Amount::fromSyliusAmount($orderItem->getTaxTotal()),
@@ -127,7 +149,7 @@ final readonly class PaymentConverter implements PaymentConverterInterface
             null,
             'pcs',
             $orderItem->getProduct()?->getCode(),
-            'physical',
+            OrderLineType::Physical,
         );
     }
 

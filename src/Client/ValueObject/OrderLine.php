@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Webgriffe\SyliusKlarnaPlugin\Client\ValueObject;
 
 use JsonSerializable;
+use Webgriffe\SyliusKlarnaPlugin\Client\Enum\OrderLineType;
 
 final readonly class OrderLine implements JsonSerializable
 {
@@ -21,7 +22,7 @@ final readonly class OrderLine implements JsonSerializable
         private ?string $merchantData = null,
         private ?string $quantityUnit = null,
         private ?string $reference = null,
-        private ?string $type = null,
+        private ?OrderLineType $type = null,
     ) {
     }
 
@@ -85,7 +86,7 @@ final readonly class OrderLine implements JsonSerializable
         return $this->reference;
     }
 
-    public function getType(): ?string
+    public function getType(): ?OrderLineType
     {
         return $this->type;
     }
@@ -104,7 +105,7 @@ final readonly class OrderLine implements JsonSerializable
             'image_url' => $this->getImageUrl(),
             'merchant_data' => $this->getMerchantData(),
             'quantity_unit' => $this->getQuantityUnit(),
-            'type' => $this->getType(),
+            'type' => $this->getType()->value,
         ], static fn ($value) => $value !== null);
     }
 }
