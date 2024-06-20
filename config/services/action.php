@@ -35,6 +35,9 @@ return static function (ContainerConfigurator $containerConfigurator) {
 
     $services->set('webgriffe_sylius_klarna.payum.action.status', StatusAction::class)
         ->public()
+        ->args([
+            service('webgriffe_sylius_klarna.logger'),
+        ])
     ;
 
     $services->set('webgriffe_sylius_klarna.payum.action.cancel', CancelAction::class)

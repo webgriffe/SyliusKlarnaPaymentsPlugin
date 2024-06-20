@@ -147,17 +147,20 @@ final class PaymentDetails
         ;
     }
 
-    /**
-     * @TODO
-     */
     public function isFailed(): bool
     {
         return in_array($this->getHostedPaymentPageStatus(), [
-            HostedPaymentPageSessionStatus::Cancelled,
             HostedPaymentPageSessionStatus::Failed,
-            HostedPaymentPageSessionStatus::Back,
             HostedPaymentPageSessionStatus::Disabled,
             HostedPaymentPageSessionStatus::Error,
+        ], true);
+    }
+
+    public function isCanceled(): bool
+    {
+        return in_array($this->getHostedPaymentPageStatus(), [
+            HostedPaymentPageSessionStatus::Cancelled,
+            HostedPaymentPageSessionStatus::Back,
         ], true);
     }
 

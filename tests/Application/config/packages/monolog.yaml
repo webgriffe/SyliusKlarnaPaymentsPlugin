@@ -2,6 +2,6 @@ monolog:
     handlers:
         payum:
             type: stream
-            path: "%kernel.logs_dir%/payum.log"
+            path: "%kernel.logs_dir%/payum_%kernel.environment%.log"
             level: debug
             channels: ['payum']

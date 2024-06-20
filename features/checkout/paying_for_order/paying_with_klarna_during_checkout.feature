@@ -54,7 +54,10 @@ Feature: Paying with Klarna Payments during checkout
         And I proceeded with "Free" shipping method and "Klarna" payment
         When I confirm my order
         And I cancel the payment on Klarna
-        Then I should be notified that my payment has been cancelled
+        Then I should be on the waiting payment processing page
+        When Klarna notify the store about the cancelled payment
+        Then I should be redirected to the order page page
+        And I should be notified that my payment has been cancelled
         And I should be able to pay again
 
     @ui @javascript
@@ -66,6 +69,8 @@ Feature: Paying with Klarna Payments during checkout
         And I proceeded with "Free" shipping method and "Klarna" payment
         And I have confirmed order
         But I have cancelled Klarna payment
+        And Klarna notify the store about the cancelled payment
+        Then I should be redirected to the order page page
         When I try to pay again with Klarna
         And Klarna notify the store about the successful payment
         Then I should be redirected to the thank you page

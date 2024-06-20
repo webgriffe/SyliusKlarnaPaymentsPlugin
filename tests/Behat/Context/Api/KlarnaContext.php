@@ -15,7 +15,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
 use Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Context\PayumPaymentTrait;
 use Webgriffe\SyliusKlarnaPlugin\Client\Enum\HostedPaymentPageSessionStatus;
-use Webmozart\Assert\Assert;
 
 final class KlarnaContext implements Context
 {
@@ -69,6 +68,25 @@ final class KlarnaContext implements Context
             'session' => [
                 'session_id' => random_bytes(5),
                 'status' => HostedPaymentPageSessionStatus::Failed->value,
+                'updated_at' => (new DateTime())->format('Y-m-d H:i:s'),
+                'expires_at' => (new DateTime('+1 day'))->format('Y-m-d H:i:s'),
+            ],
+        ]);
+    }
+
+    /**
+     * @When /^Klarna notify the store about the cancelled payment$/
+     */
+    public function klarnaNotifyTheStoreAboutTheCancelledPayment(): void
+    {
+        $payment = $this->getCurrentPayment();
+        [$paymentCaptureSecurityToken, $paymentNotifySecurityToken] = $this->getCurrentPaymentSecurityTokens($payment);
+
+        $this->notifyPaymentState($paymentNotifySecurityToken, [
+            'event_id' => random_bytes(5),
+            'session' => [
+                'session_id' => random_bytes(5),
+                'status' => HostedPaymentPageSessionStatus::Cancelled->value,
                 'updated_at' => (new DateTime())->format('Y-m-d H:i:s'),
                 'expires_at' => (new DateTime('+1 day'))->format('Y-m-d H:i:s'),
             ],

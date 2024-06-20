@@ -18,7 +18,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
 use Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Context\PayumPaymentTrait;
 use Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Page\Shop\Payment\ProcessPageInterface;
-use Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Page\Shop\Payum\Capture\PayumCaptureDoPageInterface;
 use Webmozart\Assert\Assert;
 
 final class KlarnaContext implements Context
@@ -35,7 +34,6 @@ final class KlarnaContext implements Context
         private readonly PaymentRepositoryInterface $paymentRepository,
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly Session $session,
-        private readonly PayumCaptureDoPageInterface $payumCaptureDoPage,
         private readonly ProcessPageInterface $paymentProcessPage,
         private readonly ThankYouPageInterface $thankYouPage,
         private readonly ShowPageInterface $orderShowPage,
@@ -105,7 +103,7 @@ final class KlarnaContext implements Context
      */
     public function iShouldBeRedirectedToTheOrderPagePage(): void
     {
-        $this->payumCaptureDoPage->waitForRedirect();
+        $this->paymentProcessPage->waitForRedirect();
         $orders = $this->orderRepository->findAll();
         $order = reset($orders);
         Assert::isInstanceOf($order, OrderInterface::class);
