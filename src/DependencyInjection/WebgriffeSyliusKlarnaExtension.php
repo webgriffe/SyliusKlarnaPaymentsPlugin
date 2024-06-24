@@ -18,9 +18,12 @@ final class WebgriffeSyliusKlarnaExtension extends AbstractResourceExtension imp
     /** @psalm-suppress UnusedVariable */
     public function load(array $configs, ContainerBuilder $container): void
     {
+        $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
 
         $loader->load('services.php');
+
+        $this->addImageOptionsConverters($container, $config);
     }
 
     public function prepend(ContainerBuilder $container): void
@@ -43,5 +46,9 @@ final class WebgriffeSyliusKlarnaExtension extends AbstractResourceExtension imp
         return [
             'Sylius\Bundle\CoreBundle\Migrations',
         ];
+    }
+
+    private function addImageOptionsConverters(ContainerBuilder $container, array $config): void
+    {
     }
 }
