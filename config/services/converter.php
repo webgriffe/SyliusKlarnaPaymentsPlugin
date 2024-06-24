@@ -14,6 +14,9 @@ return static function (ContainerConfigurator $containerConfigurator) {
     $services->set('webgriffe_sylius_klarna.converter.payment', PaymentConverter::class)
         ->args([
             service('webgriffe_sylius_klarna.resolver.payment_country'),
+            service('translator'),
+            service('router'),
+            service('liip_imagine.cache.manager'),
         ])
     ;
 

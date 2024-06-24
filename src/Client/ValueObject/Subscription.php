@@ -32,10 +32,10 @@ final readonly class Subscription implements JsonSerializable
 
     public function jsonSerialize(): array
     {
-        return array_filter([
+        return [
             'name' => $this->getName(),
             'interval' => $this->getInterval(),
             'interval_count' => $this->getIntervalCount(),
-        ], static fn ($value) => $value !== null);
+        ];
     }
 }

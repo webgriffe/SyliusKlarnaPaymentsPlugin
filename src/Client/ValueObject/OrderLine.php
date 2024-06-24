@@ -118,7 +118,7 @@ final readonly class OrderLine implements JsonSerializable
             'total_amount' => $this->getTotalAmount()->getISO4217Amount(),
             'total_discount_amount' => $this->getTotalDiscountAmount()->getISO4217Amount(),
             'total_tax_amount' => $this->getTotalTaxAmount()->getISO4217Amount(),
-            'type' => $this->getType()->value,
+            'type' => $this->getType()?->value,
             'unit_price' => $this->getUnitPrice()->getISO4217Amount(),
             'subscription' => $this->getSubscription(),
         ], static fn ($value) => $value !== null);
