@@ -54,6 +54,9 @@ final readonly class Payment implements JsonSerializable
         return $this->orderAmount;
     }
 
+    /**
+     * @return OrderLine[]
+     */
     public function getOrderLines(): array
     {
         return $this->orderLines;
@@ -138,25 +141,25 @@ final readonly class Payment implements JsonSerializable
     public function jsonSerialize(): array
     {
         $payload = [
-            'locale' => $this->getLocale()->value,
-            'purchase_country' => $this->getPaymentCountry()->getCountry()->value,
-            'purchase_currency' => $this->getPaymentCountry()->getCurrency()->value,
-            'order_amount' => $this->getOrderAmount()->getISO4217Amount(),
-            'order_lines' => $this->getOrderLines(),
-            'intent' => $this->getIntent()->value,
-            'merchant_urls' => $this->getMerchantUrls(),
             'acquiring_channel' => $this->getAcquiringChannel()->value,
-            'customer' => $this->getCustomer(),
+            'attachment' => $this->getAttachment(),
             'billing_address' => $this->getBillingAddress(),
-            'shipping_address' => $this->getShippingAddress(),
+            'custom_payment_method_ids' => $this->getCustomPaymentMethodIds(),
+            'customer' => $this->getCustomer(),
+            'design' => $this->getDesign(),
+            'locale' => $this->getLocale()->value,
+            'merchant_data' => $this->getMerchantData(),
             'merchant_reference1' => $this->getMerchantReference1(),
             'merchant_reference2' => $this->getMerchantReference2(),
-            'order_tax_amount' => $this->getOrderTaxAmount()?->getISO4217Amount(),
-            'merchant_data' => $this->getMerchantData(),
-            'attachment' => $this->getAttachment(),
-            'custom_payment_method_ids' => $this->getCustomPaymentMethodIds(),
-            'design' => $this->getDesign(),
+            'merchant_urls' => $this->getMerchantUrls(),
             'options' => $this->getOptions(),
+            'order_amount' => $this->getOrderAmount()->getISO4217Amount(),
+            'order_lines' => $this->getOrderLines(),
+            'order_tax_amount' => $this->getOrderTaxAmount()?->getISO4217Amount(),
+            'purchase_country' => $this->getPaymentCountry()->getCountry()->value,
+            'purchase_currency' => $this->getPaymentCountry()->getCurrency()->value,
+            'shipping_address' => $this->getShippingAddress(),
+            'intent' => $this->getIntent()->value,
         ];
 
         return array_filter($payload, static fn ($value) => $value !== null);

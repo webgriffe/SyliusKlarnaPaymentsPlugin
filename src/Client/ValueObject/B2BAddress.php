@@ -49,19 +49,19 @@ final readonly class B2BAddress extends Address
     public function jsonSerialize(): array
     {
         return array_filter([
+            'attention' => $this->getAttention(),
             'city' => $this->getCity(),
             'country' => $this->getCountry(),
             'email' => $this->getEmail(),
             'family_name' => $this->getFamilyName(),
             'given_name' => $this->getGivenName(),
+            'organization_name' => $this->getOrganizationName(),
             'phone' => $this->getPhone(),
             'postal_code' => $this->getPostalCode(),
             'region' => $this->getRegion(),
             'street_address' => $this->getStreetAddress(),
             'street_address2' => $this->getStreetAddress2(),
             'title' => $this->getTitle(),
-            'attention' => $this->getAttention(),
-            'organization_name' => $this->getOrganizationName(),
         ], static fn ($value) => $value !== null);
     }
 }

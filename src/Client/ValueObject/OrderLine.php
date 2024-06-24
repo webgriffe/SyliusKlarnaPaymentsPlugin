@@ -23,6 +23,8 @@ final readonly class OrderLine implements JsonSerializable
         private ?string $quantityUnit = null,
         private ?string $reference = null,
         private ?OrderLineType $type = null,
+        private ?ProductIdentifiers $productIdentifiers = null,
+        private ?Subscription $subscription = null,
     ) {
     }
 
@@ -91,21 +93,34 @@ final readonly class OrderLine implements JsonSerializable
         return $this->type;
     }
 
+    public function getProductIdentifiers(): ?ProductIdentifiers
+    {
+        return $this->productIdentifiers;
+    }
+
+    public function getSubscription(): ?Subscription
+    {
+        return $this->subscription;
+    }
+
     public function jsonSerialize(): array
     {
         return array_filter([
+            'image_url' => $this->getImageUrl(),
+            'merchant_data' => $this->getMerchantData(),
             'name' => $this->getName(),
+            'product_identifiers' => $this->getProductIdentifiers(),
+            'product_url' => $this->getProductUrl(),
             'quantity' => $this->getQuantity(),
+            'quantity_unit' => $this->getQuantityUnit(),
+            'reference' => $this->getReference(),
             'tax_rate' => $this->getTaxRate(),
             'total_amount' => $this->getTotalAmount()->getISO4217Amount(),
             'total_discount_amount' => $this->getTotalDiscountAmount()->getISO4217Amount(),
             'total_tax_amount' => $this->getTotalTaxAmount()->getISO4217Amount(),
-            'unit_price' => $this->getUnitPrice()->getISO4217Amount(),
-            'product_url' => $this->getProductUrl(),
-            'image_url' => $this->getImageUrl(),
-            'merchant_data' => $this->getMerchantData(),
-            'quantity_unit' => $this->getQuantityUnit(),
             'type' => $this->getType()->value,
+            'unit_price' => $this->getUnitPrice()->getISO4217Amount(),
+            'subscription' => $this->getSubscription(),
         ], static fn ($value) => $value !== null);
     }
 }
