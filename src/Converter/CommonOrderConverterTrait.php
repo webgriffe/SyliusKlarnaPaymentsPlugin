@@ -193,7 +193,9 @@ trait CommonOrderConverterTrait
         $taxRate = 0;
         $taxAdjustment = $order->getAdjustmentsRecursively(AdjustmentInterface::TAX_ADJUSTMENT)->first();
         if ($taxAdjustment instanceof AdjustmentInterface) {
-            $taxRate = (int) ($taxAdjustment->getDetails()['taxRateAmount'] * 10000);
+            /** @var float $taxRateAmount */
+            $taxRateAmount = $taxAdjustment->getDetails()['taxRateAmount'];
+            $taxRate = (int) ($taxRateAmount * 10000);
         }
 
         return $taxRate;
@@ -224,9 +226,9 @@ trait CommonOrderConverterTrait
             return null;
         }
         foreach ($mainTaxon->getAncestors() as $taxon) {
-            $categoryPath = $taxon->getName() . ' > ' . $categoryPath;
+            $categoryPath = (string) $taxon->getName() . ' > ' . $categoryPath;
         }
 
-        return $categoryPath . $mainTaxon->getName();
+        return $categoryPath . (string) $mainTaxon->getName();
     }
 }

@@ -60,7 +60,7 @@ final readonly class OrderConverter implements OrderConverterInterface
             '#' . (string) $order->getNumber(),
             null,
             $this->getCustomer($order),
-            sprintf('#%s@%s', $order->getId(), $payment->getId()),
+            sprintf('#%s@%s', (string) $order->getId(), (string) $payment->getId()),
         );
     }
 

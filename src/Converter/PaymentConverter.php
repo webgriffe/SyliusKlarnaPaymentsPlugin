@@ -78,7 +78,7 @@ final readonly class PaymentConverter implements PaymentConverterInterface
             '#' . (string) $order->getNumber(),
             null,
             Amount::fromSyliusAmount($order->getTaxTotal()),
-            sprintf('#%s@%s', $order->getId(), $payment->getId()),
+            sprintf('#%s@%s', (string) $order->getId(), (string) $payment->getId()),
         );
     }
 
