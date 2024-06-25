@@ -10,15 +10,17 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Webmozart\Assert\Assert;
 
 final class WebgriffeSyliusKlarnaExtension extends AbstractResourceExtension implements PrependExtensionInterface
 {
     use PrependDoctrineMigrationsTrait;
 
-    /** @psalm-suppress UnusedVariable */
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
+        $configuration = $this->getConfiguration([], $container);
+        Assert::notNull($configuration);
+        $config = $this->processConfiguration($configuration, $configs);
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
 
         $loader->load('services.php');

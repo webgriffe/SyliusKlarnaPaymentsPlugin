@@ -4,24 +4,26 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusKlarnaPlugin\Converter;
 
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use LogicException;
-use Sylius\Component\Core\Model\AddressInterface;
 use Sylius\Component\Core\Model\OrderInterface;
-use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
-use Sylius\Component\Customer\Model\CustomerInterface as SyliusCustomerInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Address;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Amount;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Order;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\OrderLine;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payments\MerchantUrls;
 use Webgriffe\SyliusKlarnaPlugin\Resolver\PaymentCountryResolverInterface;
 use Webmozart\Assert\Assert;
 
 final readonly class OrderConverter implements OrderConverterInterface
 {
+    use CommonOrderConverterTrait;
+
     public function __construct(
         private PaymentCountryResolverInterface $paymentCountryResolver,
+        private TranslatorInterface $translator,
+        private UrlGeneratorInterface $urlGenerator,
+        private CacheManager $cacheManager,
     ) {
     }
 
@@ -47,72 +49,33 @@ final readonly class OrderConverter implements OrderConverterInterface
 
         return new Order(
             $paymentCountry,
-            $this->getAddress($order->getBillingAddress(), $order->getCustomer()),
-            $this->getAddress($order->getShippingAddress(), $order->getCustomer()),
             Amount::fromSyliusAmount($order->getTotal()),
             Amount::fromSyliusAmount($order->getTaxTotal()),
             $this->getOrderLines($order),
-            new MerchantUrls(
-                '',
-                '',
-            ),
-            (string) $order->getNumber(),
+            $paymentCountry->matchUserLocale($order->getLocaleCode()),
+            $this->getAddress($order->getBillingAddress(), $order->getCustomer()),
+            $this->getAddress($order->getShippingAddress(), $order->getCustomer()),
+            false,
+            null,
+            '#' . (string) $order->getNumber(),
+            null,
+            $this->getCustomer($order),
+            sprintf('#%s@%s', $order->getId(), $payment->getId()),
         );
     }
 
-    /**
-     * @return OrderLine[]
-     */
-    private function getOrderLines(OrderInterface $order): array
+    private function getUrlGenerator(): UrlGeneratorInterface
     {
-        $lines = [];
-        foreach ($order->getItems() as $orderItem) {
-            $lines[] = $this->createOrderLineFromOrderItem($orderItem);
-        }
-
-        return $lines;
+        return $this->urlGenerator;
     }
 
-    private function createOrderLineFromOrderItem(OrderItemInterface $orderItem): OrderLine
+    private function getCacheManager(): CacheManager
     {
-        return new OrderLine(
-            (string) $orderItem->getProductName(),
-            $orderItem->getQuantity(),
-            2200,
-            Amount::fromSyliusAmount($orderItem->getTotal()),
-            Amount::fromSyliusAmount(0),
-            Amount::fromSyliusAmount($orderItem->getTaxTotal()),
-            Amount::fromSyliusAmount($orderItem->getUnitPrice()),
-            null,
-            null,
-            null,
-            'pcs',
-            $orderItem->getProduct()?->getCode(),
-            'physical',
-        );
+        return $this->cacheManager;
     }
 
-    private function getAddress(?AddressInterface $address, ?SyliusCustomerInterface $customer): Address
+    private function getTranslator(): TranslatorInterface
     {
-        Assert::notNull($address);
-
-        $region = $address->getProvinceCode();
-        if ($region !== null && str_contains($region, '-')) {
-            $region = explode('-', $region)[1];
-        }
-
-        return new Address(
-            $address->getCity(),
-            $address->getCountryCode(),
-            $customer?->getEmail(),
-            $address->getLastName(),
-            $address->getFirstName(),
-            $address->getPhoneNumber(),
-            $address->getPostcode(),
-            $region,
-            $address->getStreet(),
-            null,
-            null,
-        );
+        return $this->translator;
     }
 }
