@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Webgriffe\SyliusKlarnaPlugin\Resolver;
 
+use InvalidArgumentException;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\PaymentCountry;
 
@@ -16,5 +17,8 @@ interface PaymentCountryResolverInterface
      */
     public function getDefaultDataMapping(): array;
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function resolve(PaymentInterface $payment): PaymentCountry;
 }
