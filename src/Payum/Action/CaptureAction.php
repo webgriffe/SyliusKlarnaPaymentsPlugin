@@ -116,8 +116,9 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
             Assert::isInstanceOf($order, OrderInterface::class);
 
             throw new HttpRedirect(
-                $this->router->generate('webgriffe_sylius_klarna_plugin.payment.process', [
+                $this->router->generate('webgriffe_sylius_klarna_plugin_payment_process', [
                     'tokenValue' => $order->getTokenValue(),
+                    '_locale' => $order->getLocaleCode(),
                 ]),
             );
         }

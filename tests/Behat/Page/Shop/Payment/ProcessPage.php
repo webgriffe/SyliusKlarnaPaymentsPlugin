@@ -11,7 +11,7 @@ final class ProcessPage extends SymfonyPage implements ProcessPageInterface
 {
     public function getRouteName(): string
     {
-        return 'webgriffe_sylius_klarna_plugin.payment.process';
+        return 'webgriffe_sylius_klarna_plugin_payment_process';
     }
 
     public function waitForRedirect(): void

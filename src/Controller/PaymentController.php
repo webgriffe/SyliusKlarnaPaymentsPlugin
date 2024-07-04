@@ -84,7 +84,7 @@ class PaymentController extends AbstractController
         }
         $paymentDetails = PaymentDetails::createFromStoredPaymentDetails($storedPaymentDetails);
         $paymentStatusUrl = $this->router->generate(
-            'webgriffe_sylius_klarna_plugin.payment.status',
+            'webgriffe_sylius_klarna_plugin_payment_status',
             ['paymentId' => $syliusPayment->getId()],
             UrlGeneratorInterface::ABSOLUTE_URL,
         );
