@@ -24,6 +24,8 @@ final readonly class OrderConverter implements OrderConverterInterface
         private TranslatorInterface $translator,
         private UrlGeneratorInterface $urlGenerator,
         private CacheManager $cacheManager,
+        private string $mainImageType,
+        private string $imageFilter,
     ) {
     }
 
@@ -77,5 +79,20 @@ final readonly class OrderConverter implements OrderConverterInterface
     private function getTranslator(): TranslatorInterface
     {
         return $this->translator;
+    }
+
+    private function getSchema(): string
+    {
+        return 'https';
+    }
+
+    private function getImageFilter(): string
+    {
+        return $this->imageFilter;
+    }
+
+    private function getMainImageType(): string
+    {
+        return $this->mainImageType;
     }
 }

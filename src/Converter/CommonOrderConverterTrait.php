@@ -32,6 +32,12 @@ trait CommonOrderConverterTrait
 
     abstract private function getTranslator(): TranslatorInterface;
 
+    abstract private function getSchema(): string;
+
+    abstract private function getImageFilter(): string;
+
+    abstract private function getMainImageType(): string;
+
     private function getCustomer(OrderInterface $order): ?Customer
     {
         $customer = $order->getCustomer();
@@ -106,7 +112,7 @@ trait CommonOrderConverterTrait
                 '',
                 'GET',
                 $hostname,
-                'https',
+                $this->getSchema(),
             ));
         }
         $slug = $orderItem->getProduct()?->getSlug();
@@ -123,7 +129,7 @@ trait CommonOrderConverterTrait
         if ($productImagePath !== null) {
             $imageUrl = $this->getCacheManager()->getBrowserPath(
                 $productImagePath,
-                'sylius_shop_product_thumbnail',
+                $this->getImageFilter(),
             );
         }
         $this->getUrlGenerator()->setContext($previousContext);
@@ -206,7 +212,7 @@ trait CommonOrderConverterTrait
         if ($product === null) {
             return null;
         }
-        $images = $product->getImagesByType('main_image');
+        $images = $product->getImagesByType($this->getMainImageType());
         foreach ($images as $image) {
             return $image->getPath();
         }

@@ -25,7 +25,7 @@ final class WebgriffeSyliusKlarnaExtension extends AbstractResourceExtension imp
 
         $loader->load('services.php');
 
-        $this->addImageOptionsConverters($container, $config);
+        $this->addImageOptionsOnConverters($container, $config);
     }
 
     public function prepend(ContainerBuilder $container): void
@@ -50,7 +50,14 @@ final class WebgriffeSyliusKlarnaExtension extends AbstractResourceExtension imp
         ];
     }
 
-    private function addImageOptionsConverters(ContainerBuilder $container, array $config): void
+    private function addImageOptionsOnConverters(ContainerBuilder $container, array $config): void
     {
+        $definition = $container->getDefinition('webgriffe_sylius_klarna.converter.order');
+        $definition->setArgument('$mainImageType', $config['product_images']['type']);
+        $definition->setArgument('$imageFilter', $config['product_images']['filter']);
+
+        $definition = $container->getDefinition('webgriffe_sylius_klarna.converter.payment');
+        $definition->setArgument('$mainImageType', $config['product_images']['type']);
+        $definition->setArgument('$imageFilter', $config['product_images']['filter']);
     }
 }
