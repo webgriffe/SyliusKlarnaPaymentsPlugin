@@ -6,7 +6,7 @@ webgriffe_sylius_klarna:
         return_to_klarna_checkout: '<a href="{redirectUrl}">Cliquez ici si vous souhaitez revenir à la caisse Klarna pour finaliser votre paiement.</a>'
     form:
         gateway_configuration:
-            merchant_key: 'Clé du commerçant'
+            username: 'Nom d''utilisateur'
+            password: 'Mot de passe'
+            server_region: 'Région du serveur'
             sandbox: 'Mode bac à sable'
-            allowed_terms: 'Termes autorisés'
-            allowed_terms_help: 'Vous pouvez sélectionner un ou plusieurs termes à proposer au client, si vous n''en sélectionnez aucun, tous les termes disponibles par défaut sur votre compte seront proposés.'

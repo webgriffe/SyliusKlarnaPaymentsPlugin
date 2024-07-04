@@ -6,7 +6,7 @@ webgriffe_sylius_klarna:
         return_to_klarna_checkout: '<a href="{redirectUrl}">Clicca qui se vuoi tornare al checkout di Klarna per ultimare il tuo pagamento.</a>'
     form:
         gateway_configuration:
-            merchant_key: 'Chiave del commerciante'
+            username: 'Nome utente'
+            password: 'Password'
+            server_region: 'Regione del server'
             sandbox: 'Modalità Sandbox'
-            allowed_terms: 'Rate ammesse'
-            allowed_terms_help: 'Puoi selezionare una o più rate da proporre al cliente, se non ne selezioni nessuna verranno proposte tutte le rate disponibili di default sul tuo account.'

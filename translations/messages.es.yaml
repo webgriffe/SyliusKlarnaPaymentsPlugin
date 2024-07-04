@@ -6,7 +6,7 @@ webgriffe_sylius_klarna:
         return_to_klarna_checkout: '<a href="{redirectUrl}">Haga clic aquí si desea volver al pago de Klarna para completar su pago.</a>'
     form:
         gateway_configuration:
-            merchant_key: 'Clave del comerciante'
+            username: 'Nombre de usuario'
+            password: 'Contraseña'
+            server_region: 'Región del servidor'
             sandbox: 'Modo de prueba'
-            allowed_terms: 'Plazos permitidos'
-            allowed_terms_help: 'Puede seleccionar uno o más plazos para ofrecer al cliente, si no selecciona ninguno, se ofrecerán todos los plazos disponibles por defecto en su cuenta.'

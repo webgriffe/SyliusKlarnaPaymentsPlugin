@@ -6,7 +6,7 @@ webgriffe_sylius_klarna:
         return_to_klarna_checkout: '<a href="{redirectUrl}">Click here if you want to return to Klarna checkout to complete your payment.</a>'
     form:
         gateway_configuration:
-            merchant_key: 'Merchant key'
-            sandbox: 'Sandbox mode'
-            allowed_terms: 'Allowed terms'
-            allowed_terms_help: 'You can select one or more terms to offer to the customer, if you do not select any, all the terms available by default on your account will be offered.'
+            username: 'Username'
+            password: 'Password'
+            server_region: 'Server Region'
+            sandbox: 'Sandbox Mode'

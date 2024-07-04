@@ -41,14 +41,14 @@ final readonly class PaymentConverter implements PaymentConverterInterface
         Assert::isInstanceOf($order, OrderInterface::class);
         $billingAddress = $order->getBillingAddress();
         $purchaseCountry = $billingAddress?->getCountryCode();
-        Assert::notNull($purchaseCountry, 'Purchase country is required to create a payment on Klarna');
+        Assert::notNull($purchaseCountry, 'Purchase country is required to create a payment on Klarna.');
         $purchaseCurrency = $order->getCurrencyCode();
-        Assert::notNull($purchaseCurrency, 'Purchase currency is required to create a payment on Klarna');
+        Assert::notNull($purchaseCurrency, 'Purchase currency is required to create a payment on Klarna.');
         $paymentCountry = $this->paymentCountryResolver->resolve($payment);
         if ($purchaseCurrency !== $paymentCountry->getCurrency()->value) {
             throw new LogicException(sprintf(
                 'Attention! The order currency is "%s", but for the country "%s" Klarna only supports currency
-                "%s". Please, change the channel configuration or implement a way to handle currencies change',
+                "%s". Please, change the channel configuration or implement a way to handle currencies change.',
                 $purchaseCurrency,
                 $purchaseCountry,
                 $paymentCountry->getCurrency()->value,
