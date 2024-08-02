@@ -20,39 +20,25 @@
    
    Normally, the plugin is automatically added to the `config/bundles.php` file by the `composer require` command. If it is not, you have to add it manually.
 
-3. Import the routes needed for cancelling the payments. Add the following to your config/routes.yaml file:
+3. Create a new file config/packages/webgriffe_sylius_klarna_plugin.yaml:
+   ```yaml
+   imports:
+       - { resource: "@WebgriffeSyliusKlarnaPlugin/config/config.php" }
+    
+   webgriffe_sylius_klarna:
+       product_images:
+       type: 'main' # Type of the product image to send to Klarna. If none is specified or the type does not exists on current product then the first image will be used.
+       filter: 'sylius_medium' # Liip filter to apply to the image. If none is specified then the original image will be used.
+   ```
+
+4. Import the routes needed for cancelling the payments. Add the following to your config/routes.yaml file:
    ```yaml
    webgriffe_sylius_klarna_plugin:
        resource: "@WebgriffeSyliusKlarnaPlugin/config/shop_routing.php"
    ```
    **NB:** you should avoid to have any param prefix in your routes, otherwise the plugin won't work properly.
 
-4. Add the WebhookToken entity. Create a new file `src/Entity/Payment/WebhookToken.php` with the following content:
-   ```php
-    <?php
-
-    declare(strict_types=1);
-
-    namespace App\Entity\Payment;
-
-    use Doctrine\ORM\Mapping as ORM;
-    use Webgriffe\SyliusKlarnaPlugin\Entity\WebhookToken as BaseWebhookToken;
-    
-    /**
-     * @ORM\Entity
-     * @ORM\Table(name="webgriffe_sylius_pagolight_webhook_token")
-     */
-    class WebhookToken extends BaseWebhookToken
-    {
-    }
-    ```
 5. Run:
-    ```bash
-    php bin/console doctrine:migrations:diff
-    php bin/console doctrine:migrations:migrate
-    ```
-
-6. Run:
     ```bash
     php bin/console sylius:install:assets
    ```
@@ -63,7 +49,7 @@
         './vendor/webgriffe/sylius-klarna-plugin/public/poll_payment.js'
     )
     ```
-   And then override the template `WebgriffeSyliusKlarnaPlugin/after_pay.html.twig` to include the entry:
+   And then override the template `WebgriffeSyliusKlarnaPlugin/Process/index.html.twig` to include the entry:
     ```twig
     {% block javascripts %}
         {{ parent() }}
