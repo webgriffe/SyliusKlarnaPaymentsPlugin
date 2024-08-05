@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Webmozart\Assert\Assert;
 
-final class WebgriffeSyliusKlarnaExtension extends AbstractResourceExtension implements PrependExtensionInterface
+final class WebgriffeSyliusKlarnaPaymentsExtension extends AbstractResourceExtension implements PrependExtensionInterface
 {
     use PrependDoctrineMigrationsTrait;
 
@@ -40,7 +40,7 @@ final class WebgriffeSyliusKlarnaExtension extends AbstractResourceExtension imp
 
     protected function getMigrationsDirectory(): string
     {
-        return '@WebgriffeSyliusKlarnaPlugin/migrations';
+        return '@WebgriffeSyliusKlarnaPaymentsPlugin/migrations';
     }
 
     protected function getNamespacesOfMigrationsExecutedBefore(): array
@@ -52,11 +52,11 @@ final class WebgriffeSyliusKlarnaExtension extends AbstractResourceExtension imp
 
     private function addImageOptionsOnConverters(ContainerBuilder $container, array $config): void
     {
-        $definition = $container->getDefinition('webgriffe_sylius_klarna.converter.order');
+        $definition = $container->getDefinition('webgriffe_sylius_klarna_payments.converter.order');
         $definition->setArgument('$mainImageType', $config['product_images']['type']);
         $definition->setArgument('$imageFilter', $config['product_images']['filter']);
 
-        $definition = $container->getDefinition('webgriffe_sylius_klarna.converter.payment');
+        $definition = $container->getDefinition('webgriffe_sylius_klarna_payments.converter.payment');
         $definition->setArgument('$mainImageType', $config['product_images']['type']);
         $definition->setArgument('$imageFilter', $config['product_images']['filter']);
     }

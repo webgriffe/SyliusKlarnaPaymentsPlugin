@@ -11,7 +11,7 @@ final class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('webgriffe_sylius_klarna_plugin');
+        $treeBuilder = new TreeBuilder('webgriffe_sylius_klarna_payments_plugin');
         $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
