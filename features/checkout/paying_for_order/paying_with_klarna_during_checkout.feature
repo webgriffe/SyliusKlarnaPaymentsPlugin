@@ -41,7 +41,7 @@ Feature: Paying with Klarna Payments during checkout
         And I complete the payment on Klarna
         Then I should be on the waiting payment processing page
         When Klarna notify the store about the failed payment
-        Then I should be redirected to the order page page
+        Then I should be redirected to the order page
         And I should be notified that my payment is failed
         And I should be able to pay again
 
@@ -56,7 +56,7 @@ Feature: Paying with Klarna Payments during checkout
         And I cancel the payment on Klarna
         Then I should be on the waiting payment processing page
         When Klarna notify the store about the cancelled payment
-        Then I should be redirected to the order page page
+        Then I should be redirected to the order page
         And I should be notified that my payment has been cancelled
         And I should be able to pay again
 
@@ -70,7 +70,7 @@ Feature: Paying with Klarna Payments during checkout
         And I have confirmed order
         But I have cancelled Klarna payment
         And Klarna notify the store about the cancelled payment
-        Then I should be redirected to the order page page
+        Then I should be redirected to the order page
         When I try to pay again with Klarna
         And Klarna notify the store about the successful payment
         Then I should be redirected to the thank you page

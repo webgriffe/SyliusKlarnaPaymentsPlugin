@@ -99,9 +99,9 @@ final class KlarnaContext implements Context
     }
 
     /**
-     * @Then /^I should be redirected to the order page page$/
+     * @Then /^I should be redirected to the order page$/
      */
-    public function iShouldBeRedirectedToTheOrderPagePage(): void
+    public function iShouldBeRedirectedToTheOrderPage(): void
     {
         $this->paymentProcessPage->waitForRedirect();
         $orders = $this->orderRepository->findAll();
