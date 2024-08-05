@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Payum;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Payum;
 
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\ServerRegion;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\ServerRegion;
 
 final class KlarnaPaymentsApi
 {

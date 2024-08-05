@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Resolver;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Resolver;
 
 use InvalidArgumentException;
 use Sylius\Component\Core\Model\AddressInterface;
@@ -13,7 +13,7 @@ use Sylius\Component\Core\Model\PaymentMethodInterface;
 use Sylius\Component\Core\Repository\PaymentMethodRepositoryInterface;
 use Sylius\Component\Payment\Model\PaymentInterface as BasePaymentInterface;
 use Sylius\Component\Payment\Resolver\PaymentMethodsResolverInterface;
-use Webgriffe\SyliusKlarnaPlugin\Payum\KlarnaPaymentsApi;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\KlarnaPaymentsApi;
 use Webmozart\Assert\Assert;
 
 final readonly class KlarnaPaymentMethodsResolver implements PaymentMethodsResolverInterface

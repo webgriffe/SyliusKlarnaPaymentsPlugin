@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client\Enum;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum;
 
 /**
  * See section on url https://docs.klarna.com/hosted-payment-page/get-started/accept-klarna-payments-using-hosted-payment-page/#:~:text=Payment%20Methods%20and%20Categories

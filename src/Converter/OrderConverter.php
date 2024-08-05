@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Converter;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Converter;
 
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use LogicException;
@@ -10,9 +10,9 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Amount;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Order;
-use Webgriffe\SyliusKlarnaPlugin\Resolver\PaymentCountryResolverInterface;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Amount;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Order;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Resolver\PaymentCountryResolverInterface;
 use Webmozart\Assert\Assert;
 
 final readonly class OrderConverter implements OrderConverterInterface

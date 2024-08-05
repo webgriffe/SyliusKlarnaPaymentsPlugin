@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client;
 
 use DateTimeImmutable;
 use GuzzleHttp\ClientInterface as GuzzleHttpClientInterface;
@@ -11,31 +11,31 @@ use GuzzleHttp\Psr7\ServerRequest;
 use const JSON_THROW_ON_ERROR;
 use JsonException;
 use Psr\Log\LoggerInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\AcquiringChannel;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\HostedPaymentPageSessionStatus;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Intent;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\OrderStatus;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PaymentSessionStatus;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\ServerRegion;
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\ClientException;
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionCreateFailedException;
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionReadFailedException;
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\OrderCreateFailedException;
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\OrderReadFailedException;
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionCreateFailedException;
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionReadFailedException;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Order;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\AuthorizedPaymentMethod;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\DistributionModule;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSessionDetails;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\Order as OrderResponse;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\OrderDetails;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSessionDetails;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\AcquiringChannel;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\HostedPaymentPageSessionStatus;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\Intent;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\OrderStatus;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\PaymentSessionStatus;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\ServerRegion;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception\ClientException;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception\HostedPaymentPageSessionCreateFailedException;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception\HostedPaymentPageSessionReadFailedException;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception\OrderCreateFailedException;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception\OrderReadFailedException;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception\PaymentSessionCreateFailedException;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception\PaymentSessionReadFailedException;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\ApiContext;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\HostedPaymentPage;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Order;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Payment;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\AuthorizedPaymentMethod;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\DistributionModule;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\HostedPaymentPageSessionDetails;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\Order as OrderResponse;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\OrderDetails;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\PaymentSession;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\PaymentSessionDetails;
 
 final readonly class Client implements ClientInterface
 {

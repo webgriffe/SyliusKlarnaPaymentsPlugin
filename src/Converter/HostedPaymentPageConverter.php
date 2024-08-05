@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Converter;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Converter;
 
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PlaceOrderMode;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PurchaseType;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage\MerchantUrls;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\PlaceOrderMode;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\PurchaseType;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\HostedPaymentPage;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\HostedPaymentPage\MerchantUrls;
 
 final class HostedPaymentPageConverter implements HostedPaymentPageConverterInterface
 {

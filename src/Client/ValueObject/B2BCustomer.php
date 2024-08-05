@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client\ValueObject;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject;
 
 use DateTimeInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\OrganizationEntityType;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\OrganizationEntityType;
 
 final readonly class B2BCustomer extends Customer
 {

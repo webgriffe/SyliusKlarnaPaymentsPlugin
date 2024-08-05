@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Payum\Action;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Action;
 
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
-use Webgriffe\SyliusKlarnaPlugin\Converter\HostedPaymentPageConverterInterface;
-use Webgriffe\SyliusKlarnaPlugin\Payum\Request\ConvertSyliusPaymentToKlarnaHostedPaymentPage;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Converter\HostedPaymentPageConverterInterface;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Request\ConvertSyliusPaymentToKlarnaHostedPaymentPage;
 use Webmozart\Assert\Assert;
 
 final readonly class ConvertSyliusPaymentToKlarnaHostedPaymentPageAction implements ActionInterface

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client\ValueObject;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject;
 
 final readonly class Amount
 {

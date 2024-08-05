@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Request\Api;
 
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Payment;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\PaymentSession;
 
 final class CreatePaymentSession
 {

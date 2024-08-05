@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client\Exception;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception;
 
 use Throwable;
 

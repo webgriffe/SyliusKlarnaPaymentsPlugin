@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response;
 
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\OrderStatus;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\OrderStatus;
 
 final readonly class OrderDetails
 {

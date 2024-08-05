@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client\ValueObject;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject;
 
 use JsonSerializable;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\AcquiringChannel;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Intent;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Locale;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payments\MerchantUrls;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\AcquiringChannel;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\Intent;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\Locale;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Payments\MerchantUrls;
 
 final readonly class Payment implements JsonSerializable
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Resolver;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Resolver;
 
 use InvalidArgumentException;
 use Sylius\Component\Core\Model\PaymentInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\PaymentCountry;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\PaymentCountry;
 
 interface PaymentCountryResolverInterface
 {

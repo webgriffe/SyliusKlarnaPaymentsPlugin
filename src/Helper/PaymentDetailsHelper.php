@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Helper;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Helper;
 
-use Webgriffe\SyliusKlarnaPlugin\Model\PaymentDetails;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Model\PaymentDetails;
 use Webmozart\Assert\Assert;
 use Webmozart\Assert\InvalidArgumentException;
 

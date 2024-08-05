@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Context;
+namespace Tests\Webgriffe\SyliusKlarnaPaymentsPlugin\Behat\Context;
 
 use Sylius\Bundle\PayumBundle\Model\PaymentSecurityTokenInterface;
 use Sylius\Component\Core\Model\PaymentInterface;

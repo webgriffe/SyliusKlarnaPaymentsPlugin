@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client;
 
 final class Config
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Converter;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Converter;
 
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use LogicException;
@@ -10,12 +10,12 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\AcquiringChannel;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Intent;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Amount;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payments\MerchantUrls;
-use Webgriffe\SyliusKlarnaPlugin\Resolver\PaymentCountryResolverInterface;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\AcquiringChannel;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\Intent;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Amount;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Payment;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Payments\MerchantUrls;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Resolver\PaymentCountryResolverInterface;
 use Webmozart\Assert\Assert;
 
 final readonly class PaymentConverter implements PaymentConverterInterface

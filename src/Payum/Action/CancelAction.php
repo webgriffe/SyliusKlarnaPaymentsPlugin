@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Payum\Action;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Action;
 
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
@@ -14,9 +14,9 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
-use Webgriffe\SyliusKlarnaPlugin\Controller\PaymentController;
-use Webgriffe\SyliusKlarnaPlugin\Helper\PaymentDetailsHelper;
-use Webgriffe\SyliusKlarnaPlugin\Model\PaymentDetails;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Controller\PaymentController;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Helper\PaymentDetailsHelper;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Model\PaymentDetails;
 use Webmozart\Assert\Assert;
 
 /**
@@ -67,7 +67,7 @@ final class CancelAction implements ActionInterface
         Assert::isInstanceOf($order, OrderInterface::class);
 
         throw new HttpRedirect(
-            $this->router->generate('webgriffe_sylius_klarna_plugin_payment_process', [
+            $this->router->generate('webgriffe_sylius_klarna_payments_plugin_payment_process', [
                 'tokenValue' => $order->getTokenValue(),
                 '_locale' => $order->getLocaleCode(),
             ]),

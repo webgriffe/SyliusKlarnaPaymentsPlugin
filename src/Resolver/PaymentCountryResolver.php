@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Resolver;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Resolver;
 
 use InvalidArgumentException;
 use Sylius\Component\Core\Model\AddressInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Country;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Currency;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Locale;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\PaymentCountry;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\Country;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\Currency;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\Locale;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\PaymentCountry;
 
 final class PaymentCountryResolver implements PaymentCountryResolverInterface
 {

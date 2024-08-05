@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Context\Ui;
+namespace Tests\Webgriffe\SyliusKlarnaPaymentsPlugin\Behat\Context\Ui;
 
 use Behat\Behat\Context\Context;
 use Behat\Mink\Session;
@@ -16,8 +16,8 @@ use Sylius\Component\Core\Repository\PaymentRepositoryInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
-use Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Context\PayumPaymentTrait;
-use Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Page\Shop\Payment\ProcessPageInterface;
+use Tests\Webgriffe\SyliusKlarnaPaymentsPlugin\Behat\Context\PayumPaymentTrait;
+use Tests\Webgriffe\SyliusKlarnaPaymentsPlugin\Behat\Page\Shop\Payment\ProcessPageInterface;
 use Webmozart\Assert\Assert;
 
 final class KlarnaContext implements Context

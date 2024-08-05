@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Controller;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Controller;
 
 use Payum\Core\Model\Identity;
 use Payum\Core\Security\TokenInterface;
@@ -18,9 +18,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Webgriffe\SyliusKlarnaPlugin\Helper\PaymentDetailsHelper;
-use Webgriffe\SyliusKlarnaPlugin\Model\PaymentDetails;
-use Webgriffe\SyliusKlarnaPlugin\Payum\KlarnaPaymentsApi;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Helper\PaymentDetailsHelper;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Model\PaymentDetails;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\KlarnaPaymentsApi;
 use Webmozart\Assert\Assert;
 
 /**
@@ -84,7 +84,7 @@ class PaymentController extends AbstractController
         }
         $paymentDetails = PaymentDetails::createFromStoredPaymentDetails($storedPaymentDetails);
         $paymentStatusUrl = $this->router->generate(
-            'webgriffe_sylius_klarna_plugin_payment_status',
+            'webgriffe_sylius_klarna_payments_plugin_payment_status',
             ['paymentId' => $syliusPayment->getId()],
             UrlGeneratorInterface::ABSOLUTE_URL,
         );

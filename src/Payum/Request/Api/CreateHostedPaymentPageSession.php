@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Request\Api;
 
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\HostedPaymentPage;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
 
 final class CreateHostedPaymentPageSession
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Request\Api;
 
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\OrderDetails;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\OrderDetails;
 
 final class ReadOrder
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Converter;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Converter;
 
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\HostedPaymentPage;
 
 interface HostedPaymentPageConverterInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Converter;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Converter;
 
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Sylius\Component\Core\Model\AddressInterface;
@@ -17,12 +17,12 @@ use Sylius\Component\Customer\Model\CustomerInterface as ModelCustomerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\OrderLineType;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Address;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Amount;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Customer;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\OrderLine;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ProductIdentifiers;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\OrderLineType;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Address;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Amount;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Customer;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\OrderLine;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\ProductIdentifiers;
 
 trait CommonOrderConverterTrait
 {

@@ -1,4 +1,4 @@
 suites:
     main:
-        namespace: Webgriffe\SyliusKlarnaPlugin
-        psr4_prefix: Webgriffe\SyliusKlarnaPlugin
+        namespace: Webgriffe\SyliusKlarnaPaymentsPlugin
+        psr4_prefix: Webgriffe\SyliusKlarnaPaymentsPlugin

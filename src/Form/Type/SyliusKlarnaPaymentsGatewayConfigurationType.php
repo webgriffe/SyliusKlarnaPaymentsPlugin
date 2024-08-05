@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Form\Type;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -10,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\ServerRegion;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\ServerRegion;
 
 final class SyliusKlarnaPaymentsGatewayConfigurationType extends AbstractType
 {

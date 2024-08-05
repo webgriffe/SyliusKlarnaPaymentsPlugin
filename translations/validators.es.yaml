@@ -1,3 +1,3 @@
-webgriffe_sylius_klarna:
+webgriffe_sylius_klarna_payments:
     payment_method:
         unique: 'Debe haber un solo método de pago para esta pasarela.'

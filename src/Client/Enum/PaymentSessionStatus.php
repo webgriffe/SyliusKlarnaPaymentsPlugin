@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client\Enum;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum;
 
 enum PaymentSessionStatus: string
 {

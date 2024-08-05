@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Context\Ui\KlarnaContext;
+use Tests\Webgriffe\SyliusKlarnaPaymentsPlugin\Behat\Context\Ui\KlarnaContext;
 
 return static function (ContainerConfigurator $containerConfigurator) {
     $services = $containerConfigurator->services();

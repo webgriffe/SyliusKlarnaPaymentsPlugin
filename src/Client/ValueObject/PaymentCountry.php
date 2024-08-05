@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client\ValueObject;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject;
 
 use InvalidArgumentException;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Country;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Currency;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Locale;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\Country;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\Currency;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\Locale;
 
 final readonly class PaymentCountry
 {

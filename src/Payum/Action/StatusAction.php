@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Payum\Action;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Action;
 
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
@@ -10,8 +10,8 @@ use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Sylius\Bundle\PayumBundle\Request\GetStatus;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
-use Webgriffe\SyliusKlarnaPlugin\Helper\PaymentDetailsHelper;
-use Webgriffe\SyliusKlarnaPlugin\Model\PaymentDetails;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Helper\PaymentDetailsHelper;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Model\PaymentDetails;
 use Webmozart\Assert\Assert;
 
 /**

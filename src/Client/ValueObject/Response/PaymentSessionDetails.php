@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response;
 
 use DateTimeImmutable;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\AcquiringChannel;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\Intent;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PaymentSessionStatus;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\AcquiringChannel;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\Intent;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\PaymentSessionStatus;
 
 final readonly class PaymentSessionDetails
 {

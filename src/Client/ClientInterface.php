@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client;
 
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\ClientException;
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionCreateFailedException;
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\HostedPaymentPageSessionReadFailedException;
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\OrderCreateFailedException;
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\OrderReadFailedException;
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionCreateFailedException;
-use Webgriffe\SyliusKlarnaPlugin\Client\Exception\PaymentSessionReadFailedException;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Order;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSessionDetails;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\Order as OrderResponse;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\OrderDetails;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSessionDetails;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception\ClientException;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception\HostedPaymentPageSessionCreateFailedException;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception\HostedPaymentPageSessionReadFailedException;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception\OrderCreateFailedException;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception\OrderReadFailedException;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception\PaymentSessionCreateFailedException;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Exception\PaymentSessionReadFailedException;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\ApiContext;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\HostedPaymentPage;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Order;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Payment;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\HostedPaymentPageSessionDetails;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\Order as OrderResponse;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\OrderDetails;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\PaymentSession;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\PaymentSessionDetails;
 
 interface ClientInterface
 {

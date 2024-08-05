@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client\ValueObject;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject;
 
 use InvalidArgumentException;
 use JsonSerializable;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PaymentMethod;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PlaceOrderMode;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PurchaseType;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage\MerchantUrls;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\PaymentMethod;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\PlaceOrderMode;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\PurchaseType;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\HostedPaymentPage\MerchantUrls;
 
 /**
  * @psalm-type HostedPaymentPageOptions = array{background_images?: array<array-key, array{url: string, width: string}>, logo_url?: string, page_title?: string, payment_method_categories?: PaymentMethod[], payment_method_category?: PaymentMethod, place_order_mode?: PlaceOrderMode, purchase_type?: PurchaseType, show_subtotal_detail?: 'HIDE'}

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Context\Api;
+namespace Tests\Webgriffe\SyliusKlarnaPaymentsPlugin\Behat\Context\Api;
 
 use Behat\Behat\Context\Context;
 use DateTime;
@@ -15,8 +15,8 @@ use Sylius\Component\Core\Repository\PaymentRepositoryInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
-use Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Context\PayumPaymentTrait;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\HostedPaymentPageSessionStatus;
+use Tests\Webgriffe\SyliusKlarnaPaymentsPlugin\Behat\Context\PayumPaymentTrait;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\HostedPaymentPageSessionStatus;
 
 final class KlarnaContext implements Context
 {

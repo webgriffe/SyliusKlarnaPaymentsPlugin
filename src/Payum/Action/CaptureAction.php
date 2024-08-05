@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Payum\Action;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Action;
 
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
@@ -21,21 +21,21 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\ClientInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Authorization;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
-use Webgriffe\SyliusKlarnaPlugin\Controller\PaymentController;
-use Webgriffe\SyliusKlarnaPlugin\Helper\PaymentDetailsHelper;
-use Webgriffe\SyliusKlarnaPlugin\Model\PaymentDetails;
-use Webgriffe\SyliusKlarnaPlugin\Payum\KlarnaPaymentsApi;
-use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\CreateHostedPaymentPageSession;
-use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\CreatePaymentSession;
-use Webgriffe\SyliusKlarnaPlugin\Payum\Request\ConvertSyliusPaymentToKlarnaHostedPaymentPage;
-use Webgriffe\SyliusKlarnaPlugin\Payum\Request\ConvertSyliusPaymentToKlarnaPayment;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ClientInterface;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\ApiContext;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Authorization;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\HostedPaymentPage;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Payment;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\HostedPaymentPageSession;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\PaymentSession;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Controller\PaymentController;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Helper\PaymentDetailsHelper;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Model\PaymentDetails;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\KlarnaPaymentsApi;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Request\Api\CreateHostedPaymentPageSession;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Request\Api\CreatePaymentSession;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Request\ConvertSyliusPaymentToKlarnaHostedPaymentPage;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Request\ConvertSyliusPaymentToKlarnaPayment;
 use Webmozart\Assert\Assert;
 
 /**
@@ -116,7 +116,7 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
             Assert::isInstanceOf($order, OrderInterface::class);
 
             throw new HttpRedirect(
-                $this->router->generate('webgriffe_sylius_klarna_plugin_payment_process', [
+                $this->router->generate('webgriffe_sylius_klarna_payments_plugin_payment_process', [
                     'tokenValue' => $order->getTokenValue(),
                     '_locale' => $order->getLocaleCode(),
                 ]),

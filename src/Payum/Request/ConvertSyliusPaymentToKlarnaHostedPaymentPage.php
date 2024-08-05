@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Payum\Request;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Request;
 
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\HostedPaymentPage;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\HostedPaymentPage;
 
 final class ConvertSyliusPaymentToKlarnaHostedPaymentPage
 {

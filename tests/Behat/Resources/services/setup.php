@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Context\Setup\PaymentContext;
-use Webgriffe\SyliusKlarnaPlugin\Payum\KlarnaPaymentsApi;
+use Tests\Webgriffe\SyliusKlarnaPaymentsPlugin\Behat\Context\Setup\PaymentContext;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\KlarnaPaymentsApi;
 
 return static function (ContainerConfigurator $containerConfigurator) {
     $services = $containerConfigurator->services();

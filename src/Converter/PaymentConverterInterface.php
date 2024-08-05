@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Converter;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Converter;
 
 use Sylius\Component\Core\Model\PaymentInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Payment;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Payment;
 
 interface PaymentConverterInterface
 {

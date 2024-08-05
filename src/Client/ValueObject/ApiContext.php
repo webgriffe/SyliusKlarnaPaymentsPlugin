@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client\ValueObject;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject;
 
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\ServerRegion;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\ServerRegion;
 
 final readonly class ApiContext
 {

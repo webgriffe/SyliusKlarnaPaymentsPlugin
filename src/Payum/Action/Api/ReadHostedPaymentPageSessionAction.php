@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Payum\Action\Api;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Action\Api;
 
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\ApiAwareTrait;
 use Payum\Core\Exception\RequestNotSupportedException;
-use Webgriffe\SyliusKlarnaPlugin\Client\ClientInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\ApiContext;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Authorization;
-use Webgriffe\SyliusKlarnaPlugin\Payum\KlarnaPaymentsApi;
-use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\ReadHostedPaymentPageSession;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ClientInterface;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\ApiContext;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Authorization;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\KlarnaPaymentsApi;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Request\Api\ReadHostedPaymentPageSession;
 use Webmozart\Assert\Assert;
 
 /**

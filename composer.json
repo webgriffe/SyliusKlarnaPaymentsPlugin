@@ -1,10 +1,11 @@
 {
-    "name": "webgriffe/sylius-klarna-plugin",
+    "name": "webgriffe/sylius-klarna-payments-plugin",
     "description": "Klarna Payments plugin for Sylius ecommerce framework",
     "type": "sylius-plugin",
     "keywords": [
         "sylius",
         "klarna",
+        "klarna-payments",
         "sylius-plugin"
     ],
     "license": "proprietary",
@@ -61,8 +62,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Webgriffe\\SyliusKlarnaPlugin\\": "src/",
-            "Tests\\Webgriffe\\SyliusKlarnaPlugin\\": "tests/"
+            "Webgriffe\\SyliusKlarnaPaymentsPlugin\\": "src/",
+            "Tests\\Webgriffe\\SyliusKlarnaPaymentsPlugin\\": "tests/"
         }
     },
     "autoload-dev": {

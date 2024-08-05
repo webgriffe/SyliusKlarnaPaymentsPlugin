@@ -1,4 +1,4 @@
-webgriffe_sylius_klarna:
+webgriffe_sylius_klarna_payments:
     ui:
         processing_payment: 'Ihre Zahlung wird bearbeitet!'
         please_wait: 'Bitte warten Sie, bis Sie eine neue Statusseite sehen!'

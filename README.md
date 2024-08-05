@@ -13,19 +13,19 @@
 
 1. Run:
     ```bash
-    composer require webgriffe/sylius-klarna-plugin
+    composer require webgriffe/sylius-klarna-payments-plugin
    ```
 
-2. Add `Webgriffe\SyliusKlarnaPlugin\WebgriffeSyliusKlarnaPlugin::class => ['all' => true]` to your `config/bundles.php`.
+2. Add `Webgriffe\SyliusKlarnaPlugin\WebgriffeSyliusKlarnaPaymentsPlugin::class => ['all' => true]` to your `config/bundles.php`.
    
    Normally, the plugin is automatically added to the `config/bundles.php` file by the `composer require` command. If it is not, you have to add it manually.
 
-3. Create a new file config/packages/webgriffe_sylius_klarna_plugin.yaml:
+3. Create a new file config/packages/webgriffe_sylius_klarna_payments_plugin.yaml:
    ```yaml
    imports:
-       - { resource: "@WebgriffeSyliusKlarnaPlugin/config/config.php" }
+       - { resource: "@WebgriffeSyliusKlarnaPaymentsPlugin/config/config.php" }
     
-   webgriffe_sylius_klarna:
+   webgriffe_sylius_klarna_payments:
        product_images:
        type: 'main' # Type of the product image to send to Klarna. If none is specified or the type does not exists on current product then the first image will be used.
        filter: 'sylius_medium' # Liip filter to apply to the image. If none is specified then the original image will be used.
@@ -33,8 +33,8 @@
 
 4. Import the routes needed for cancelling the payments. Add the following to your config/routes.yaml file:
    ```yaml
-   webgriffe_sylius_klarna_plugin:
-       resource: "@WebgriffeSyliusKlarnaPlugin/config/shop_routing.php"
+   webgriffe_sylius_klarna_payments_plugin:
+       resource: "@WebgriffeSyliusKlarnaPaymentsPlugin/config/shop_routing.php"
    ```
    **NB:** you should avoid to have any param prefix in your routes, otherwise the plugin won't work properly.
 
@@ -45,11 +45,11 @@
    Or, you can add the entry to your webpack.config.js file:
     ```javascript
     .addEntry(
-        'webgriffe-sylius-klarna-entry',
-        './vendor/webgriffe/sylius-klarna-plugin/public/poll_payment.js'
+        'webgriffe-sylius-klarna-payments-entry',
+        './vendor/webgriffe/sylius-klarna-payments-plugin/public/poll_payment.js'
     )
     ```
-   And then override the template `WebgriffeSyliusKlarnaPlugin/Process/index.html.twig` to include the entry:
+   And then override the template `WebgriffeSyliusKlarnaPaymentsPlugin/Process/index.html.twig` to include the entry:
     ```twig
     {% block javascripts %}
         {{ parent() }}
@@ -58,7 +58,7 @@
             window.afterUrl = "{{ afterUrl }}";
             window.paymentStatusUrl = "{{ paymentStatusUrl }}";
         </script>
-        {{ encore_entry_script_tags('webgriffe-sylius-klarna-entry', null, 'sylius.shop') }}
+        {{ encore_entry_script_tags('webgriffe-sylius-klarna-payments-entry', null, 'sylius.shop') }}
     {% endblock %}
     ```
 

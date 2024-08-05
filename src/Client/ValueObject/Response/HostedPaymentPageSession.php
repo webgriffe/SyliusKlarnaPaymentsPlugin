@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response;
 
 use DateTimeInterface;
 

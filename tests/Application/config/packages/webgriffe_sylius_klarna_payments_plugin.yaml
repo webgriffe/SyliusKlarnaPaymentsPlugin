@@ -1,0 +1,2 @@
+imports:
+    - { resource: "@WebgriffeSyliusKlarnaPaymentsPlugin/config/config.php" }

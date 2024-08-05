@@ -1,15 +1,15 @@
 {% extends '@SyliusShop/layout.html.twig' %}
 
 {% block content %}
-    <h1>{{ 'webgriffe_sylius_klarna.ui.processing_payment'|trans }}</h1>
+    <h1>{{ 'webgriffe_sylius_klarna_payments.ui.processing_payment'|trans }}</h1>
 
-    <p>{{ 'webgriffe_sylius_klarna.ui.please_wait'|trans }}</p>
+    <p>{{ 'webgriffe_sylius_klarna_payments.ui.please_wait'|trans }}</p>
 
-    <img src="{{ asset('build/shop/images/loading.gif', 'shop') }}" alt="{{ 'webgriffe_sylius_klarna.ui.loading'|trans }}">
+    <img src="{{ asset('build/shop/images/loading.gif', 'shop') }}" alt="{{ 'webgriffe_sylius_klarna_payments.ui.loading'|trans }}">
 
     {% if redirectUrl %}
         <a href="{{ redirectUrl }}">
-            {{ 'webgriffe_sylius_klarna.ui.return_to_klarna_checkout'|trans }}
+            {{ 'webgriffe_sylius_klarna_payments.ui.return_to_klarna_checkout'|trans }}
         </a>
     {% endif %}
 {% endblock %}
@@ -21,5 +21,5 @@
         window.afterUrl = "{{ afterUrl }}";
         window.paymentStatusUrl = "{{ paymentStatusUrl }}";
     </script>
-    <script src="{{ asset('bundles/webgriffesyliusklarnaplugin/poll_payment.js') }}"></script>
+    <script src="{{ asset('bundles/webgriffesyliusklarnapaymentsplugin/poll_payment.js') }}"></script>
 {% endblock %}

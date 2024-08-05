@@ -51,7 +51,7 @@ default:
         FriendsOfBehat\SymfonyExtension:
             bootstrap: tests/Application/config/bootstrap.php
             kernel:
-                class: Tests\Webgriffe\SyliusKlarnaPlugin\Application\Kernel
+                class: Tests\Webgriffe\SyliusKlarnaPaymentsPlugin\Application\Kernel
 
         FriendsOfBehat\VariadicExtension: ~
 

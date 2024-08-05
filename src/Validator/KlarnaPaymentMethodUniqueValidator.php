@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Validator;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Validator;
 
 use Sylius\Component\Core\Model\PaymentMethodInterface;
 use Sylius\Component\Core\Repository\PaymentMethodRepositoryInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
-use Webgriffe\SyliusKlarnaPlugin\Payum\KlarnaPaymentsApi;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\KlarnaPaymentsApi;
 
 /**
  * @psalm-suppress PropertyNotSetInConstructor

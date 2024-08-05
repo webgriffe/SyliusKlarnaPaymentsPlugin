@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Payum;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Payum;
 
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\GatewayFactory;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\ServerRegion;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\ServerRegion;
 
 final class KlarnaPaymentsGatewayFactory extends GatewayFactory
 {

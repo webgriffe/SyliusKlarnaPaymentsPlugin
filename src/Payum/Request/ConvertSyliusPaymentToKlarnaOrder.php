@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Payum\Request;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Request;
 
 use Sylius\Component\Core\Model\PaymentInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Order;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Order;
 
 final class ConvertSyliusPaymentToKlarnaOrder
 {

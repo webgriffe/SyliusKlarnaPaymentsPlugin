@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Tests\Webgriffe\SyliusKlarnaPlugin\Application\Kernel;
+use Tests\Webgriffe\SyliusKlarnaPaymentsPlugin\Application\Kernel;
 use Symfony\Component\ErrorHandler\Debug;
 use Symfony\Component\HttpFoundation\Request;
 

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Model;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Model;
 
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\HostedPaymentPageSessionStatus;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\OrderStatus;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\PaymentSessionStatus;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSession;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\HostedPaymentPageSessionStatus;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\OrderStatus;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\PaymentSessionStatus;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\PaymentSession;
 
 /**
  * @psalm-type StoredPaymentDetails array{payment_session_id: string, payment_client_token: string, payment_status: ?string, hosted_payment_page_session_id: ?string, hosted_payment_page_redirect_url: ?string, hosted_payment_page_status: ?string, order_id: ?string, order_status: ?string, klarna_reference: ?string}

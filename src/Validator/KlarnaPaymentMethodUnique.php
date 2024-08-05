@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Validator;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Validator;
 
 use Symfony\Component\Validator\Constraint;
 

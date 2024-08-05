@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Page\Shop\Payment;
+namespace Tests\Webgriffe\SyliusKlarnaPaymentsPlugin\Behat\Page\Shop\Payment;
 
 interface ProcessPageInterface
 {

@@ -4,7 +4,7 @@
                     xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping
         https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
     <class name="Sylius\Component\Core\Model\PaymentMethod">
-        <constraint name="Webgriffe\SyliusKlarnaPlugin\Validator\KlarnaPaymentMethodUnique">
+        <constraint name="Webgriffe\SyliusKlarnaPaymentsPlugin\Validator\KlarnaPaymentMethodUnique">
             <option name="groups">sylius</option>
         </constraint>
     </class>

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webgriffe\SyliusKlarnaPlugin\Payum\Action;
+namespace Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Action;
 
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
@@ -12,11 +12,11 @@ use Payum\Core\Request\GetHttpRequest;
 use Payum\Core\Request\Notify;
 use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\PaymentInterface as SyliusPaymentInterface;
-use Webgriffe\SyliusKlarnaPlugin\Client\Enum\HostedPaymentPageSessionStatus;
-use Webgriffe\SyliusKlarnaPlugin\Client\ValueObject\Response\PaymentSessionDetails;
-use Webgriffe\SyliusKlarnaPlugin\Helper\PaymentDetailsHelper;
-use Webgriffe\SyliusKlarnaPlugin\Model\PaymentDetails;
-use Webgriffe\SyliusKlarnaPlugin\Payum\Request\Api\ReadPaymentSession;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\HostedPaymentPageSessionStatus;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\Response\PaymentSessionDetails;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Helper\PaymentDetailsHelper;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Model\PaymentDetails;
+use Webgriffe\SyliusKlarnaPaymentsPlugin\Payum\Request\Api\ReadPaymentSession;
 use Webmozart\Assert\Assert;
 
 /**

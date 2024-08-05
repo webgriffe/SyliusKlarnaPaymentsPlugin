@@ -1,4 +1,4 @@
-webgriffe_sylius_klarna:
+webgriffe_sylius_klarna_payments:
     ui:
         processing_payment: 'Your payment is being processed!'
         please_wait: 'Please wait until you see a new status page!'
