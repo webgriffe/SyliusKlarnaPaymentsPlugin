@@ -10,7 +10,7 @@ use Webgriffe\SyliusKlarnaPlugin\Payum\KlarnaPaymentsApi;
 return static function (ContainerConfigurator $containerConfigurator) {
     $services = $containerConfigurator->services();
 
-    $services->set('webgriffe_sylius_pagolight.form.type.gateway_configuration', SyliusKlarnaPaymentsGatewayConfigurationType::class)
+    $services->set('webgriffe_sylius_klarna.form.type.gateway_configuration', SyliusKlarnaPaymentsGatewayConfigurationType::class)
         ->tag('sylius.gateway_configuration_type', ['type' => KlarnaPaymentsApi::CODE, 'label' => 'Klarna Payments'])
         ->tag('form.type')
     ;
