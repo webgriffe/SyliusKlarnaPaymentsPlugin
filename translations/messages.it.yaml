@@ -3,7 +3,7 @@ webgriffe_sylius_klarna_payments:
         processing_payment: 'Stiamo processando il tuo pagamento!'
         please_wait: 'Per favore, attendi fino a quando non vedrai una nuova pagina di stato!'
         loading: 'Caricamento in corso'
-        return_to_klarna_checkout: '<a href="{redirectUrl}">Clicca qui se vuoi tornare al checkout di Klarna per ultimare il tuo pagamento.</a>'
+        return_to_klarna_checkout: 'Clicca qui se vuoi tornare al checkout di Klarna per ultimare il tuo pagamento.'
     form:
         gateway_configuration:
             username: 'Nome utente'

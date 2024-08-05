@@ -89,7 +89,7 @@ class PaymentController extends AbstractController
             UrlGeneratorInterface::ABSOLUTE_URL,
         );
 
-        return $this->render('@WebgriffeSyliusKlarnaPlugin/Process/index.html.twig', [
+        return $this->render('@WebgriffeSyliusKlarnaPaymentsPlugin/Process/index.html.twig', [
             'afterUrl' => $token->getAfterUrl(),
             'paymentStatusUrl' => $paymentStatusUrl,
             'redirectUrl' => $paymentDetails->getHostedPaymentPageRedirectUrl(),

@@ -15,7 +15,7 @@ final class KlarnaPaymentsGatewayFactory extends GatewayFactory
         $config->defaults([
             'payum.factory_name' => KlarnaPaymentsApi::CODE,
             'payum.factory_title' => 'Klarna Payments',
-            'payum.action.status' => '@webgriffe_sylius_klarna.payum.action.status',
+            'payum.action.status' => '@webgriffe_sylius_klarna_payments.payum.action.status',
         ]);
 
         if (false === (bool) $config['payum.api']) {
