@@ -6,7 +6,9 @@ namespace Tests\Webgriffe\SyliusKlarnaPlugin\Behat\Context\Api;
 
 use Behat\Behat\Context\Context;
 use DateTime;
+use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Request;
 use Sylius\Bundle\PayumBundle\Model\PaymentSecurityTokenInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Sylius\Component\Core\Repository\PaymentRepositoryInterface;
@@ -28,7 +30,7 @@ final class KlarnaContext implements Context
         private readonly RepositoryInterface $paymentTokenRepository,
         private readonly PaymentRepositoryInterface $paymentRepository,
         private readonly UrlGeneratorInterface $urlGenerator,
-        private readonly ClientInterface $client,
+        private readonly ClientInterface|Client $client,
     ) {
         // TODO: Why config parameters are not loaded?
         $this->urlGenerator->setContext(new RequestContext('', 'GET', '127.0.0.1:8080', 'https'));
@@ -111,11 +113,21 @@ final class KlarnaContext implements Context
 
     private function notifyPaymentState(PaymentSecurityTokenInterface $token, array $responsePayload): void
     {
-        $this->client->request(
+        $formParams = http_build_query($responsePayload);
+        $request = new Request(
             'POST',
             $this->getNotifyUrl($token),
-            ['form_params' => $responsePayload],
+            [
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ],
+            $formParams,
         );
+        if ($this->client instanceof Client) {
+            $this->client->send($request);
+
+            return;
+        }
+        $this->client->sendRequest($request);
     }
 
     private function getNotifyUrl(PaymentSecurityTokenInterface $token): string
