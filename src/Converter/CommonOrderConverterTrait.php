@@ -155,7 +155,7 @@ trait CommonOrderConverterTrait
             $orderItem->getQuantity(),
             $taxRate,
             Amount::fromSyliusAmount($totalAmount),
-            Amount::fromSyliusAmount($totalDiscountAmount),
+            Amount::fromSyliusAmount($totalDiscountAmount * $orderItem->getQuantity()),
             Amount::fromSyliusAmount($totalTaxAmount),
             Amount::fromSyliusAmount($orderItem->getUnitPrice()),
             $productUrl,
