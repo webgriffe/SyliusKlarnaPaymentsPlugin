@@ -147,7 +147,10 @@ trait CommonOrderConverterTrait
         $totalDiscountAmount = 0;
         $firstOrderItemUnit = $orderItem->getUnits()->first();
         if ($firstOrderItemUnit instanceof OrderItemUnitInterface) {
-            $totalDiscountAmount = -1 * $firstOrderItemUnit->getAdjustmentsTotal(AdjustmentInterface::ORDER_PROMOTION_ADJUSTMENT);
+            $totalDiscountAmount = -1 * (
+                $firstOrderItemUnit->getAdjustmentsTotal(AdjustmentInterface::ORDER_PROMOTION_ADJUSTMENT) +
+                $firstOrderItemUnit->getAdjustmentsTotal(AdjustmentInterface::ORDER_UNIT_PROMOTION_ADJUSTMENT)
+            );
         }
 
         return new OrderLine(
