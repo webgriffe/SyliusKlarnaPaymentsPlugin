@@ -32,7 +32,7 @@ final class PaymentCountryResolver implements PaymentCountryResolverInterface
 
         $defaultDataMapping = $this->getDefaultDataMapping();
         if (!array_key_exists($countryCode, $defaultDataMapping)) {
-            throw new InvalidArgumentException('Could not determine default country code for billing address');
+            throw new InvalidArgumentException("Could not determine default country code for billing address having country code '$countryCode'");
         }
 
         return $defaultDataMapping[$countryCode];

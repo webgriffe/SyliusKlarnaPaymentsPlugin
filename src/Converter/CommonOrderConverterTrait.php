@@ -143,7 +143,7 @@ trait CommonOrderConverterTrait
         }
         $taxRate = $this->getOrderTaxRate($order);
         $totalAmount = $orderItem->getTotal();
-        $totalTaxAmount = (int) ($totalAmount - (($totalAmount * 10000) / (10000 + $taxRate)));
+        $totalTaxAmount = $this->getOrderItemTaxAmount($orderItem);
         $totalDiscountAmount = 0;
         $firstOrderItemUnit = $orderItem->getUnits()->first();
         if ($firstOrderItemUnit instanceof OrderItemUnitInterface) {
@@ -160,7 +160,7 @@ trait CommonOrderConverterTrait
             Amount::fromSyliusAmount($totalAmount),
             Amount::fromSyliusAmount($totalDiscountAmount * $orderItem->getQuantity()),
             Amount::fromSyliusAmount($totalTaxAmount),
-            Amount::fromSyliusAmount($orderItem->getUnitPrice()),
+            Amount::fromSyliusAmount($this->getOrderItemUnitPrice($orderItem)),
             $productUrl,
             $imageUrl,
             (string) $orderItem->getId(),
@@ -197,6 +197,10 @@ trait CommonOrderConverterTrait
         );
     }
 
+    /**
+     * Tax rate of the order line. Non-negative value.
+     * The percentage value is represented with two implicit decimals. I.e 2000 = 20%.
+     */
     private function getOrderTaxRate(OrderInterface $order): int
     {
         $taxRate = 0;
@@ -239,5 +243,29 @@ trait CommonOrderConverterTrait
         }
 
         return $categoryPath . (string) $mainTaxon->getName();
+    }
+
+    private function getOrderItemTaxAmount(OrderItemInterface $orderItem): int
+    {
+        return $orderItem->getTaxTotal();
+    }
+
+    /**
+     * Price for a single unit of the order line. Must be defined as minor units and exclude any discount.
+     * Typically including taxes, however some countries may include specific requirements,
+     * see Tax handling guidelines for further details. (max value: 200000000)
+     */
+    private function getOrderItemUnitPrice(OrderItemInterface $orderItem): int
+    {
+        $taxAdjustment = $orderItem->getAdjustments(AdjustmentInterface::TAX_ADJUSTMENT)->first();
+        if (!$taxAdjustment instanceof AdjustmentInterface) {
+            return $orderItem->getUnitPrice();
+        }
+        if ($taxAdjustment->isNeutral()) {
+            return $orderItem->getUnitPrice();
+        }
+        $taxBySingleItem = (int) ($orderItem->getTaxTotal() / $orderItem->getQuantity());
+
+        return $orderItem->getUnitPrice() + $taxBySingleItem;
     }
 }

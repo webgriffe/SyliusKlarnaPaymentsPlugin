@@ -49,8 +49,8 @@ final readonly class PaymentConverter implements PaymentConverterInterface
         $paymentCountry = $this->paymentCountryResolver->resolve($payment);
         if ($purchaseCurrency !== $paymentCountry->getCurrency()->value) {
             throw new LogicException(sprintf(
-                'Attention! The order currency is "%s", but for the country "%s" Klarna only supports currency
-                "%s". Please, change the channel configuration or implement a way to handle currencies change.',
+                'Attention! The order currency is "%s", but for the country "%s" Klarna only supports currency ' .
+                '"%s". Please, change the channel configuration or implement a way to handle currencies change.',
                 $purchaseCurrency,
                 $purchaseCountry,
                 $paymentCountry->getCurrency()->value,
