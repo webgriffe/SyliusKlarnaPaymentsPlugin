@@ -136,10 +136,13 @@ trait CommonOrderConverterTrait
 
         $productIdentifiers = null;
         if ($product !== null) {
-            $productIdentifiers = new ProductIdentifiers(
-                null,
-                $this->getCategoryPath($product),
-            );
+            $categoryPath = $this->getCategoryPath($product);
+            if ($categoryPath !== null) {
+                $productIdentifiers = new ProductIdentifiers(
+                    null,
+                    $categoryPath,
+                );
+            }
         }
         $taxRate = $this->getOrderTaxRate($order);
         $totalAmount = $orderItem->getTotal();
