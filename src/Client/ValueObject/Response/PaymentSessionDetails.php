@@ -11,6 +11,9 @@ use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\PaymentSessionStatus;
 
 final readonly class PaymentSessionDetails
 {
+    /**
+     * TODO: Set nullable acquiring channel on next major version
+     */
     public function __construct(
         private AcquiringChannel $acquiringChannel,
         private string $clientToken,
