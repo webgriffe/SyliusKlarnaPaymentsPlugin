@@ -120,7 +120,7 @@ trait CommonOrderConverterTrait
         if ($slug !== null) {
             $productUrl = $this->getUrlGenerator()->generate(
                 'sylius_shop_product_show',
-                ['slug' => $slug],
+                ['slug' => $slug, '_locale' => $order->getLocaleCode()],
                 UrlGeneratorInterface::ABSOLUTE_URL,
             );
         }
