@@ -17,7 +17,7 @@ final class InMemoryUrlGenerator implements UrlGeneratorInterface
         $this->context = $context ?? new RequestContext();
     }
 
-    public function setContext(RequestContext $context)
+    public function setContext(RequestContext $context): void
     {
         $this->context = $context;
     }

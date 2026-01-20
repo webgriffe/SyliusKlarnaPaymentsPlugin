@@ -43,6 +43,7 @@ final class PaymentConverterTest extends TestCase
         $cacheManager = $this->createMock(CacheManager::class);
 
         $this->capProduct = new Product();
+        $this->capProduct->setFallbackLocale('it_IT');
         $this->capProduct->setCurrentLocale('it_IT');
 
         $this->capProductVariant = new ProductVariant();
@@ -242,6 +243,7 @@ final class PaymentConverterTest extends TestCase
         $this->order->addItem($this->capProductOrderItem);
 
         $otherProductProduct = new Product();
+        $otherProductProduct->setFallbackLocale('it_IT');
         $otherProductProduct->setCurrentLocale('it_IT');
         $otherProductVariant = new ProductVariant();
         $otherProductVariant->setProduct($otherProductProduct);
@@ -369,6 +371,7 @@ final class PaymentConverterTest extends TestCase
         $this->order->addItem($this->capProductOrderItem);
 
         $otherProductProduct = new Product();
+        $otherProductProduct->setFallbackLocale('it_IT');
         $otherProductProduct->setCurrentLocale('it_IT');
         $otherProductVariant = new ProductVariant();
         $otherProductVariant->setProduct($otherProductProduct);
@@ -429,6 +432,7 @@ final class PaymentConverterTest extends TestCase
         $this->order->addItem($this->capProductOrderItem);
 
         $otherProductProduct = new Product();
+        $otherProductProduct->setFallbackLocale('it_IT');
         $otherProductProduct->setCurrentLocale('it_IT');
         $otherProductVariant = new ProductVariant();
         $otherProductVariant->setProduct($otherProductProduct);
@@ -489,6 +493,7 @@ final class PaymentConverterTest extends TestCase
         $this->order->addItem($this->capProductOrderItem);
 
         $freeProduct = new Product();
+        $freeProduct->setFallbackLocale('it_IT');
         $freeProduct->setCurrentLocale('it_IT');
         $freeProductVariant = new ProductVariant();
         $freeProductVariant->setProduct($freeProduct);
