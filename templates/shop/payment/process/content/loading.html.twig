@@ -6,8 +6,8 @@
      alt="{{ 'webgriffe_sylius_klarna_payments.ui.loading'|trans }}"
      style="max-width: 100px; max-height: 100px;">
 
-{% if redirectUrl %}
-    <a href="{{ redirectUrl }}">
+{% if hookable_metadata.context.redirectUrl %}
+    <a href="{{ hookable_metadata.context.redirectUrl }}">
         {{ 'webgriffe_sylius_klarna_payments.ui.return_to_klarna_checkout'|trans }}
     </a>
 {% endif %}
