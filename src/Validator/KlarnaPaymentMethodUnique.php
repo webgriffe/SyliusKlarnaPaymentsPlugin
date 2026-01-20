@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraint;
  */
 final class KlarnaPaymentMethodUnique extends Constraint
 {
-    public string $message = 'webgriffe_sylius_klarna.payment_method.unique';
+    public string $message = 'webgriffe_sylius_klarna_payments.payment_method.unique';
 
     #[\Override]
     public function getTargets(): string

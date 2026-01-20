@@ -1,10 +1,14 @@
 <p align="center">
     <a href="https://sylius.com" target="_blank">
-        <img src="https://demo.sylius.com/assets/shop/img/logo.png" />
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://media.sylius.com/sylius-logo-800-dark.png">
+          <source media="(prefers-color-scheme: light)" srcset="https://media.sylius.com/sylius-logo-800.png">
+          <img alt="Sylius Logo." src="https://media.sylius.com/sylius-logo-800.png">
+        </picture>
     </a>
 </p>
 
-<h1 align="center">Sylius <a href="https://docs.klarna.com/klarna-payments/" target="_blank">Klarna</a> Plugin</h1>
+<h1 align="center">Sylius <a href="https://docs.klarna.com/klarna-payments/" target="_blank">Klarna Payments</a> Plugin</h1>
 
 <p align="center">Sylius plugin for <b>Klarna payments</b> payment method.</p>
 
@@ -53,25 +57,6 @@
     ```bash
     php bin/console sylius:install:assets
    ```
-   Or, you can add the entry to your webpack.config.js file:
-    ```javascript
-    .addEntry(
-        'webgriffe-sylius-klarna-payments-entry',
-        './vendor/webgriffe/sylius-klarna-payments-plugin/public/poll_payment.js'
-    )
-    ```
-   And then override the template `WebgriffeSyliusKlarnaPaymentsPlugin/Process/index.html.twig` to include the entry:
-    ```twig
-    {% block javascripts %}
-        {{ parent() }}
-
-        <script>
-            window.afterUrl = "{{ afterUrl }}";
-            window.paymentStatusUrl = "{{ paymentStatusUrl }}";
-        </script>
-        {{ encore_entry_script_tags('webgriffe-sylius-klarna-payments-entry', null, 'sylius.shop') }}
-    {% endblock %}
-    ```
 
 ## Usage
 
@@ -81,38 +66,49 @@ as gateway. Then, configure the payment method with the required parameters.
 ## Contributing
 
 For a comprehensive guide on Sylius Plugins development please go to Sylius documentation,
-there you will find the <a href="https://docs.sylius.com/en/latest/plugin-development-guide/index.html">Plugin Development Guide</a>, that is full of examples.
+there you will find the <a href="https://docs.sylius.com/plugins-development-guide/how-to-create-a-plugin-for-sylius">Plugin Development Guide</a> - it's a great place to start.
 
-### Quickstart Installation
+For more information about the **Test Application** included in the skeleton, please refer to the [Sylius documentation](https://docs.sylius.com/plugins-development-guide/test-application).
 
-#### Traditional
+### Traditional
 
-1. Run `composer create-project sylius/plugin-skeleton ProjectName`.
-
-2. From the plugin skeleton root directory, run the following commands:
+1. From the plugin skeleton root directory, run the following commands:
    
     ```bash
-    $ (cd tests/Application && yarn install)
-    $ (cd tests/Application && yarn build)
-    $ (cd tests/Application && APP_ENV=test bin/console assets:install public)
-    
-    $ (cd tests/Application && APP_ENV=test bin/console doctrine:database:create)
-    $ (cd tests/Application && APP_ENV=test bin/console doctrine:schema:create)
+    (cd vendor/sylius/test-application && yarn install)
+    (cd vendor/sylius/test-application && yarn build)
+    vendor/bin/console assets:install
+   
+    vendor/bin/console doctrine:database:create
+    vendor/bin/console doctrine:migrations:migrate -n
+    # Optionally load data fixtures
+    vendor/bin/console sylius:fixtures:load -n
     ```
 
-To be able to set up a plugin's database, remember to configure you database credentials in `tests/Application/.env` and `tests/Application/.env.test`.
+To be able to set up a plugin's database, remember to configure your database credentials in `tests/TestApplication/.env` and `tests/TestApplication/.env.test`.
 
-#### Docker
+2. Run your local server:
+   
+      ```bash
+      symfony server:ca:install
+      symfony server:start -d
+      ```
 
-1. Execute `docker compose up -d`
+3. Open your browser and navigate to `https://localhost:8000`.
 
-2. Initialize plugin `docker compose exec app make init`
+### Docker
 
-3. See your browser `open localhost`
+1. Execute `make init` to initialize the container and install the dependencies.
+
+2. Execute `make database-init` to create the database and run migrations.
+
+3. (Optional) Execute `make load-fixtures` to load the fixtures.
+
+4. Your app is available at `http://localhost`.
 
 ## Usage
 
-#### Running plugin tests
+### Running plugin tests
 
 - PHPUnit
   
@@ -120,16 +116,10 @@ To be able to set up a plugin's database, remember to configure you database cre
   vendor/bin/phpunit
   ```
 
-- PHPSpec
-  
-  ```bash
-  vendor/bin/phpspec run
-  ```
-
 - Behat (non-JS scenarios)
   
   ```bash
-  vendor/bin/behat --strict --tags="~@javascript"
+  vendor/bin/behat --strict --tags="~@javascript&&~@mink:chromedriver"
   ```
 
 - Behat (JS scenarios)
@@ -146,27 +136,27 @@ To be able to set up a plugin's database, remember to configure you database cre
   
     ```bash
     symfony server:ca:install
-    APP_ENV=test symfony server:start --port=8080 --dir=tests/Application/public --daemon
+    APP_ENV=test symfony server:start --port=8080 --daemon
     ```
     
     4. Run Behat:
   
     ```bash
-    vendor/bin/behat --strict --tags="@javascript"
+    vendor/bin/behat --strict --tags="@javascript,@mink:chromedriver"
     ```
 
 - Static Analysis
-    
-    - Psalm
-      
-      ```bash
-      vendor/bin/psalm
-      ```
     
     - PHPStan
       
       ```bash
       vendor/bin/phpstan analyse -c phpstan.neon -l max src/  
+      ```
+
+    - Psalm
+
+      ```bash
+      vendor/bin/psalm
       ```
 
 - Coding Standard
@@ -175,18 +165,18 @@ To be able to set up a plugin's database, remember to configure you database cre
   vendor/bin/ecs check
   ```
 
-#### Opening Sylius with your plugin
+### Opening Sylius with your plugin
 
 - Using `test` environment:
   
     ```bash
-    (cd tests/Application && APP_ENV=test bin/console sylius:fixtures:load)
-    (cd tests/Application && APP_ENV=test bin/console server:run -d public)
+    APP_ENV=test vendor/bin/console vendor/bin/console sylius:fixtures:load -n
+    APP_ENV=test symfony server:start -d
     ```
 
 - Using `dev` environment:
   
     ```bash
-    (cd tests/Application && APP_ENV=dev bin/console sylius:fixtures:load)
-    (cd tests/Application && APP_ENV=dev bin/console server:run -d public)
+    vendor/bin/console vendor/bin/console sylius:fixtures:load -n
+    symfony server:start -d
     ```
