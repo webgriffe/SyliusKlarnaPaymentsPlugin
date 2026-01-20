@@ -18,6 +18,9 @@ use Webmozart\Assert\Assert;
 
 final readonly class KlarnaPaymentMethodsResolver implements PaymentMethodsResolverInterface
 {
+    /**
+     * @param PaymentMethodRepositoryInterface<PaymentMethodInterface> $paymentMethodRepository
+     */
     public function __construct(
         private PaymentMethodRepositoryInterface $paymentMethodRepository,
         private PaymentCountryResolverInterface $paymentCountryResolver,
@@ -29,6 +32,7 @@ final readonly class KlarnaPaymentMethodsResolver implements PaymentMethodsResol
      *
      * @return PaymentMethodInterface[]
      */
+    #[\Override]
     public function getSupportedMethods(BasePaymentInterface $subject): array
     {
         Assert::true($this->supports($subject), 'This payment is not support by current resolver');
@@ -69,6 +73,7 @@ final readonly class KlarnaPaymentMethodsResolver implements PaymentMethodsResol
         );
     }
 
+    #[\Override]
     public function supports(BasePaymentInterface $subject): bool
     {
         if (!$subject instanceof PaymentInterface) {

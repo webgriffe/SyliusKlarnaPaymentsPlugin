@@ -7,7 +7,7 @@ namespace Tests\Webgriffe\SyliusKlarnaPaymentsPlugin\Behat\Context;
 use Sylius\Bundle\PayumBundle\Model\PaymentSecurityTokenInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Sylius\Component\Core\Repository\PaymentRepositoryInterface;
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Webmozart\Assert\Assert;
 
 trait PayumPaymentTrait
@@ -60,7 +60,10 @@ trait PayumPaymentTrait
         });
         Assert::count($paymentCaptureSecurityTokens, 1, sprintf('Expected 1 payment capture security token, got %s.', count($paymentCaptureSecurityTokens)));
 
-        return array_pop($paymentCaptureSecurityTokens);
+        $paymentCaptureSecurityToken = array_pop($paymentCaptureSecurityTokens);
+        Assert::isInstanceOf($paymentCaptureSecurityToken, PaymentSecurityTokenInterface::class);
+
+        return $paymentCaptureSecurityToken;
     }
 
     /**
@@ -73,7 +76,10 @@ trait PayumPaymentTrait
         });
         Assert::count($paymentNotifySecurityTokens, 1, sprintf('Expected 1 payment notify security token, got %s.', count($paymentNotifySecurityTokens)));
 
-        return array_pop($paymentNotifySecurityTokens);
+        $paymentNotifySecurityToken = array_pop($paymentNotifySecurityTokens);
+        Assert::isInstanceOf($paymentNotifySecurityToken, PaymentSecurityTokenInterface::class);
+
+        return $paymentNotifySecurityToken;
     }
 
     /**
@@ -86,6 +92,9 @@ trait PayumPaymentTrait
         });
         Assert::count($paymentCancelSecurityTokens, 1, sprintf('Expected 1 payment cancel security token, got %s.', count($paymentCancelSecurityTokens)));
 
-        return array_pop($paymentCancelSecurityTokens);
+        $paymentCancelSecurityToken = array_pop($paymentCancelSecurityTokens);
+        Assert::isInstanceOf($paymentCancelSecurityToken, PaymentSecurityTokenInterface::class);
+
+        return $paymentCancelSecurityToken;
     }
 }

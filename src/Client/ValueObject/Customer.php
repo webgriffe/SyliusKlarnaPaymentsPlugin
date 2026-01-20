@@ -52,6 +52,7 @@ readonly class Customer implements JsonSerializable
         return 'person';
     }
 
+    #[\Override]
     public function jsonSerialize(): array
     {
         return array_filter([

@@ -138,6 +138,7 @@ final readonly class Payment implements JsonSerializable
         return $this->options;
     }
 
+    #[\Override]
     public function jsonSerialize(): array
     {
         $payload = [

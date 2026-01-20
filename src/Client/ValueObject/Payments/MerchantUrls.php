@@ -36,6 +36,7 @@ final readonly class MerchantUrls implements JsonSerializable
         return $this->authorization;
     }
 
+    #[\Override]
     public function jsonSerialize(): array
     {
         return array_filter([

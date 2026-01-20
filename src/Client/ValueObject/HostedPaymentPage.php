@@ -115,6 +115,7 @@ final readonly class HostedPaymentPage implements JsonSerializable
         return $this->profileId;
     }
 
+    #[\Override]
     public function jsonSerialize(): array
     {
         $options = $this->getOptions();

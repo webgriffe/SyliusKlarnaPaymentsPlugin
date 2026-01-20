@@ -29,6 +29,7 @@ final readonly class Authorization implements Stringable
         return base64_encode($this->username . ':' . $this->password);
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return $this->getHeader();

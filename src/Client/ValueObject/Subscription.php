@@ -30,6 +30,7 @@ final readonly class Subscription implements JsonSerializable
         return $this->intervalCount;
     }
 
+    #[\Override]
     public function jsonSerialize(): array
     {
         return [

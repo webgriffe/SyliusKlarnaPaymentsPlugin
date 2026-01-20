@@ -20,6 +20,7 @@ final readonly class ConvertSyliusPaymentToKlarnaOrderAction implements ActionIn
     /**
      * @param mixed|ConvertSyliusPaymentToKlarnaOrder $request
      */
+    #[\Override]
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
@@ -32,6 +33,7 @@ final readonly class ConvertSyliusPaymentToKlarnaOrderAction implements ActionIn
         $request->setKlarnaOrder($klarnaOrder);
     }
 
+    #[\Override]
     public function supports($request): bool
     {
         return $request instanceof ConvertSyliusPaymentToKlarnaOrder;

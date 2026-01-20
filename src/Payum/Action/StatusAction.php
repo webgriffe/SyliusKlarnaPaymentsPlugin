@@ -27,6 +27,7 @@ final class StatusAction implements ActionInterface
     /**
      * @param GetStatus|mixed $request
      */
+    #[\Override]
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
@@ -87,6 +88,7 @@ final class StatusAction implements ActionInterface
         }
     }
 
+    #[\Override]
     public function supports($request): bool
     {
         return

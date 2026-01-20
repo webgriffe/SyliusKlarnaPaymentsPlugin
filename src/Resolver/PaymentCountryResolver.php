@@ -15,6 +15,7 @@ use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\PaymentCountry;
 
 final class PaymentCountryResolver implements PaymentCountryResolverInterface
 {
+    #[\Override]
     public function resolve(PaymentInterface $payment): PaymentCountry
     {
         $order = $payment->getOrder();
@@ -41,6 +42,7 @@ final class PaymentCountryResolver implements PaymentCountryResolverInterface
     /**
      * @return array<string, PaymentCountry>
      */
+    #[\Override]
     public function getDefaultDataMapping(): array
     {
         $paymentCountries = [

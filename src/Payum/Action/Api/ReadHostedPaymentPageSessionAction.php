@@ -31,6 +31,7 @@ final class ReadHostedPaymentPageSessionAction implements ActionInterface, ApiAw
     /**
      * @param ReadHostedPaymentPageSession|mixed $request
      */
+    #[\Override]
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
@@ -48,6 +49,7 @@ final class ReadHostedPaymentPageSessionAction implements ActionInterface, ApiAw
         $request->setHostedPaymentPageSessionDetails($hostedPaymentPageSessionDetails);
     }
 
+    #[\Override]
     public function supports($request): bool
     {
         return $request instanceof ReadHostedPaymentPageSession;

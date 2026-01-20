@@ -45,6 +45,7 @@ final readonly class Client implements ClientInterface
     ) {
     }
 
+    #[\Override]
     public function createPaymentSession(
         ApiContext $apiContext,
         Payment $payment,
@@ -128,6 +129,7 @@ final readonly class Client implements ClientInterface
         );
     }
 
+    #[\Override]
     public function getPaymentSessionDetails(
         ApiContext $apiContext,
         string $sessionId,
@@ -202,6 +204,7 @@ final readonly class Client implements ClientInterface
         );
     }
 
+    #[\Override]
     public function createHostedPaymentPageSession(
         ApiContext $apiContext,
         HostedPaymentPage $hostedPaymentPage,
@@ -293,6 +296,7 @@ final readonly class Client implements ClientInterface
         );
     }
 
+    #[\Override]
     public function getHostedPaymentPageSessionDetails(
         ApiContext $apiContext,
         string $sessionId,
@@ -363,6 +367,7 @@ final readonly class Client implements ClientInterface
         );
     }
 
+    #[\Override]
     public function createOrder(
         ApiContext $apiContext,
         Order $order,
@@ -453,6 +458,7 @@ final readonly class Client implements ClientInterface
         );
     }
 
+    #[\Override]
     public function getOrderDetails(
         ApiContext $apiContext,
         string $orderId,
@@ -519,6 +525,7 @@ final readonly class Client implements ClientInterface
         );
     }
 
+    #[\Override]
     public function createPaymentSessionUrl(
         ApiContext $apiContext,
         string $sessionId,

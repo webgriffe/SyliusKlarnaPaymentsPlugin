@@ -16,6 +16,7 @@ final class WebgriffeSyliusKlarnaPaymentsExtension extends AbstractResourceExten
 {
     use PrependDoctrineMigrationsTrait;
 
+    #[\Override]
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = $this->getConfiguration([], $container);
@@ -28,21 +29,25 @@ final class WebgriffeSyliusKlarnaPaymentsExtension extends AbstractResourceExten
         $this->addImageOptionsOnConverters($container, $config);
     }
 
+    #[\Override]
     public function prepend(ContainerBuilder $container): void
     {
         $this->prependDoctrineMigrations($container);
     }
 
+    #[\Override]
     protected function getMigrationsNamespace(): string
     {
         return 'DoctrineMigrations';
     }
 
+    #[\Override]
     protected function getMigrationsDirectory(): string
     {
         return '@WebgriffeSyliusKlarnaPaymentsPlugin/src/Migrations';
     }
 
+    #[\Override]
     protected function getNamespacesOfMigrationsExecutedBefore(): array
     {
         return [

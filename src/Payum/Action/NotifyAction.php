@@ -37,6 +37,7 @@ final class NotifyAction implements ActionInterface, GatewayAwareInterface
     /**
      * @param Notify|mixed $request
      */
+    #[\Override]
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
@@ -87,6 +88,7 @@ final class NotifyAction implements ActionInterface, GatewayAwareInterface
         $payment->setDetails($paymentDetails->toStoredPaymentDetails());
     }
 
+    #[\Override]
     public function supports($request): bool
     {
         return $request instanceof Notify &&
