@@ -34,13 +34,13 @@
 4. Import the routes needed for cancelling the payments. Add the following to your config/routes.yaml file:
    ```yaml
    webgriffe_sylius_klarna_payments_plugin:
-       resource: "@WebgriffeSyliusKlarnaPaymentsPlugin/config/shop_routing.php"
+       resource: "@WebgriffeSyliusKlarnaPaymentsPlugin/config/routes/shop.php"
        prefix: /{_locale}
        requirements:
            _locale: ^[A-Za-z]{2,4}(_([A-Za-z]{4}|[0-9]{3}))?(_([A-Za-z]{2}|[0-9]{3}))?$
 
    webgriffe_sylius_klarna_payments_plugin_ajax:
-       resource: "@WebgriffeSyliusKlarnaPaymentsPlugin/config/shop_ajax_routing.php"
+       resource: "@WebgriffeSyliusKlarnaPaymentsPlugin/config/routes/shop_ajax.php"
 
    sylius_shop_payum_cancel:
        resource: "@PayumBundle/Resources/config/routing/cancel.xml"

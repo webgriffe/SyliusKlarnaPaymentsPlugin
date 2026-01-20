@@ -1,0 +1,13 @@
+<h1>{{ 'webgriffe_sylius_klarna_payments.ui.processing_payment'|trans }}</h1>
+
+<p>{{ 'webgriffe_sylius_klarna_payments.ui.please_wait'|trans }}</p>
+
+<img src="{{ asset('build/shop/images/loader.gif', 'shop') }}"
+     alt="{{ 'webgriffe_sylius_klarna_payments.ui.loading'|trans }}"
+     style="max-width: 100px; max-height: 100px;">
+
+{% if redirectUrl %}
+    <a href="{{ redirectUrl }}">
+        {{ 'webgriffe_sylius_klarna_payments.ui.return_to_klarna_checkout'|trans }}
+    </a>
+{% endif %}

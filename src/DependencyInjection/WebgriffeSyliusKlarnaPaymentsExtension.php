@@ -40,7 +40,7 @@ final class WebgriffeSyliusKlarnaPaymentsExtension extends AbstractResourceExten
 
     protected function getMigrationsDirectory(): string
     {
-        return '@WebgriffeSyliusKlarnaPaymentsPlugin/migrations';
+        return '@WebgriffeSyliusKlarnaPaymentsPlugin/src/Migrations';
     }
 
     protected function getNamespacesOfMigrationsExecutedBefore(): array
