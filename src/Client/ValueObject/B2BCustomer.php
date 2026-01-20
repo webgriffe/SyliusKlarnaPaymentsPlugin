@@ -26,6 +26,7 @@ final readonly class B2BCustomer extends Customer
         return $this->organizationEntityType;
     }
 
+    #[\Override]
     public function getType(): string
     {
         return 'organization';
@@ -41,6 +42,7 @@ final readonly class B2BCustomer extends Customer
         return $this->vatId;
     }
 
+    #[\Override]
     public function jsonSerialize(): array
     {
         return array_filter([

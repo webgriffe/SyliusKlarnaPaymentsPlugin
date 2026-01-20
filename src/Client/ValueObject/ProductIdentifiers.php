@@ -48,6 +48,7 @@ final readonly class ProductIdentifiers implements JsonSerializable
         return $this->size;
     }
 
+    #[\Override]
     public function jsonSerialize(): array
     {
         $payload = [

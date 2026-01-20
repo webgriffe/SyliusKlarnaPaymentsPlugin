@@ -103,6 +103,7 @@ final readonly class OrderLine implements JsonSerializable
         return $this->subscription;
     }
 
+    #[\Override]
     public function jsonSerialize(): array
     {
         return array_filter([

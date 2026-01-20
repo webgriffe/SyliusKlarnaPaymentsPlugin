@@ -46,6 +46,7 @@ final readonly class B2BAddress extends Address
         return $this->organizationName;
     }
 
+    #[\Override]
     public function jsonSerialize(): array
     {
         return array_filter([

@@ -31,6 +31,7 @@ final class ReadPaymentSessionAction implements ActionInterface, ApiAwareInterfa
     /**
      * @param ReadPaymentSession|mixed $request
      */
+    #[\Override]
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
@@ -48,6 +49,7 @@ final class ReadPaymentSessionAction implements ActionInterface, ApiAwareInterfa
         $request->setPaymentSessionDetails($paymentSessionDetails);
     }
 
+    #[\Override]
     public function supports($request): bool
     {
         return $request instanceof ReadPaymentSession;

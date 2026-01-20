@@ -180,6 +180,7 @@ trait CommonOrderConverterTrait
         $taxRate = $this->getOrderTaxRate($order);
         $totalAmount = $order->getShippingTotal();
         $unitPrice = $order->getAdjustmentsTotalRecursively(AdjustmentInterface::SHIPPING_ADJUSTMENT);
+        /** @psalm-suppress InvalidOperand */
         $shippingTaxTotal = (int) ($totalAmount - (($totalAmount * 10000) / (10000 + $taxRate)));
         $totalDiscountAmount = -1 * $order->getAdjustmentsTotalRecursively(AdjustmentInterface::ORDER_SHIPPING_PROMOTION_ADJUSTMENT);
 
@@ -211,7 +212,7 @@ trait CommonOrderConverterTrait
         if ($taxAdjustment instanceof AdjustmentInterface) {
             /** @var float $taxRateAmount */
             $taxRateAmount = $taxAdjustment->getDetails()['taxRateAmount'];
-            $taxRate = (int) ($taxRateAmount * 10000);
+            $taxRate = (int) ($taxRateAmount * 10000.0);
         }
 
         return $taxRate;

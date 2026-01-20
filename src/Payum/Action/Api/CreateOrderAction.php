@@ -31,6 +31,7 @@ final class CreateOrderAction implements ActionInterface, ApiAwareInterface
     /**
      * @param mixed|CreateOrder $request
      */
+    #[\Override]
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
@@ -48,6 +49,7 @@ final class CreateOrderAction implements ActionInterface, ApiAwareInterface
         $request->setOrderResponse($orderResponse);
     }
 
+    #[\Override]
     public function supports($request): bool
     {
         return $request instanceof CreateOrder;

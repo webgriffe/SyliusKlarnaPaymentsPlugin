@@ -24,6 +24,7 @@ final readonly class Attachment implements JsonSerializable
         return $this->contentType;
     }
 
+    #[\Override]
     public function jsonSerialize(): array
     {
         return [

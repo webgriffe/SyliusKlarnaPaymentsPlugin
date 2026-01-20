@@ -31,6 +31,7 @@ final class CreateHostedPaymentPageSessionAction implements ActionInterface, Api
     /**
      * @param CreateHostedPaymentPageSession|mixed $request
      */
+    #[\Override]
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
@@ -51,6 +52,7 @@ final class CreateHostedPaymentPageSessionAction implements ActionInterface, Api
         $request->setHostedPaymentPageSession($hostedPaymentPageSession);
     }
 
+    #[\Override]
     public function supports($request): bool
     {
         return $request instanceof CreateHostedPaymentPageSession;

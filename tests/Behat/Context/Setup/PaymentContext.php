@@ -18,6 +18,7 @@ final class PaymentContext implements Context
 {
     /**
      * @param PaymentMethodRepositoryInterface<PaymentMethodInterface> $paymentMethodRepository
+     * @param ExampleFactoryInterface<PaymentMethodInterface> $paymentMethodExampleFactory
      */
     public function __construct(
         private readonly SharedStorageInterface $sharedStorage,

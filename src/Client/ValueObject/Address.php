@@ -78,6 +78,7 @@ readonly class Address implements JsonSerializable
         return $this->title;
     }
 
+    #[\Override]
     public function jsonSerialize(): array
     {
         return array_filter([

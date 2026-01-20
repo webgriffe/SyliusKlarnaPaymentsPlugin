@@ -14,6 +14,7 @@ use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\ServerRegion;
 
 final class SyliusKlarnaPaymentsGatewayConfigurationType extends AbstractType
 {
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $serverRegionChoices = [];

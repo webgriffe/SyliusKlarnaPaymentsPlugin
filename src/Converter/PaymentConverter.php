@@ -32,6 +32,7 @@ final readonly class PaymentConverter implements PaymentConverterInterface
     ) {
     }
 
+    #[\Override]
     public function convert(
         PaymentInterface $payment,
         ?string $confirmationUrl,
@@ -84,31 +85,37 @@ final readonly class PaymentConverter implements PaymentConverterInterface
         );
     }
 
+    #[\Override]
     private function getUrlGenerator(): UrlGeneratorInterface
     {
         return $this->urlGenerator;
     }
 
+    #[\Override]
     private function getCacheManager(): CacheManager
     {
         return $this->cacheManager;
     }
 
+    #[\Override]
     private function getTranslator(): TranslatorInterface
     {
         return $this->translator;
     }
 
+    #[\Override]
     private function getSchema(): string
     {
         return 'https';
     }
 
+    #[\Override]
     private function getImageFilter(): string
     {
         return $this->imageFilter;
     }
 
+    #[\Override]
     private function getMainImageType(): string
     {
         return $this->mainImageType;

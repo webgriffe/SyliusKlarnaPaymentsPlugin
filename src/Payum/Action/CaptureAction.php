@@ -67,6 +67,7 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
      *
      * @param Capture|mixed $request
      */
+    #[\Override]
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
@@ -143,6 +144,7 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface, Api
         throw new HttpRedirect($hostedPaymentPageRedirectUrl);
     }
 
+    #[\Override]
     public function supports($request): bool
     {
         return

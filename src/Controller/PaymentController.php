@@ -28,12 +28,16 @@ use Webmozart\Assert\Assert;
  *
  * @psalm-import-type StoredPaymentDetails from PaymentDetails
  */
-class PaymentController extends AbstractController
+final class PaymentController extends AbstractController
 {
     public const PAYMENT_ID_SESSION_KEY = 'webgriffe_klarna_payment_id';
 
     public const TOKEN_HASH_SESSION_KEY = 'webgriffe_klarna_token_hash';
 
+    /**
+     * @param OrderRepositoryInterface<OrderInterface> $orderRepository
+     * @param PaymentRepositoryInterface<PaymentInterface> $paymentRepository
+     */
     public function __construct(
         private readonly OrderRepositoryInterface $orderRepository,
         private readonly RequestStack $requestStack,
@@ -89,7 +93,7 @@ class PaymentController extends AbstractController
             UrlGeneratorInterface::ABSOLUTE_URL,
         );
 
-        return $this->render('@WebgriffeSyliusKlarnaPaymentsPlugin/Process/index.html.twig', [
+        return $this->render('@WebgriffeSyliusKlarnaPaymentsPlugin/shop/payment/process.html.twig', [
             'afterUrl' => $token->getAfterUrl(),
             'paymentStatusUrl' => $paymentStatusUrl,
             'redirectUrl' => $paymentDetails->getHostedPaymentPageRedirectUrl(),

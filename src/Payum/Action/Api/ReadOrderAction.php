@@ -31,6 +31,7 @@ final class ReadOrderAction implements ActionInterface, ApiAwareInterface
     /**
      * @param ReadOrder|mixed $request
      */
+    #[\Override]
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
@@ -48,6 +49,7 @@ final class ReadOrderAction implements ActionInterface, ApiAwareInterface
         $request->setOrderDetails($orderDetails);
     }
 
+    #[\Override]
     public function supports($request): bool
     {
         return $request instanceof ReadOrder;

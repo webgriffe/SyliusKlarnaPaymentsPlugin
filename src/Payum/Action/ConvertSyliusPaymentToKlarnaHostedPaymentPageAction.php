@@ -20,6 +20,7 @@ final readonly class ConvertSyliusPaymentToKlarnaHostedPaymentPageAction impleme
     /**
      * @param ConvertSyliusPaymentToKlarnaHostedPaymentPage|mixed $request
      */
+    #[\Override]
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
@@ -38,6 +39,7 @@ final readonly class ConvertSyliusPaymentToKlarnaHostedPaymentPageAction impleme
         $request->setKlarnaHostedPaymentPage($klarnaHostedPaymentPage);
     }
 
+    #[\Override]
     public function supports($request): bool
     {
         return $request instanceof ConvertSyliusPaymentToKlarnaHostedPaymentPage;

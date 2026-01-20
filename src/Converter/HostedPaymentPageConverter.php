@@ -11,6 +11,7 @@ use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\ValueObject\HostedPaymentPage\Me
 
 final class HostedPaymentPageConverter implements HostedPaymentPageConverterInterface
 {
+    #[\Override]
     public function convert(
         string $confirmationUrl,
         string $notificationUrl,

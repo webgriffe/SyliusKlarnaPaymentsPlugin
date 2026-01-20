@@ -48,6 +48,7 @@ final readonly class MerchantUrls implements JsonSerializable
         return $this->success;
     }
 
+    #[\Override]
     public function jsonSerialize(): array
     {
         return [

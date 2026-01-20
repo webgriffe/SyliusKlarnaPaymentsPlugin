@@ -13,7 +13,7 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Sylius\Component\Core\Repository\PaymentRepositoryInterface;
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
 use Tests\Webgriffe\SyliusKlarnaPaymentsPlugin\Behat\Context\PayumPaymentTrait;
@@ -76,7 +76,7 @@ final class KlarnaContext implements Context
     {
         $payment = $this->getCurrentPayment();
         $this->paymentProcessPage->verify([
-            'tokenValue' => $payment->getOrder()->getTokenValue(),
+            'tokenValue' => $payment->getOrder()?->getTokenValue(),
         ]);
     }
 

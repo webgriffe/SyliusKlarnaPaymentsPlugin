@@ -10,6 +10,7 @@ use Webgriffe\SyliusKlarnaPaymentsPlugin\Client\Enum\ServerRegion;
 
 final class KlarnaPaymentsGatewayFactory extends GatewayFactory
 {
+    #[\Override]
     protected function populateConfig(ArrayObject $config): void
     {
         $config->defaults([

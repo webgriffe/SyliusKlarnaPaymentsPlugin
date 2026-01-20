@@ -108,6 +108,7 @@ final readonly class Order implements JsonSerializable
         return $this->customer;
     }
 
+    #[\Override]
     public function jsonSerialize(): array
     {
         return array_filter([
