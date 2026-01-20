@@ -17,7 +17,10 @@ Feature: Paying with Klarna Payments during checkout
     @ui @javascript
     Scenario: Successful payment
         Given I added product "PHP T-Shirt" to the cart
-        And I have proceeded selecting "Klarna" payment method
+        And I am at the checkout addressing step
+        And I specify the billing address as "Via Franceschini 3", "Casalgrande", "42013", "Italy" for "Mario Rossi"
+        And I complete the addressing step
+        And I have proceeded order with "Free" shipping method and "Klarna" payment
         When I confirm my order
         And I complete the payment on Klarna
         Then I should be on the waiting payment processing page
@@ -30,7 +33,10 @@ Feature: Paying with Klarna Payments during checkout
     @ui @javascript
     Scenario: Failed payment
         Given I added product "PHP T-Shirt" to the cart
-        And I have proceeded selecting "Klarna" payment method
+        And I am at the checkout addressing step
+        And I specify the billing address as "Via Franceschini 3", "Casalgrande", "42013", "Italy" for "Mario Rossi"
+        And I complete the addressing step
+        And I have proceeded order with "Free" shipping method and "Klarna" payment
         When I confirm my order
         And I complete the payment on Klarna
         Then I should be on the waiting payment processing page
@@ -42,7 +48,10 @@ Feature: Paying with Klarna Payments during checkout
     @ui @javascript
     Scenario: Cancelling the payment
         Given I added product "PHP T-Shirt" to the cart
-        And I have proceeded selecting "Klarna" payment method
+        And I am at the checkout addressing step
+        And I specify the billing address as "Via Franceschini 3", "Casalgrande", "42013", "Italy" for "Mario Rossi"
+        And I complete the addressing step
+        And I have proceeded order with "Free" shipping method and "Klarna" payment
         When I confirm my order
         And I cancel the payment on Klarna
         Then I should be on the waiting payment processing page
@@ -54,7 +63,10 @@ Feature: Paying with Klarna Payments during checkout
     @ui @javascript
     Scenario: Retrying the payment with success
         Given I added product "PHP T-Shirt" to the cart
-        And I have proceeded selecting "Klarna" payment method
+        And I am at the checkout addressing step
+        And I specify the billing address as "Via Franceschini 3", "Casalgrande", "42013", "Italy" for "Mario Rossi"
+        And I complete the addressing step
+        And I have proceeded order with "Free" shipping method and "Klarna" payment
         And I have confirmed order
         But I have cancelled Klarna payment
         And Klarna notify the store about the cancelled payment
