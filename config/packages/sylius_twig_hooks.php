@@ -8,12 +8,16 @@ return static function (ContainerConfigurator $container): void {
     $container->extension('sylius_twig_hooks', [
         'hooks' => [
             'sylius_admin.payment_method.create.content.form.sections.gateway_configuration' => [
-                'alias' => [
-                    'template' => '@WebgriffeSyliusKlarnaPaymentsPlugin/admin/payment_method/form/alias.html.twig',
+                'username' => [
+                    'template' => '@WebgriffeSyliusKlarnaPaymentsPlugin/admin/payment_method/form/username.html.twig',
                     'priority' => 0,
                 ],
-                'mac_key' => [
-                    'template' => '@WebgriffeSyliusKlarnaPaymentsPlugin/admin/payment_method/form/mac_key.html.twig',
+                'password' => [
+                    'template' => '@WebgriffeSyliusKlarnaPaymentsPlugin/admin/payment_method/form/password.html.twig',
+                    'priority' => 0,
+                ],
+                'server_region' => [
+                    'template' => '@WebgriffeSyliusKlarnaPaymentsPlugin/admin/payment_method/form/server_region.html.twig',
                     'priority' => 0,
                 ],
                 'sandbox' => [
@@ -22,12 +26,16 @@ return static function (ContainerConfigurator $container): void {
                 ],
             ],
             'sylius_admin.payment_method.update.content.form.sections.gateway_configuration' => [
-                'alias' => [
-                    'template' => '@WebgriffeSyliusKlarnaPaymentsPlugin/admin/payment_method/form/alias.html.twig',
+                'username' => [
+                    'template' => '@WebgriffeSyliusKlarnaPaymentsPlugin/admin/payment_method/form/username.html.twig',
                     'priority' => 0,
                 ],
-                'mac_key' => [
-                    'template' => '@WebgriffeSyliusKlarnaPaymentsPlugin/admin/payment_method/form/mac_key.html.twig',
+                'password' => [
+                    'template' => '@WebgriffeSyliusKlarnaPaymentsPlugin/admin/payment_method/form/password.html.twig',
+                    'priority' => 0,
+                ],
+                'server_region' => [
+                    'template' => '@WebgriffeSyliusKlarnaPaymentsPlugin/admin/payment_method/form/server_region.html.twig',
                     'priority' => 0,
                 ],
                 'sandbox' => [

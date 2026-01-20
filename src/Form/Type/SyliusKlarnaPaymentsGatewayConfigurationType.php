@@ -24,26 +24,26 @@ final class SyliusKlarnaPaymentsGatewayConfigurationType extends AbstractType
 
         $builder
             ->add('username', TextType::class, [
-                'label' => 'webgriffe_sylius_klarna.form.gateway_configuration.username',
+                'label' => 'webgriffe_sylius_klarna_payments.form.gateway_configuration.username',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
                 ],
             ])
             ->add('password', TextType::class, [
-                'label' => 'webgriffe_sylius_klarna.form.gateway_configuration.password',
+                'label' => 'webgriffe_sylius_klarna_payments.form.gateway_configuration.password',
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
                 ],
             ])
             ->add('server_region', ChoiceType::class, [
-                'label' => 'webgriffe_sylius_klarna.form.gateway_configuration.server_region',
+                'label' => 'webgriffe_sylius_klarna_payments.form.gateway_configuration.server_region',
                 'required' => true,
                 'choices' => $serverRegionChoices,
             ])
             ->add('sandbox', CheckboxType::class, [
-                'label' => 'webgriffe_sylius_klarna.form.gateway_configuration.sandbox',
+                'label' => 'webgriffe_sylius_klarna_payments.form.gateway_configuration.sandbox',
                 'required' => false,
             ])
         ;
