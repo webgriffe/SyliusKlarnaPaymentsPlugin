@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Webgriffe\SyliusKlarnaPaymentsPlugin\Behat\Context\Ui;
 
 use Behat\Behat\Context\Context;
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Mink\Session;
 use Sylius\Behat\Page\Shop\Order\ShowPageInterface;
 use Sylius\Behat\Page\Shop\Order\ThankYouPageInterface;
@@ -113,9 +114,25 @@ final class KlarnaContext implements Context
     /**
      * @Then I should be notified that my payment is failed
      */
-    public function iShouldBeNotifiedThatMyPaymentHasBeenCancelled(): void
+    public function iShouldBeNotifiedThatMyPaymentHasFailed(): void
     {
         $this->assertNotification('Payment has failed.');
+    }
+
+    /**
+     * @Given I should be notified that my payment has been completed
+     */
+    public function iShouldBeNotifiedThatMyPaymentHasBeenCompleted(): void
+    {
+        $this->assertNotification('Payment has been completed.');
+    }
+
+    /**
+     * @Given I should be notified that my payment has been cancelled
+     */
+    public function iShouldBeNotifiedThatMyPaymentHasBeenCancelled(): void
+    {
+        $this->assertNotification('Payment has been cancelled.');
     }
 
     /**
