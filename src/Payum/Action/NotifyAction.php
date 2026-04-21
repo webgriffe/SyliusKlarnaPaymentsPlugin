@@ -71,7 +71,20 @@ final class NotifyAction implements ActionInterface, GatewayAwareInterface
         $paymentDetails = PaymentDetails::createFromStoredPaymentDetails($storedPaymentDetails);
 
         $oldHostedPaymentPage = $paymentDetails->getHostedPaymentPageStatus();
-        $paymentDetails->setHostedPaymentPageStatus(HostedPaymentPageSessionStatus::tryFrom($requestParameters['session']['status']));
+        $newHostedPaymentPageStatus = HostedPaymentPageSessionStatus::tryFrom($requestParameters['session']['status']);
+
+        // Never downgrade from a successful terminal state (COMPLETED) to a non-success state
+        // due to out-of-order webhooks (e.g. a late BACK arriving after COMPLETED)
+        if ($oldHostedPaymentPage !== HostedPaymentPageSessionStatus::Completed) {
+            $paymentDetails->setHostedPaymentPageStatus($newHostedPaymentPageStatus);
+        } else {
+            $this->logger->info(sprintf(
+                'Ignoring HPP status "%s" for payment with ID "%s" because it is already COMPLETED.',
+                $requestParameters['session']['status'],
+                $paymentId,
+            ));
+        }
+
         $paymentDetails->setOrderId($requestParameters['session']['order_id'] ?? null);
         $paymentDetails->setKlarnaReference($requestParameters['session']['klarna_reference'] ?? null);
 

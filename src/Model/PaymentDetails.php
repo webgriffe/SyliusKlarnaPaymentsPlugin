@@ -143,7 +143,7 @@ final class PaymentDetails
     public function isSuccessfully(): bool
     {
         return $this->getPaymentSessionStatus() === PaymentSessionStatus::Complete &&
-            $this->getHostedPaymentPageStatus() === HostedPaymentPageSessionStatus::Completed
+            !$this->isFailed()
         ;
     }
 
@@ -158,6 +158,10 @@ final class PaymentDetails
 
     public function isCanceled(): bool
     {
+        if ($this->getPaymentSessionStatus() === PaymentSessionStatus::Complete) {
+            return false;
+        }
+
         return in_array($this->getHostedPaymentPageStatus(), [
             HostedPaymentPageSessionStatus::Cancelled,
             HostedPaymentPageSessionStatus::Back,
